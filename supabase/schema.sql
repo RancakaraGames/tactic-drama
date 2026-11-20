@@ -135,3 +135,25 @@ create policy "Admins can delete drama videos"
 on storage.objects for delete
 to authenticated
 using (bucket_id = 'drama-videos' and public.is_admin());
+
+-- Viewer comments. Public read; public can post with a display name.
+create table if not exists public.comments (
+  id uuid primary key default gen_random_uuid(),
+  drama_id uuid not null references public.dramas(id) on delete cascade,
+  display_name text not null check (char_length(display_name) between 1 and 40),
+  body text not null check (char_length(body) between 1 and 1000),
+  created_at timestamptz not null default now()
+);
+create index if not exists comments_drama_created_idx
+on public.comments (drama_id, created_at desc);
+alter table public.comments enable row level security;
+drop policy if exists "Public can read comments" on public.comments;
+create policy "Public can read comments"
+on public.comments for select to anon, authenticated using (true);
+drop policy if exists "Visitors can post comments" on public.comments;
+create policy "Visitors can post comments"
+on public.comments for insert to anon, authenticated
+with check (
+  char_length(trim(display_name)) between 1 and 40
+  and char_length(trim(body)) between 1 and 1000
+);
