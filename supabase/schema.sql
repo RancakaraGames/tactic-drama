@@ -157,3 +157,16 @@ with check (
   char_length(trim(display_name)) between 1 and 40
   and char_length(trim(body)) between 1 and 1000
 );
+
+-- Optional poster images for drama cards.
+insert into storage.buckets (id,name,public,file_size_limit,allowed_mime_types)
+values ('drama-posters','drama-posters',true,10485760,array['image/jpeg','image/png','image/webp'])
+on conflict (id) do update set public=true,file_size_limit=10485760,allowed_mime_types=excluded.allowed_mime_types;
+drop policy if exists "Public can view drama posters" on storage.objects;
+create policy "Public can view drama posters" on storage.objects for select to anon,authenticated using (bucket_id='drama-posters');
+drop policy if exists "Admins can upload drama posters" on storage.objects;
+create policy "Admins can upload drama posters" on storage.objects for insert to authenticated with check (bucket_id='drama-posters' and public.is_admin());
+drop policy if exists "Admins can update drama posters" on storage.objects;
+create policy "Admins can update drama posters" on storage.objects for update to authenticated using (bucket_id='drama-posters' and public.is_admin()) with check (bucket_id='drama-posters' and public.is_admin());
+drop policy if exists "Admins can delete drama posters" on storage.objects;
+create policy "Admins can delete drama posters" on storage.objects for delete to authenticated using (bucket_id='drama-posters' and public.is_admin());
