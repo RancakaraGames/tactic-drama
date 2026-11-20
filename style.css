@@ -187,3 +187,9 @@ input:focus,textarea:focus{outline:1px solid #e9c58a80;border-color:var(--gold)}
  .episode-list{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 @media(prefers-reduced-motion:reduce){.episode-list button{transition:none}}
+
+/* Clear episode navigation */
+.episode-nav{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:14px 0 10px}
+.episode-nav button{min-width:0;padding:12px 10px;font-size:11px}
+.episode-nav button:disabled{opacity:.38;cursor:not-allowed;box-shadow:none}
+.episode-nav #nextEpisode{background:linear-gradient(135deg,#f0d5a0,#c18b58);color:#21171a}
