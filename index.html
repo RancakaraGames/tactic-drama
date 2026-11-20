@@ -60,6 +60,15 @@
     <p id="loginStatus" class="status" role="status"></p>
     <section id="uploadSection" hidden>
       <p class="notice" id="adminIdentity"></p>
+      <section class="creator-profile-card" aria-label="Profil kreator">
+        <div class="creator-profile-top"><img id="creatorAvatar" class="creator-avatar" alt="Foto profil kreator"><div><strong id="creatorDisplayName">Kreator TacTic</strong><small id="creatorEmail"></small></div></div>
+        <form id="creatorProfileForm" class="creator-profile-form">
+          <label>Nama tampilan<input name="displayName" maxlength="40" required placeholder="Nama kreator"></label>
+          <label>Foto profil (opsional)<input name="avatar" type="file" accept="image/jpeg,image/png,image/webp"></label>
+          <button class="secondary-btn full" type="submit">Simpan profil</button>
+        </form>
+        <p id="profileStatus" class="status" role="status"></p>
+      </section>
       <section id="creatorLibrary" class="creator-library"><div class="creator-heading"><h3>Drama saya</h3><span class="creator-count" id="creatorCount">0 drama</span></div><p class="notice">Kelola dan buka kembali drama yang sudah kamu terbitkan.</p><div id="myDramaList" class="my-drama-list"><p class="notice">Memuat daftar drama...</p></div></section>
       <section id="moderationSection" hidden><h3>Laporan video dari pengguna</h3><p class="notice">Tinjau laporan. Jika terbukti melanggar, sembunyikan drama dari katalog.</p><div id="moderationList"></div></section>
       <form id="uploadForm">
