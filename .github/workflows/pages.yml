@@ -9,6 +9,7 @@ permissions:
   contents: read
   pages: write
   id-token: write
+  actions: read
 
 concurrency:
   group: "pages"
@@ -18,19 +19,42 @@ jobs:
   deploy:
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      url: ${{ steps.deploy_retry2.outputs.page_url || steps.deploy_retry1.outputs.page_url || steps.deploy.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
+
       - name: Configure Pages
         uses: actions/configure-pages@v5
         with:
           enablement: true
-      - name: Upload site
-        uses: actions/upload-pages-artifact@v3
+
+      - name: Upload site artifact (once per run)
+        uses: actions/upload-pages-artifact@v5
         with:
           path: .
-      - name: Deploy
-        id: deployment
-        uses: actions/deploy-pages@v4
+
+      - name: Deploy to GitHub Pages
+        id: deploy
+        continue-on-error: true
+        uses: actions/deploy-pages@v5.0.1
+
+      - name: Wait before deploy retry 1
+        if: steps.deploy.outcome == 'failure'
+        run: sleep 15
+
+      - name: Retry deployment 1 (reuse the same artifact)
+        id: deploy_retry1
+        if: steps.deploy.outcome == 'failure'
+        continue-on-error: true
+        uses: actions/deploy-pages@v5.0.1
+
+      - name: Wait before deploy retry 2
+        if: steps.deploy_retry1.outcome == 'failure'
+        run: sleep 30
+
+      - name: Retry deployment 2 (reuse the same artifact)
+        id: deploy_retry2
+        if: steps.deploy_retry1.outcome == 'failure'
+        uses: actions/deploy-pages@v5.0.1
