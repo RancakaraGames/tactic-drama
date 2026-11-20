@@ -214,7 +214,8 @@ $("#uploadForm").addEventListener("submit",async e=>{
   setStatus("#uploadStatus","Gagal menerbitkan drama: "+(err?.message||String(err))+". File sementara yang sudah terkirim akan dibersihkan jika izin penyimpanan mengizinkan. Periksa koneksi lalu coba lagi.");
  }finally{btn.disabled=false}
 });
-document.querySelectorAll(".nav-item").forEach(b=>b.addEventListener("click",()=>{document.querySelectorAll(".nav-item").forEach(x=>x.classList.remove("active"));b.classList.add("active");activeTab=b.dataset.tab;if(activeTab==="profile"){admin.showModal();return}render()}));
+document.querySelectorAll(".nav-item").forEach(b=>b.addEventListener("click",()=>{document.querySelectorAll(".nav-item").forEach(x=>x.classList.remove("active"));b.classList.add("active");activeTab=b.dataset.tab;const historyTools=$("#historyTools");if(historyTools)historyTools.hidden=activeTab!=="history";if(activeTab==="profile"){admin.showModal();return}render()}));
+$("#clearHistory").addEventListener("click",()=>{if(!Object.keys(watchHistory).length)return;if(!window.confirm("Hapus seluruh riwayat tontonan di perangkat ini?"))return;watchHistory={};try{localStorage.removeItem("tactic-watch-history")}catch{}render()});
 
 $("#likeDrama").addEventListener("click",async()=>{
  if(!activeDrama||String(activeDrama.id).startsWith("demo-"))return;
