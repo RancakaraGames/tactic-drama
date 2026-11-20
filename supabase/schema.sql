@@ -245,3 +245,26 @@ with check (
  uploader_id = (select auth.uid()) and status = 'approved'
  and exists (select 1 from public.dramas d where d.id = drama_id and d.uploader_id = (select auth.uid()) and d.status = 'approved')
 );
+
+
+-- Post-publication reporting: reports never block the initial upload.
+create table if not exists public.video_reports (
+ id uuid primary key default gen_random_uuid(),
+ drama_id uuid not null references public.dramas(id) on delete cascade,
+ reporter_id uuid not null references auth.users(id) on delete cascade,
+ reason text not null check (char_length(reason) between 3 and 80),
+ details text not null default '' check (char_length(details) <= 1000),
+ status text not null default 'open' check (status in ('open','reviewed','actioned')),
+ created_at timestamptz not null default now()
+);
+create index if not exists video_reports_status_created_at_idx on public.video_reports(status, created_at desc);
+alter table public.video_reports enable row level security;
+drop policy if exists "Signed-in users can report videos" on public.video_reports;
+create policy "Signed-in users can report videos" on public.video_reports for insert to authenticated
+ with check (reporter_id = (select auth.uid()) and exists (select 1 from public.dramas d where d.id = drama_id and d.status = 'approved'));
+drop policy if exists "Admins can read video reports" on public.video_reports;
+create policy "Admins can read video reports" on public.video_reports for select to authenticated using (public.is_admin());
+drop policy if exists "Admins can update video reports" on public.video_reports;
+create policy "Admins can update video reports" on public.video_reports for update to authenticated using (public.is_admin()) with check (public.is_admin());
+grant insert on public.video_reports to authenticated;
+grant select, update on public.video_reports to authenticated;
