@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#101014">
+  <meta name="description" content="TacTic Drama — tempat menikmati drama pendek favoritmu.">
+  <title>TacTic Drama</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="TacTic Drama beranda"><span class="brand-mark">T</span><span>TacTic <b>Drama</b></span></a>
+    <button class="icon-btn" id="installBtn" hidden aria-label="Pasang aplikasi">↓</button>
+  </header>
+
+  <main>
+    <section class="hero">
+      <p class="eyebrow">CERITA PILIHAN HARI INI</p>
+      <h1>Drama seru,<br><span>tanpa berhenti.</span></h1>
+      <p class="hero-copy">Temukan cerita pendek yang bikin penasaran di setiap episode.</p>
+    </section>
+
+    <section class="section-heading">
+      <div><p class="eyebrow">UNTUKMU</p><h2>Drama pilihan</h2></div>
+      <span class="live-dot">● PILIHAN</span>
+    </section>
+    <section id="dramaGrid" class="drama-grid" aria-live="polite"></section>
+
+    <section class="admin-callout">
+      <div><p class="eyebrow">PUNYA KONTEN?</p><h2>Ruang kreator</h2><p>Pratinjau fitur unggah untuk pengelola TacTic Drama.</p></div>
+      <button class="primary-btn" id="openAdmin">Buka panel admin</button>
+    </section>
+  </main>
+
+  <nav class="bottom-nav" aria-label="Navigasi utama">
+    <button class="nav-item active" data-tab="home"><span>⌂</span>Beranda</button>
+    <button class="nav-item" data-tab="saved"><span>♡</span>Favorit</button>
+    <button class="nav-item" data-tab="profile"><span>♙</span>Profil</button>
+  </nav>
+
+  <dialog id="playerDialog" class="player-dialog">
+    <button class="close-btn" data-close="playerDialog" aria-label="Tutup">×</button>
+    <div class="player-layout">
+      <video id="videoPlayer" controls playsinline></video>
+      <div class="player-info"><p class="eyebrow" id="playerSeries">TAC TIC DRAMA</p><h2 id="playerTitle">Judul drama</h2><p id="playerDescription"></p><div id="episodeList" class="episode-list"></div></div>
+    </div>
+  </dialog>
+
+  <dialog id="adminDialog" class="admin-dialog">
+    <button class="close-btn" data-close="adminDialog" aria-label="Tutup">×</button>
+    <p class="eyebrow">PENGELOLA</p><h2>Panel admin</h2>
+    <p class="notice">Mode pratinjau: video yang dipilih hanya tersimpan sementara di browser HP ini. Agar semua penonton bisa melihat unggahan, nanti perlu login admin sungguhan dan penyimpanan video online.</p>
+    <form id="uploadForm">
+      <label>Judul drama<input name="title" required placeholder="Contoh: Cinta di Ujung Senja"></label>
+      <label>Deskripsi<textarea name="description" rows="3" placeholder="Ceritakan singkat dramanya"></textarea></label>
+      <label>Nomor episode<input name="episode" type="number" min="1" value="1" required></label>
+      <label>Pilih video<input name="video" type="file" accept="video/*" required></label>
+      <button class="primary-btn full" type="submit">Tambah pratinjau video</button>
+    </form>
+    <p id="uploadStatus" class="status" role="status"></p>
+  </dialog>
+  <script src="app.js"></script>
+</body>
+</html>
