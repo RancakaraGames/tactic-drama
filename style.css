@@ -239,3 +239,8 @@ input:focus,textarea:focus{outline:1px solid #e9c58a80;border-color:var(--gold)}
 .creator-stats-grid span{font-size:.78rem;color:var(--muted,#aaa)}
 #likeDrama[aria-pressed="true"]{border-color:rgba(233,197,138,.55);color:#e9c58a}
 @media(min-width:520px){.creator-stats-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+
+/* Watch history navigation */
+.bottom-nav{grid-template-columns:repeat(4,minmax(0,1fr))}
+.bottom-nav .nav-item{min-width:0}
+.bottom-nav .nav-item span{font-size:1.15rem}
