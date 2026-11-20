@@ -193,3 +193,16 @@ input:focus,textarea:focus{outline:1px solid #e9c58a80;border-color:var(--gold)}
 .episode-nav button{min-width:0;padding:12px 10px;font-size:11px}
 .episode-nav button:disabled{opacity:.38;cursor:not-allowed;box-shadow:none}
 .episode-nav #nextEpisode{background:linear-gradient(135deg,#f0d5a0,#c18b58);color:#21171a}
+
+
+/* Creator profile and published library */
+.creator-library{margin:18px 0;padding:16px;border:1px solid #e9c58a30;border-radius:16px;background:#100f15}
+.creator-heading{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.creator-heading h3{font-family:Georgia,"Times New Roman",serif;font-weight:500;font-size:20px;margin:0}
+.creator-count{font-size:10px;color:var(--gold);border:1px solid #e9c58a40;border-radius:20px;padding:5px 9px;white-space:nowrap}
+.my-drama-list{display:grid;gap:9px}
+.creator-item{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px;border:1px solid #ffffff16;border-radius:12px;background:#19161f}
+.creator-item-info{display:grid;gap:4px;min-width:0}
+.creator-item-info strong{font-size:13px;overflow-wrap:anywhere}
+.creator-item-info span,.creator-item-info small{font-size:10px;color:var(--muted)}
+.creator-item>.secondary-btn{flex:0 0 auto;font-size:11px;padding:9px 12px}
