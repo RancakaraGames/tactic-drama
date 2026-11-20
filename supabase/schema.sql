@@ -268,3 +268,22 @@ drop policy if exists "Admins can update video reports" on public.video_reports;
 create policy "Admins can update video reports" on public.video_reports for update to authenticated using (public.is_admin()) with check (public.is_admin());
 grant insert on public.video_reports to authenticated;
 grant select, update on public.video_reports to authenticated;
+
+
+-- Allow upload owners to remove only their own objects.
+-- This is required for cleanup when a drama or episode insert fails after media upload.
+drop policy if exists "Users can delete their own drama videos" on storage.objects;
+create policy "Users can delete their own drama videos"
+on storage.objects for delete to authenticated
+using (
+  bucket_id = 'drama-videos'
+  and (storage.foldername(name))[1] = (select auth.uid())::text
+);
+
+drop policy if exists "Users can delete their own drama posters" on storage.objects;
+create policy "Users can delete their own drama posters"
+on storage.objects for delete to authenticated
+using (
+  bucket_id = 'drama-posters'
+  and (storage.foldername(name))[1] = (select auth.uid())::text
+);
