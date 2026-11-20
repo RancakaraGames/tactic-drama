@@ -170,3 +170,60 @@ drop policy if exists "Admins can update drama posters" on storage.objects;
 create policy "Admins can update drama posters" on storage.objects for update to authenticated using (bucket_id='drama-posters' and public.is_admin()) with check (bucket_id='drama-posters' and public.is_admin());
 drop policy if exists "Admins can delete drama posters" on storage.objects;
 create policy "Admins can delete drama posters" on storage.objects for delete to authenticated using (bucket_id='drama-posters' and public.is_admin());
+
+
+-- Community uploads: every registered user can submit content for moderation.
+alter table public.dramas
+  add column if not exists uploader_id uuid references auth.users(id) on delete set null,
+  add column if not exists status text not null default 'approved';
+alter table public.episodes
+  add column if not exists uploader_id uuid references auth.users(id) on delete set null,
+  add column if not exists status text not null default 'approved';
+alter table public.dramas drop constraint if exists dramas_status_check;
+alter table public.dramas add constraint dramas_status_check check (status in ('pending','approved','rejected'));
+alter table public.episodes drop constraint if exists episodes_status_check;
+alter table public.episodes add constraint episodes_status_check check (status in ('pending','approved','rejected'));
+
+drop policy if exists "Public can read dramas" on public.dramas;
+drop policy if exists "Public can read approved dramas" on public.dramas;
+create policy "Public can read approved dramas" on public.dramas
+for select to anon, authenticated using (status = 'approved' or uploader_id = (select auth.uid()) or public.is_admin());
+drop policy if exists "Admins can insert dramas" on public.dramas;
+drop policy if exists "Signed-in users can submit dramas" on public.dramas;
+create policy "Signed-in users can submit dramas" on public.dramas
+for insert to authenticated with check (uploader_id = (select auth.uid()) and status = 'pending');
+drop policy if exists "Admins can update dramas" on public.dramas;
+drop policy if exists "Admins can moderate dramas" on public.dramas;
+create policy "Admins can moderate dramas" on public.dramas
+for update to authenticated using (public.is_admin()) with check (public.is_admin());
+drop policy if exists "Owners can edit pending dramas" on public.dramas;
+create policy "Owners can edit pending dramas" on public.dramas
+for update to authenticated using (uploader_id = (select auth.uid()) and status = 'pending')
+with check (uploader_id = (select auth.uid()) and status = 'pending');
+
+drop policy if exists "Public can read episodes" on public.episodes;
+drop policy if exists "Public can read approved episodes" on public.episodes;
+create policy "Public can read approved episodes" on public.episodes
+for select to anon, authenticated using (status = 'approved' or uploader_id = (select auth.uid()) or public.is_admin());
+drop policy if exists "Admins can insert episodes" on public.episodes;
+drop policy if exists "Owners can submit episodes" on public.episodes;
+create policy "Owners can submit episodes" on public.episodes
+for insert to authenticated with check (
+ uploader_id = (select auth.uid()) and status = 'pending'
+ and exists (select 1 from public.dramas d where d.id = drama_id and d.uploader_id = (select auth.uid()))
+);
+drop policy if exists "Admins can update episodes" on public.episodes;
+drop policy if exists "Admins can moderate episodes" on public.episodes;
+create policy "Admins can moderate episodes" on public.episodes
+for update to authenticated using (public.is_admin()) with check (public.is_admin());
+
+drop policy if exists "Admins can upload drama videos" on storage.objects;
+drop policy if exists "Users can upload their own drama videos" on storage.objects;
+create policy "Users can upload their own drama videos" on storage.objects
+for insert to authenticated with check (bucket_id = 'drama-videos' and (storage.foldername(name))[1] = (select auth.uid())::text);
+drop policy if exists "Admins can upload drama posters" on storage.objects;
+drop policy if exists "Users can upload their own drama posters" on storage.objects;
+create policy "Users can upload their own drama posters" on storage.objects
+for insert to authenticated with check (bucket_id = 'drama-posters' and (storage.foldername(name))[1] = (select auth.uid())::text);
+grant select on public.dramas, public.episodes to anon, authenticated;
+grant insert, update, delete on public.dramas, public.episodes to authenticated;
