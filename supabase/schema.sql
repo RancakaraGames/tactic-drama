@@ -227,3 +227,21 @@ create policy "Users can upload their own drama posters" on storage.objects
 for insert to authenticated with check (bucket_id = 'drama-posters' and (storage.foldername(name))[1] = (select auth.uid())::text);
 grant select on public.dramas, public.episodes to anon, authenticated;
 grant insert, update, delete on public.dramas, public.episodes to authenticated;
+
+-- Publish community uploads immediately for signed-in users.
+drop policy if exists "Signed-in users can submit dramas" on public.dramas;
+create policy "Signed-in users can publish dramas" on public.dramas
+for insert to authenticated
+with check (uploader_id = (select auth.uid()) and status = 'approved');
+drop policy if exists "Owners can edit pending dramas" on public.dramas;
+create policy "Owners can update own dramas" on public.dramas
+for update to authenticated
+using (uploader_id = (select auth.uid()))
+with check (uploader_id = (select auth.uid()));
+drop policy if exists "Owners can submit episodes" on public.episodes;
+create policy "Owners can publish episodes" on public.episodes
+for insert to authenticated
+with check (
+ uploader_id = (select auth.uid()) and status = 'approved'
+ and exists (select 1 from public.dramas d where d.id = drama_id and d.uploader_id = (select auth.uid()) and d.status = 'approved')
+);
