@@ -43,7 +43,33 @@ $("#prevEpisode").addEventListener("click",()=>playEpisode(activeEpisodeIndex-1)
 $("#nextEpisode").addEventListener("click",()=>playEpisode(activeEpisodeIndex+1));
 let swipeStartY=null;video.addEventListener("touchstart",e=>{swipeStartY=e.changedTouches[0].clientY},{passive:true});video.addEventListener("touchend",e=>{if(swipeStartY===null)return;const delta=swipeStartY-e.changedTouches[0].clientY;swipeStartY=null;if(Math.abs(delta)>55)playEpisode(activeEpisodeIndex+(delta>0?1:-1))},{passive:true});
 player.addEventListener("keydown",e=>{if(e.key==="ArrowUp"){e.preventDefault();playEpisode(activeEpisodeIndex+1)}else if(e.key==="ArrowDown"){e.preventDefault();playEpisode(activeEpisodeIndex-1)}});
-async function verifySession(session){$("#uploadSection").hidden=true;$("#loginForm").hidden=false;$("#signupForm").hidden=false;$("#moderationSection").hidden=true;if(!session||!supa)return;const {data,error}=await supa.from("user_roles").select("role").eq("user_id",session.user.id).maybeSingle();if(error){setStatus("#loginStatus","Gagal memeriksa akun: "+error.message);return}const isAdmin=data?.role==="admin";$("#uploadSection").hidden=false;$("#loginForm").hidden=true;$("#signupForm").hidden=true;$("#adminIdentity").textContent=(isAdmin?"Admin masuk sebagai ":"Masuk sebagai ")+session.user.email;setStatus("#loginStatus",isAdmin?"Login admin berhasil.":"Login berhasil. Kamu bisa langsung mengunggah dan menerbitkan drama.");loadMyDramas(session.user.id);if(isAdmin){$("#moderationSection").hidden=false;loadModeration()}}
+function renderCreatorProfile(user){
+ const meta=user?.user_metadata||{},name=String(meta.display_name||"").trim()||"Kreator TacTic";
+ $("#creatorDisplayName").textContent=name;$("#creatorEmail").textContent=user?.email||"";
+ $("#creatorProfileForm").elements.displayName.value=String(meta.display_name||"");
+ const avatar=$("#creatorAvatar");avatar.src=meta.avatar_url||"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='50' fill='%23251e2b'/%3E%3Ctext x='50' y='63' text-anchor='middle' font-size='42' fill='%23e9c58a'%3E"+encodeURIComponent(name.charAt(0).toUpperCase())+"%3C/text%3E%3C/svg%3E";
+}
+$("#creatorProfileForm").addEventListener("submit",async e=>{
+ e.preventDefault();if(!supa)return;const form=e.currentTarget,fd=new FormData(form),name=String(fd.get("displayName")||"").trim(),file=fd.get("avatar"),btn=form.querySelector("button[type=submit]");
+ if(!name){setStatus("#profileStatus","Nama tampilan wajib diisi.");return}
+ if(file&&file.size>2*1024*1024){setStatus("#profileStatus","Foto profil maksimal 2 MB.");return}
+ if(file&&file.size&&!["image/jpeg","image/png","image/webp"].includes(file.type)){setStatus("#profileStatus","Foto harus JPG, PNG, atau WebP.");return}
+ btn.disabled=true;setStatus("#profileStatus","Menyimpan profil...");
+ try{
+  const {data:sessionData}=await supa.auth.getSession(),user=sessionData.session?.user;if(!user)throw new Error("Sesi login berakhir. Silakan masuk kembali.");
+  const oldAvatar=user.user_metadata?.avatar_url||null;let avatarUrl=oldAvatar;
+  if(file&&file.size){
+   const ext=({ "image/jpeg":"jpg","image/png":"png","image/webp":"webp"})[file.type],path=user.id+"/avatar-"+crypto.randomUUID()+"."+ext;
+   const uploaded=await supa.storage.from("drama-posters").upload(path,file,{contentType:file.type,upsert:false});if(uploaded.error)throw uploaded.error;
+   avatarUrl=supa.storage.from("drama-posters").getPublicUrl(path).data.publicUrl;
+  }
+  const updated=await supa.auth.updateUser({data:{display_name:name.slice(0,40),avatar_url:avatarUrl}});if(updated.error)throw updated.error;
+  if(oldAvatar&&avatarUrl!==oldAvatar){const oldPath=storagePathFromPublicUrl(oldAvatar,"drama-posters");if(oldPath&&oldPath.startsWith(user.id+"/"))await removeOwnedStorageFiles("drama-posters",[oldPath])}
+  renderCreatorProfile(updated.data.user||user);setStatus("#profileStatus","Profil kreator berhasil disimpan.");
+ }catch(err){setStatus("#profileStatus","Gagal menyimpan profil: "+(err?.message||String(err)))}
+ finally{btn.disabled=false}
+});
+async function verifySession(session){$("#uploadSection").hidden=true;$("#loginForm").hidden=false;$("#signupForm").hidden=false;$("#moderationSection").hidden=true;if(!session||!supa)return;const {data,error}=await supa.from("user_roles").select("role").eq("user_id",session.user.id).maybeSingle();if(error){setStatus("#loginStatus","Gagal memeriksa akun: "+error.message);return}const isAdmin=data?.role==="admin";renderCreatorProfile(session.user);$("#uploadSection").hidden=false;$("#loginForm").hidden=true;$("#signupForm").hidden=true;$("#adminIdentity").textContent=(isAdmin?"Admin masuk sebagai ":"Masuk sebagai ")+session.user.email;setStatus("#loginStatus",isAdmin?"Login admin berhasil.":"Login berhasil. Kamu bisa langsung mengunggah dan menerbitkan drama.");loadMyDramas(session.user.id);if(isAdmin){$("#moderationSection").hidden=false;loadModeration()}}
 async function editCreatorDrama(drama,userId){const title=window.prompt("Ubah judul drama:",drama.title);if(title===null)return;if(!title.trim()){setStatus("#loginStatus","Judul drama tidak boleh kosong.");return}const description=window.prompt("Ubah deskripsi drama:",drama.description||"");if(description===null)return;const {data,error}=await supa.from("dramas").update({title:title.trim().slice(0,120),description:description.trim().slice(0,2000)}).eq("id",drama.id).eq("uploader_id",userId).select("id").maybeSingle();if(error){setStatus("#loginStatus","Gagal mengubah drama: "+error.message);return}if(!data){setStatus("#loginStatus","Drama tidak berubah. Pastikan akun memiliki akses edit.");return}setStatus("#loginStatus","Judul dan deskripsi drama berhasil diperbarui.");await loadMyDramas(userId);await loadCatalog()}
 $("#openAdmin").addEventListener("click",()=>admin.showModal());
 function storagePathFromPublicUrl(url,bucket){if(!url)return null;try{const u=new URL(url);const marker="/storage/v1/object/public/"+bucket+"/";const at=u.pathname.indexOf(marker);return at<0?null:decodeURIComponent(u.pathname.slice(at+marker.length))}catch{return null}}
