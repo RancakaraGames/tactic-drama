@@ -77,7 +77,8 @@ function uploadVideoResumable(file,path,session,onProgress){
    onProgress:(sent,total)=>onProgress(Math.round(sent/total*100)),
    onSuccess:()=>resolve()
   });
-  upload.findPreviousUploads().then(previous=>{if(previous.length)upload.resumeFromPreviousUpload(previous[0]);upload.start()}).catch(reject);
+  // Unique object paths must never resume another upload with the same filename.
+  upload.start();
  }));
 }
 $("#uploadForm").addEventListener("submit",async e=>{
