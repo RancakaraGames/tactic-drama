@@ -114,8 +114,16 @@ $("#uploadForm").addEventListener("submit",async e=>{
   setStatus("#uploadStatus","Berhasil! Drama dan episode sudah langsung diterbitkan.");
   f.reset();await loadCatalog();
  }catch(err){
-  if(dramaId){await supa.from("dramas").delete().eq("id",dramaId).eq("uploader_id",user.id)}
-  setStatus("#uploadStatus","Gagal mengunggah: "+(err?.message||String(err))+". Jika video sudah terkirim, coba lagi dengan nama file yang sama.");
+  if(dramaId){
+   const rollback=await supa.from("dramas").delete().eq("id",dramaId).eq("uploader_id",user.id);
+   if(rollback.error)console.warn("Pembersihan data drama gagal:",rollback.error.message);
+  }
+  const cleanup=[];
+  if(videoPath)cleanup.push(supa.storage.from("drama-videos").remove([videoPath]));
+  if(posterPath)cleanup.push(supa.storage.from("drama-posters").remove([posterPath]));
+  const cleanupResults=await Promise.allSettled(cleanup);
+  cleanupResults.forEach(result=>{if(result.status==="rejected")console.warn("Pembersihan file unggahan gagal:",result.reason)});
+  setStatus("#uploadStatus","Gagal menerbitkan drama: "+(err?.message||String(err))+". File sementara yang sudah terkirim akan dibersihkan jika izin penyimpanan mengizinkan. Periksa koneksi lalu coba lagi.");
  }finally{btn.disabled=false}
 });
 document.querySelectorAll(".nav-item").forEach(b=>b.addEventListener("click",()=>{document.querySelectorAll(".nav-item").forEach(x=>x.classList.remove("active"));b.classList.add("active");activeTab=b.dataset.tab;if(activeTab==="profile"){activeTab="home";document.querySelector('.nav-item[data-tab="home"]').classList.add("active");b.classList.remove("active");$("#openAdmin").scrollIntoView({behavior:"smooth",block:"center"});return}render()}));
