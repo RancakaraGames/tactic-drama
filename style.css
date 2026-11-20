@@ -230,3 +230,12 @@ input:focus,textarea:focus{outline:1px solid #e9c58a80;border-color:var(--gold)}
 .creator-profile-form{display:grid;gap:10px}
 .creator-profile-form label{display:grid;gap:6px;font-size:12px;color:#d9ced7}
 .creator-profile-form input{width:100%;min-width:0}
+
+/* Creator analytics */
+.creator-stats{margin:18px 0;padding:18px;border:1px solid rgba(233,197,138,.2);border-radius:18px;background:linear-gradient(145deg,rgba(233,197,138,.08),rgba(255,255,255,.025))}
+.creator-stats-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.creator-stats-grid article{display:flex;flex-direction:column;gap:5px;padding:14px;border:1px solid rgba(255,255,255,.07);border-radius:13px;background:rgba(0,0,0,.16)}
+.creator-stats-grid strong{font-size:1.45rem;line-height:1.2;color:#e9c58a;font-variant-numeric:tabular-nums}
+.creator-stats-grid span{font-size:.78rem;color:var(--muted,#aaa)}
+#likeDrama[aria-pressed="true"]{border-color:rgba(233,197,138,.55);color:#e9c58a}
+@media(min-width:520px){.creator-stats-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}

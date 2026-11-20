@@ -40,7 +40,7 @@
     <button class="close-btn" data-close="playerDialog" aria-label="Tutup">×</button>
     <div class="player-layout">
       <video id="videoPlayer" controls playsinline></video>
-      <div class="player-info"><p class="eyebrow" id="playerSeries">TAC TIC DRAMA</p><h2 id="playerTitle">Judul drama</h2><p id="playerDescription"></p><div class="episode-nav"><button id="prevEpisode" class="secondary-btn" type="button" disabled>← Sebelumnya</button><button id="nextEpisode" class="primary-btn" type="button" disabled>Episode berikutnya →</button></div><div id="episodeList" class="episode-list"></div><div class="player-actions"><button id="shareDrama" class="secondary-btn" type="button">↗ Bagikan drama</button><button id="reportDrama" class="secondary-btn" type="button">⚑ Laporkan video</button><span id="shareStatus" class="status" role="status"></span><span id="reportStatus" class="status" role="status"></span></div><section class="comments"><h3>Komentar penonton</h3><p id="commentStatus" class="status" role="status">Komentar akan tampil setelah backend tersambung.</p><div id="commentList" class="comment-list"></div><form id="commentForm"><label>Nama<input name="displayName" maxlength="40" required placeholder="Nama kamu"></label><label>Tulis komentar<textarea name="body" rows="3" maxlength="1000" required placeholder="Bagaimana menurutmu tentang drama ini?"></textarea></label><button class="primary-btn full" type="submit">Kirim komentar</button></form></section></div>
+      <div class="player-info"><p class="eyebrow" id="playerSeries">TAC TIC DRAMA</p><h2 id="playerTitle">Judul drama</h2><p id="playerDescription"></p><div class="episode-nav"><button id="prevEpisode" class="secondary-btn" type="button" disabled>← Sebelumnya</button><button id="nextEpisode" class="primary-btn" type="button" disabled>Episode berikutnya →</button></div><div id="episodeList" class="episode-list"></div><div class="player-actions"><button id="likeDrama" class="secondary-btn" type="button" aria-pressed="false">♡ Suka</button><button id="shareDrama" class="secondary-btn" type="button">↗ Bagikan drama</button><button id="reportDrama" class="secondary-btn" type="button">⚑ Laporkan video</button><span id="shareStatus" class="status" role="status"></span><span id="reportStatus" class="status" role="status"></span></div><section class="comments"><h3>Komentar penonton</h3><p id="commentStatus" class="status" role="status">Komentar akan tampil setelah backend tersambung.</p><div id="commentList" class="comment-list"></div><form id="commentForm"><label>Nama<input name="displayName" maxlength="40" required placeholder="Nama kamu"></label><label>Tulis komentar<textarea name="body" rows="3" maxlength="1000" required placeholder="Bagaimana menurutmu tentang drama ini?"></textarea></label><button class="primary-btn full" type="submit">Kirim komentar</button></form></section></div>
     </div>
   </dialog>
   <dialog id="adminDialog" class="admin-dialog">
@@ -68,6 +68,16 @@
           <button class="secondary-btn full" type="submit">Simpan profil</button>
         </form>
         <p id="profileStatus" class="status" role="status"></p>
+      </section>
+      <section class="creator-stats" aria-label="Statistik kreator">
+        <div class="creator-heading"><h3>Statistik kreator</h3><span class="creator-count">Data langsung</span></div>
+        <div class="creator-stats-grid">
+          <article><strong id="statDrama">0</strong><span>Total drama</span></article>
+          <article><strong id="statEpisode">0</strong><span>Total episode</span></article>
+          <article><strong id="statViews">0</strong><span>Total penayangan</span></article>
+          <article><strong id="statLikes">0</strong><span>Total suka</span></article>
+        </div>
+        <p class="notice" id="creatorStatsStatus" role="status">Statistik diperbarui otomatis saat daftar drama dimuat.</p>
       </section>
       <section id="creatorLibrary" class="creator-library"><div class="creator-heading"><h3>Drama saya</h3><span class="creator-count" id="creatorCount">0 drama</span></div><p class="notice">Kelola dan buka kembali drama yang sudah kamu terbitkan.</p><div id="myDramaList" class="my-drama-list"><p class="notice">Memuat daftar drama...</p></div></section>
       <section id="moderationSection" hidden><h3>Laporan video dari pengguna</h3><p class="notice">Tinjau laporan. Jika terbukti melanggar, sembunyikan drama dari katalog.</p><div id="moderationList"></div></section>
