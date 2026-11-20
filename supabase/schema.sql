@@ -12,7 +12,7 @@ create or replace function public.is_admin()
 returns boolean
 language sql
 stable
-security definer
+security invoker
 set search_path = public
 as $$
   select exists (
@@ -21,8 +21,8 @@ as $$
   );
 $$;
 
-revoke all on function public.is_admin() from public;
-grant execute on function public.is_admin() to anon, authenticated;
+revoke all on function public.is_admin() from public, anon;
+grant execute on function public.is_admin() to authenticated;
 
 create table if not exists public.dramas (
   id uuid primary key default gen_random_uuid(),
@@ -51,7 +51,7 @@ drop policy if exists "Users can read their own role" on public.user_roles;
 create policy "Users can read their own role"
 on public.user_roles for select
 to authenticated
-using (user_id = auth.uid());
+using (user_id = (select auth.uid()));
 
 drop policy if exists "Public can read dramas" on public.dramas;
 create policy "Public can read dramas"
