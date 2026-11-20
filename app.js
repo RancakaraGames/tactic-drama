@@ -114,7 +114,7 @@ $("#uploadForm").addEventListener("submit",async e=>{
   const saved=await supa.from("episodes").insert({drama_id:dramaId,episode_number:episode,title:String(data.get("episodeTitle")||""),video_path:videoPath,uploader_id:user.id,status:"approved"});
   if(saved.error)throw saved.error;
   setStatus("#uploadStatus",createdDrama?"Berhasil! Drama baru dan episode sudah langsung diterbitkan.":"Berhasil! Episode baru sudah ditambahkan ke drama pilihan.");
-  f.reset();await loadCatalog();await loadMyDramas(user.id);
+  f.reset();syncTargetForm();await loadCatalog();await loadMyDramas(user.id);
  }catch(err){
   if(dramaId&&createdDrama){
    const rollback=await supa.from("dramas").delete().eq("id",dramaId).eq("uploader_id",user.id);
@@ -130,7 +130,7 @@ $("#uploadForm").addEventListener("submit",async e=>{
 });
 document.querySelectorAll(".nav-item").forEach(b=>b.addEventListener("click",()=>{document.querySelectorAll(".nav-item").forEach(x=>x.classList.remove("active"));b.classList.add("active");activeTab=b.dataset.tab;if(activeTab==="profile"){admin.showModal();return}render()}));
 $("#shareDrama").addEventListener("click",async()=>{if(!activeDrama)return;const shareData={title:activeDrama.title,text:"Tonton "+activeDrama.title+" di TacTic Drama",url:location.href};try{if(navigator.share)await navigator.share(shareData);else if(navigator.clipboard){await navigator.clipboard.writeText(shareData.text+" — "+shareData.url);setStatus("#shareStatus","Link berhasil disalin.")}else setStatus("#shareStatus","Bagikan: "+shareData.url)}catch(e){if(e.name!=="AbortError")setStatus("#shareStatus","Belum bisa membagikan link dari perangkat ini.")}});
-const targetSelect=$("#targetDrama");targetSelect?.addEventListener("change",()=>{const existing=Boolean(targetSelect.value);$("#posterField").hidden=existing;$("#uploadForm [name=title]").disabled=existing;$("#uploadForm [name=description]").disabled=existing});
+const targetSelect=$("#targetDrama");function syncTargetForm(){const existing=Boolean(targetSelect?.value);$("#posterField").hidden=existing;$("#uploadForm [name=title]").disabled=existing;$("#uploadForm [name=description]").disabled=existing}targetSelect?.addEventListener("change",syncTargetForm);syncTargetForm();
  const searchBox=$("#dramaSearch");searchBox.addEventListener("input",()=>{searchQuery=searchBox.value.trim().toLocaleLowerCase("id");render()});
 render();
 const cfg=window.TACTIC_SUPABASE_CONFIG||{};
