@@ -27,8 +27,8 @@
     <div class="search-wrap"><input id="dramaSearch" type="search" placeholder="Cari judul drama..." aria-label="Cari judul drama"></div>
     <section id="dramaGrid" class="drama-grid" aria-live="polite"></section>
     <section class="admin-callout">
-      <div><p class="eyebrow">PUNYA KONTEN?</p><h2>Ruang kreator</h2><p>Masuk sebagai admin untuk mengelola drama dan episode.</p></div>
-      <button class="primary-btn" id="openAdmin">Buka panel admin</button>
+      <div><p class="eyebrow">KOMUNITAS KREATOR</p><h2>Unggah dramamu</h2><p>Daftar atau masuk untuk mengirim video. Video akan diperiksa sebelum tampil untuk semua penonton.</p></div>
+      <button class="primary-btn" id="openAdmin">Daftar / Masuk</button>
     </section>
   </main>
   <nav class="bottom-nav" aria-label="Navigasi utama">
@@ -45,16 +45,22 @@
   </dialog>
   <dialog id="adminDialog" class="admin-dialog">
     <button class="close-btn" data-close="adminDialog" aria-label="Tutup">×</button>
-    <p class="eyebrow">PENGELOLA</p><h2>Panel admin</h2>
-    <p class="notice" id="backendNotice">Koneksi backend belum dikonfigurasi. Isi URL dan anon key Supabase pada file supabase-config.js setelah proyek dibuat.</p>
+    <p class="eyebrow">AKUN TAC TIC DRAMA</p><h2>Daftar / Masuk</h2>
+    <p class="notice" id="backendNotice">Hubungkan akun untuk mengunggah video.</p>
     <form id="loginForm">
-      <label>Email admin<input name="email" type="email" autocomplete="username" required placeholder="Email admin"></label>
-      <label>Password<input name="password" type="password" autocomplete="current-password" required placeholder="Password admin"></label>
-      <button class="primary-btn full" type="submit">Masuk sebagai admin</button>
+      <label>Email<input name="email" type="email" autocomplete="username" required placeholder="Email kamu"></label>
+      <label>Password<input name="password" type="password" autocomplete="current-password" minlength="6" required placeholder="Password"></label>
+      <button class="primary-btn full" type="submit">Masuk</button>
+    </form>
+    <form id="signupForm">
+      <label>Email untuk daftar<input name="email" type="email" autocomplete="email" required placeholder="Email kamu"></label>
+      <label>Buat password<input name="password" type="password" autocomplete="new-password" minlength="6" required placeholder="Minimal 6 karakter"></label>
+      <button class="secondary-btn full" type="submit">Buat akun baru</button>
     </form>
     <p id="loginStatus" class="status" role="status"></p>
     <section id="uploadSection" hidden>
       <p class="notice" id="adminIdentity"></p>
+      <section id="moderationSection" hidden><h3>Video menunggu pemeriksaan</h3><div id="moderationList"></div></section>
       <form id="uploadForm">
         <label>Judul drama<input name="title" required placeholder="Contoh: Cinta di Ujung Senja"></label>
         <label>Deskripsi drama<textarea name="description" rows="3" placeholder="Ceritakan singkat dramanya"></textarea></label>
@@ -65,7 +71,7 @@
         <button class="primary-btn full" type="submit">Unggah video ke TacTic Drama</button>
       </form>
       <p id="uploadStatus" class="status" role="status"></p>
-      <button id="logoutBtn" class="primary-btn full" type="button">Keluar dari akun admin</button>
+      <button id="logoutBtn" class="primary-btn full" type="button">Keluar dari akun</button>
     </section>
   </dialog>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
