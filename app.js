@@ -156,7 +156,7 @@ function render(){
   const tag=String(d.id).startsWith("demo-")?"DEMO • VIDEO UJI":clipsPage?"CUPLIKAN":historyLabel?historyLabel:"DRAMA PENDEK";
   card.innerHTML=`<div class="poster" role="button" tabindex="0" style="background:linear-gradient(145deg,${d.colors?.[0]||"#61365f"},${d.colors?.[1]||"#20243a"})"><span class="tag">${escapeHtml(tag)}</span><span class="poster-title">${escapeHtml(d.title)}</span><button class="favorite-btn ${favoriteIds.has(d.id)?"is-favorite":""}" type="button" aria-label="${favoriteIds.has(d.id)?"Hapus dari":"Tambah ke"} favorit">${favoriteIds.has(d.id)?"♥":"♡"}</button></div><div class="card-meta"><strong>${escapeHtml(d.title)}</strong><span>${escapeHtml(d.genre||((d.episodes||[]).length+" episode"))}</span><span class="card-likes">♥ ${Number(d.like_count||0).toLocaleString("id-ID")} suka</span></div>`;
   const poster=card.querySelector(".poster");
-  const openCardDrama=()=>{const saved=historyPage?watchHistory[d.id]:null;const resumeNumber=saved?.episode_number??null,resumeSeconds=Number(saved?.position_seconds||0);openDrama(d);if(resumeNumber!=null){const resumeIndex=(d.episodes||[]).findIndex(ep=>Number(ep.episode_number)===Number(resumeNumber));if(resumeIndex>=0)playEpisode(resumeIndex,false,resumeSeconds)}};
+  const openCardDrama=()=>{const saved=watchHistory[d.id];const resumeNumber=saved?.episode_number??null,resumeSeconds=Number(saved?.position_seconds||0);openDrama(d);if(resumeNumber!=null){const resumeIndex=(d.episodes||[]).findIndex(ep=>Number(ep.episode_number)===Number(resumeNumber));if(resumeIndex>=0)playEpisode(resumeIndex,false,resumeSeconds)}};
   poster.addEventListener("click",openCardDrama);poster.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();openCardDrama()}});
   if(d.poster_url){const art=document.createElement("img");art.className="poster-art";art.src=d.poster_url;art.alt="Poster "+d.title;art.loading="lazy";poster.prepend(art)}
   card.querySelector(".favorite-btn").addEventListener("click",e=>{e.stopPropagation();if(favoriteIds.has(d.id))favoriteIds.delete(d.id);else favoriteIds.add(d.id);try{localStorage.setItem("tactic-favorites",JSON.stringify([...favoriteIds]))}catch{}render()});
@@ -190,12 +190,12 @@ function renderContinueWatching(){
  });
 }
 function getVideoUrl(path){const value=String(path||"");if(/^https:\/\//i.test(value))return value;return supa?.storage?.from("drama-videos").getPublicUrl(value).data.publicUrl||""}
-function saveWatchHistory(ep,positionSeconds=0){if(!activeDrama||!ep?.id||String(activeDrama.id).startsWith("demo-"))return;watchHistory[activeDrama.id]={episode_number:ep.episode_number,episode_title:ep.title||"",position_seconds:Math.max(0,Math.floor(Number(positionSeconds)||0)),watched_at:new Date().toISOString()};try{localStorage.setItem("tactic-watch-history",JSON.stringify(watchHistory))}catch{}renderContinueWatching()}
+function saveWatchHistory(ep,positionSeconds=0){if(!activeDrama||!ep?.id)return;watchHistory[activeDrama.id]={episode_number:ep.episode_number,episode_title:ep.title||"",position_seconds:Math.max(0,Math.floor(Number(positionSeconds)||0)),watched_at:new Date().toISOString()};try{localStorage.setItem("tactic-watch-history",JSON.stringify(watchHistory))}catch{}renderContinueWatching()}
 function episodeProgressKey(ep){return String(activeDrama?.id||"")+":"+String(ep?.id||"")}
 function saveEpisodeProgress(force=false){
  if(!activeDrama||!Number.isFinite(video.duration)||video.duration<=0)return;
  const now=Date.now();if(!force&&now-lastEpisodeProgressPersist<5000)return;lastEpisodeProgressPersist=now;
- const ep=activeDrama.episodes?.[activeEpisodeIndex];if(!ep?.id||String(activeDrama.id).startsWith("demo-"))return;
+ const ep=activeDrama.episodes?.[activeEpisodeIndex];if(!ep?.id)return;
  const key=episodeProgressKey(ep),seconds=Math.max(0,Math.floor(video.currentTime||0)),duration=Math.floor(video.duration);
  episodeProgress[key]={seconds,duration,percent:Math.min(100,Math.floor(seconds/duration*100)),updated_at:new Date().toISOString()};
  try{localStorage.setItem("tactic-episode-progress",JSON.stringify(episodeProgress))}catch{}
