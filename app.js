@@ -223,6 +223,13 @@ function uploadVideoResumable(file,path,session,onProgress){
   upload.start();
  }));
 }
+function updateUploadProgress(percent,visible=true){
+ const wrap=$("#uploadProgressWrap"),bar=$("#uploadProgressBar"),label=$("#uploadProgressLabel");
+ if(!wrap||!bar||!label)return;
+ wrap.hidden=!visible;
+ const value=Math.max(0,Math.min(100,Math.round(Number(percent)||0)));
+ bar.value=value;bar.setAttribute("aria-valuenow",String(value));label.textContent=value+"%";
+}
 $("#uploadForm").addEventListener("submit",async e=>{
  e.preventDefault();
  if(!supa){setStatus("#uploadStatus","Backend belum dikonfigurasi.");return}
@@ -256,7 +263,7 @@ $("#uploadForm").addEventListener("submit",async e=>{
    const posterUpload=await supa.storage.from("drama-posters").upload(posterPath,posterFile,{contentType:posterFile.type,upsert:false});
    if(posterUpload.error)throw posterUpload.error;
   }
-  await uploadVideoResumable(file,videoPath,session,pct=>setStatus("#uploadStatus","Mengunggah video... "+pct+"% (jangan tutup halaman)."));
+  updateUploadProgress(0);await uploadVideoResumable(file,videoPath,session,pct=>{updateUploadProgress(pct);setStatus("#uploadStatus","Mengunggah video... "+pct+"% (jangan tutup halaman).")});updateUploadProgress(100);
   setStatus("#uploadStatus","Video selesai diunggah. Menyimpan episode...");
   if(!dramaId){const created=await supa.from("dramas").insert({title,description:String(data.get("description")||""),poster_url:posterPath?supa.storage.from("drama-posters").getPublicUrl(posterPath).data.publicUrl:null,uploader_id:user.id,status:"approved"}).select("id").single();if(created.error)throw created.error;dramaId=created.data.id;createdDrama=true;}else{/* Drama and episode were checked before uploading; keep DB insert as final race-safe validation. */}
   const saved=await supa.from("episodes").insert({drama_id:dramaId,episode_number:episode,title:String(data.get("episodeTitle")||""),video_path:videoPath,uploader_id:user.id,status:"approved"});
@@ -308,7 +315,7 @@ const targetSelect=$("#targetDrama");function syncTargetForm(){const existing=Bo
  }
  uploadForm?.elements.poster?.addEventListener("change",updateUploadPreview);
  uploadForm?.elements.video?.addEventListener("change",updateUploadPreview);
- uploadForm?.addEventListener("reset",()=>{setTimeout(updateUploadPreview,0)});
+ uploadForm?.addEventListener("reset",()=>{setTimeout(()=>{updateUploadPreview();updateUploadProgress(0,false)},0)});
  const searchBox=$("#dramaSearch");searchBox.addEventListener("input",()=>{searchQuery=searchBox.value.trim().toLocaleLowerCase("id");render()});
 $("#dramaSort")?.addEventListener("change",render);
 $("#reloadCatalog")?.addEventListener("click",()=>loadCatalog());
