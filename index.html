@@ -8,7 +8,7 @@
   <title>TacTic Drama</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
-  <link rel="stylesheet" href="style.css?v=75">
+  <link rel="stylesheet" href="style.css?v=76">
 </head>
 <body>
   <header class="topbar">
@@ -28,11 +28,39 @@
       <button id="reloadCatalog" class="refresh-btn" type="button">↻ Muat ulang</button>
     </section>
     <div class="catalog-tools"><span class="brand-mark search-logo" aria-label="Logo TacTic">T</span><div class="search-wrap"><input id="dramaSearch" type="search" placeholder="Cari judul atau cerita drama..." aria-label="Cari judul atau cerita drama"><button id="clearSearch" class="clear-search-btn" type="button" hidden aria-label="Hapus pencarian">×</button><button id="searchSubmit" class="search-submit" type="button">Cari</button></div><button class="install-action" id="installBtn" type="button" aria-label="Pasang aplikasi" title="Pasang aplikasi">↓</button><span id="networkStatus" class="network-status" role="status" aria-label="Koneksi online" title="Koneksi online"></span></div>
-    <p id="catalogCount" class="catalog-count" aria-live="polite">Drama ditampilkan</p><p id="catalogStatus" class="catalog-status" role="status" aria-live="polite"></p><section id="profilePanel" class="profile-panel" hidden aria-labelledby="profileTitle">
-<div class="profile-hero"><div class="profile-avatar" aria-hidden="true">♙</div><div class="profile-identity"><p class="eyebrow">AKUN TAC TIC DRAMA</p><h1 id="profileTitle">Profil penonton</h1><p id="profileEmail">Kamu sedang menonton sebagai tamu.</p></div></div>
-<section class="profile-account-card"><div class="profile-card-heading"><span class="profile-card-icon">◉</span><div><strong id="profileAccountTitle">Mode tamu</strong><small id="profileAccountDescription">Masuk untuk mengelola akun penontonmu.</small></div></div><button id="profileLoginBtn" class="profile-action primary" type="button">Masuk / Daftar</button><button id="profileLogoutBtn" class="profile-action secondary" type="button" hidden>Keluar dari akun</button></section>
-<div class="profile-shortcuts"><button class="profile-shortcut" type="button" data-profile-tab="saved"><span>♡</span><strong>Drama favorit</strong><small>Lihat koleksi tersimpan</small><b id="profileFavoriteCount">0</b></button><button class="profile-shortcut" type="button" data-profile-tab="history"><span>◷</span><strong>Riwayat tontonan</strong><small>Lanjutkan drama terakhir</small><b id="profileHistoryCount">0</b></button></div>
-<section class="profile-info-card"><p class="eyebrow">TENTANG TAC TIC</p><h2>Hiburan dalam genggaman.</h2><p>Nikmati katalog drama pendek. Fitur reward penonton akan dibuka setelah sumber pendapatan dan sistem pembayaran resmi siap.</p><span class="profile-version">TacTic Drama · Penonton</span></section><p id="profilePageStatus" class="profile-page-status" role="status" aria-live="polite"></p></section>
+    <p id="catalogCount" class="catalog-count" aria-live="polite">Drama ditampilkan</p><p id="catalogStatus" class="catalog-status" role="status" aria-live="polite"></p><section id="profilePanel" class="profile-panel melolo-profile" hidden aria-labelledby="profileTitle">
+  <header class="melolo-profile-head">
+    <div class="melolo-avatar" id="profileAvatar">T</div>
+    <div class="melolo-user-copy">
+      <h1 id="profileTitle">Penonton TacTic</h1>
+      <p id="profileEmail">Kamu sedang menonton sebagai tamu.</p>
+      <small id="profileSince">Bergabung bersama TacTic Drama</small>
+    </div>
+    <button id="profileSettingsBtn" class="profile-settings-btn" type="button" aria-label="Pengaturan akun">☰</button>
+  </header>
+  <div class="melolo-benefit-row">
+    <article class="melolo-benefit-card vip-card"><span class="benefit-icon">♛</span><strong>Keanggotaan</strong><small>Penonton TacTic</small></article>
+    <article class="melolo-benefit-card reward-card"><span class="benefit-icon">◉</span><strong>Reward</strong><small>Segera hadir</small></article>
+    <article class="melolo-benefit-card download-card"><span class="benefit-icon">↓</span><strong>Unduh</strong><small>0 drama</small></article>
+  </div>
+  <div class="melolo-profile-tabs" role="tablist" aria-label="Aktivitas akun">
+    <button type="button" class="melolo-profile-tab active" data-profile-view="history" aria-pressed="true"><span>◷</span><small>Riwayat</small></button>
+    <button type="button" class="melolo-profile-tab" data-profile-view="saved" aria-pressed="false"><span>♧</span><small>Favorit</small></button>
+    <button type="button" class="melolo-profile-tab" data-profile-view="liked" aria-pressed="false"><span>♡</span><small>Disukai</small></button>
+  </div>
+  <div class="melolo-profile-filter" id="profileHistoryFilters">
+    <button type="button" class="active" data-profile-filter="all">Semua</button>
+    <button type="button" data-profile-filter="watching">Sedang ditonton</button>
+    <button type="button" data-profile-filter="finished">Selesai</button>
+  </div>
+  <div id="profileDramaList" class="profile-drama-list" aria-live="polite"><p class="empty-state">Riwayat tontonanmu akan muncul di sini.</p></div>
+  <section class="profile-account-footer">
+    <div class="profile-footer-info"><strong id="profileAccountTitle">Mode tamu</strong><small id="profileAccountDescription">Masuk untuk menyinkronkan akun penontonmu.</small></div>
+    <button id="profileLoginBtn" class="profile-action primary" type="button">Masuk / Daftar</button>
+    <button id="profileLogoutBtn" class="profile-action secondary" type="button" hidden>Keluar dari akun</button>
+  </section>
+  <p id="profilePageStatus" class="profile-page-status" role="status" aria-live="polite"></p>
+</section>
     <section id="collectionTabs" class="collection-tabs" hidden aria-label="Isi koleksi"><button type="button" class="collection-tab active" data-collection-view="saved" aria-pressed="true">♡ Favorit</button><button type="button" class="collection-tab" data-collection-view="history" aria-pressed="false">◷ Riwayat</button></section>
     <section id="historyTools" class="history-tools" hidden><span>Episode yang terakhir kamu tonton tersimpan di perangkat ini.</span><button id="clearHistory" class="secondary-btn" type="button">Hapus riwayat</button></section>
     <section id="dramaGrid" class="drama-grid" aria-live="polite"></section>
@@ -221,6 +249,6 @@
     </section>
   </dialog>
   <script src="./supabase-config.js"></script>
-  <script src="app.js?v=74"></script>
+  <script src="app.js?v=76"></script>
 </body>
 </html>

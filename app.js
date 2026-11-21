@@ -4,7 +4,7 @@ const demoDramas=[
  {id:"demo-3",title:"Janji Senja",genre:"Keluarga • Drama pilihan",description:"Janji lama yang kembali menguji sebuah keluarga.",colors:["#a64c3d","#30233b"],episodes:[]},
  {id:"demo-4",title:"Cinta Terlarang",genre:"Romantis • Drama pilihan",description:"Dua hati terjebak di antara cinta dan rahasia.",colors:["#61365f","#1d3450"],episodes:[]}
 ];
-let dramas=[...demoDramas],activeDrama=null,activeEpisodeIndex=0,supa=null,activeTab="clips",collectionView="saved",sharedDramaOpened=false;
+let dramas=[...demoDramas],activeDrama=null,activeEpisodeIndex=0,supa=null,activeTab="clips",collectionView="saved",sharedDramaOpened=false,profileCollectionView="history",profileHistoryFilter="all",profileLikesLoadedFor=null,profileLikedIds=new Set();
 let clipsObserver=null;
 let creatorPerformanceData=[];
 let autoNextEnabled=true;try{autoNextEnabled=localStorage.getItem("tactic-auto-next")!=="false"}catch{}
@@ -65,6 +65,50 @@ function renderClips(items){
   feed.querySelectorAll("video").forEach(v=>clipsObserver.observe(v));
  }else resumeClipsFeed();
 }
+function profileDateLabel(value){
+ const date=new Date(value||0);if(!Number.isFinite(date.getTime()))return "Riwayat";
+ const now=new Date(),today=new Date(now.getFullYear(),now.getMonth(),now.getDate()),day=new Date(date.getFullYear(),date.getMonth(),date.getDate());
+ const diff=Math.round((today-day)/86400000);return diff<=0?"Hari ini":diff===1?"Kemarin":date.toLocaleDateString("id-ID",{day:"numeric",month:"long",year:"numeric"});
+}
+async function renderProfileCollections(){
+ const list=$("#profileDramaList");if(!list)return;
+ const view=profileCollectionView,filter=profileHistoryFilter;
+ document.querySelectorAll("[data-profile-view]").forEach(btn=>{const active=btn.dataset.profileView===view;btn.classList.toggle("active",active);btn.setAttribute("aria-pressed",String(active))});
+ const filters=$("#profileHistoryFilters");if(filters)filters.hidden=view!=="history";
+ filters?.querySelectorAll("[data-profile-filter]").forEach(btn=>btn.classList.toggle("active",btn.dataset.profileFilter===filter));
+ let entries=[];
+ if(view==="history"){
+  entries=Object.entries(watchHistory).map(([id,entry])=>({drama:dramas.find(d=>String(d.id)===String(id)),entry})).filter(x=>x.drama).sort((a,b)=>new Date(b.entry.watched_at||0)-new Date(a.entry.watched_at||0));
+  if(filter!=="all")entries=entries.filter(({drama,entry})=>{const ep=(drama.episodes||[]).find(x=>Number(x.episode_number)===Number(entry.episode_number));const key=String(drama.id)+":"+String(ep?.id||"");const pct=Number(episodeProgress[key]?.percent||0);return filter==="finished"?pct>=95:pct<95});
+ }else if(view==="saved"){
+  entries=[...favoriteIds].map(id=>({drama:dramas.find(d=>String(d.id)===String(id)),entry:null})).filter(x=>x.drama);
+ }else{
+  const {data:sessionData}=supa?await supa.auth.getSession():{data:{session:null}};
+  const user=sessionData?.session?.user;
+  if(user&&profileLikesLoadedFor!==user.id){
+   const result=await supa.from("drama_likes").select("drama_id").eq("user_id",user.id);
+   profileLikedIds=new Set((result.data||[]).map(row=>String(row.drama_id)));profileLikesLoadedFor=user.id;
+  }else if(!user){profileLikedIds=new Set();profileLikesLoadedFor=null}
+  entries=[...profileLikedIds].map(id=>({drama:dramas.find(d=>String(d.id)===String(id)),entry:null})).filter(x=>x.drama);
+ }
+ list.innerHTML="";
+ if(!entries.length){const p=document.createElement("p");p.className="empty-state";p.textContent=view==="history"?"Belum ada riwayat tontonan. Putar drama untuk menyimpannya di sini.":view==="saved"?"Belum ada drama favorit. Simpan drama dengan menekan ikon ♡.":"Belum ada drama yang kamu sukai.";list.append(p);return}
+ let lastGroup="";
+ entries.forEach(({drama,entry})=>{
+  const group=view==="history"?profileDateLabel(entry.watched_at):view==="saved"?"Drama favorit":"Drama disukai";
+  if(group!==lastGroup){const heading=document.createElement("h3");heading.className="profile-date-heading";heading.textContent=group;list.append(heading);lastGroup=group}
+  const card=document.createElement("article");card.className="profile-drama-row";
+  const poster=document.createElement("div");poster.className="profile-drama-poster";
+  if(drama.poster_url){const img=document.createElement("img");img.src=drama.poster_url;img.alt="Poster "+drama.title;img.loading="lazy";poster.append(img)}else{poster.textContent="T"}
+  const info=document.createElement("div");info.className="profile-drama-info";
+  const title=document.createElement("strong");title.textContent=drama.title||"Drama";
+  const genre=document.createElement("span");genre.textContent=drama.genre||((drama.episodes||[]).length+" episode");
+  const episode=document.createElement("small");episode.textContent=entry?"Ep."+entry.episode_number+" / Ep."+(drama.episodes||[]).length:(drama.episodes||[]).length+" episode";
+  info.append(title,genre,episode);card.append(poster,info);
+  card.addEventListener("click",()=>{openDrama(drama);if(entry){const idx=(drama.episodes||[]).findIndex(ep=>Number(ep.episode_number)===Number(entry.episode_number));if(idx>=0)playEpisode(idx,true,Number(entry.position_seconds)||0)}});
+  list.append(card);
+ });
+}
 function render(){
  const profilePage=activeTab==="profile",collectionPage=activeTab==="collection",clipsPage=activeTab==="clips";
  document.body.classList.toggle("clips-mode",clipsPage);
@@ -81,8 +125,7 @@ function render(){
   if(continueSection)continueSection.hidden=true;
   if(historyTools)historyTools.hidden=true;
   if(collectionTabs)collectionTabs.hidden=true;
-  $("#profileFavoriteCount").textContent=favoriteIds.size.toLocaleString("id-ID");
-  $("#profileHistoryCount").textContent=Object.keys(watchHistory).length.toLocaleString("id-ID");
+  renderProfileCollections();
   grid.innerHTML="";return;
  }
  grid.innerHTML="";
@@ -687,13 +730,17 @@ $("#creatorProfileForm").addEventListener("submit",async e=>{
  }catch(err){setStatus("#profileStatus","Gagal menyimpan profil: "+(err?.message||String(err)))}
  finally{btn.disabled=false}
 });
-async function verifySession(session){if(session)hideGuestPrompt();const profileTitle=$("#profileAccountTitle"),profileDescription=$("#profileAccountDescription"),profileEmail=$("#profileEmail"),profileLogin=$("#profileLoginBtn"),profileLogout=$("#profileLogoutBtn");if(profileTitle){profileTitle.textContent=session?"Memeriksa akun…":"Mode tamu";profileDescription.textContent=session?"Memeriksa status akunmu.":"Masuk untuk mengelola akun penontonmu.";profileEmail.textContent=session?.user?.email||"Kamu sedang menonton sebagai tamu.";profileLogin.hidden=!!session;profileLogout.hidden=!session;}const panel=$("#uploadSection");panel.hidden=true;panel.removeAttribute("data-admin");$("#viewerAccount").hidden=true;setAuthMode("login");$("#resetPasswordForm").hidden=true;$("#moderationSection").hidden=true;if(!session||!supa)return;const {data,error}=await supa.from("user_roles").select("role").eq("user_id",session.user.id).maybeSingle();if(error){setStatus("#loginStatus","Gagal memeriksa akun. Coba masuk kembali.");return}if(data?.role==="admin"){if(profileTitle){profileTitle.textContent="Administrator";profileDescription.textContent="Akun pengelola TacTic Drama.";profileEmail.textContent=session.user.email||"";}panel.dataset.admin="true";panel.hidden=false;$("#loginForm").hidden=true;$("#signupForm").hidden=true;$("#moderationSection").hidden=false;$("#adminIdentity").textContent="Admin masuk sebagai "+session.user.email;setStatus("#loginStatus","Mode admin aktif. Kamu dapat mengelola katalog resmi.");loadModeration();return}$("#viewerAccount").hidden=false;$("#viewerEmail").textContent=session.user.email||"Akun penonton aktif";if(profileTitle){profileTitle.textContent="Akun penonton aktif";profileDescription.textContent="Akunmu sudah terhubung dan siap digunakan.";profileEmail.textContent=session.user.email||"Akun penonton aktif";}$("#loginForm").hidden=true;$("#signupForm").hidden=true;$("#forgotPasswordBtn").hidden=true;$("#resendConfirmationBtn").hidden=true;setStatus("#loginStatus","Login berhasil. Akun penonton aktif.")}
+async function verifySession(session){if(session)hideGuestPrompt();const profileTitle=$("#profileAccountTitle"),profileDescription=$("#profileAccountDescription"),profileEmail=$("#profileEmail"),profileLogin=$("#profileLoginBtn"),profileLogout=$("#profileLogoutBtn");const profileAvatar=$("#profileAvatar"),profileSince=$("#profileSince");if(profileAvatar){const email=session?.user?.email||"";profileAvatar.textContent=(email.split("@")[0].trim().charAt(0)||"T").toUpperCase()}if(profileSince){const created=session?.user?.created_at?new Date(session.user.created_at):null;const days=created?Math.max(0,Math.floor((Date.now()-created.getTime())/86400000)):null;profileSince.textContent=session?(days===null?"Penonton TacTic Drama":days+" hari bersama TacTic Drama"):"Nikmati drama bersama TacTic Drama"}if(profileTitle){profileTitle.textContent=session?"Memeriksa akun…":"Mode tamu";profileDescription.textContent=session?"Memeriksa status akunmu.":"Masuk untuk mengelola akun penontonmu.";profileEmail.textContent=session?.user?.email||"Kamu sedang menonton sebagai tamu.";profileLogin.hidden=!!session;profileLogout.hidden=!session;}const panel=$("#uploadSection");panel.hidden=true;panel.removeAttribute("data-admin");$("#viewerAccount").hidden=true;setAuthMode("login");$("#resetPasswordForm").hidden=true;$("#moderationSection").hidden=true;if(!session||!supa)return;const {data,error}=await supa.from("user_roles").select("role").eq("user_id",session.user.id).maybeSingle();if(error){setStatus("#loginStatus","Gagal memeriksa akun. Coba masuk kembali.");return}if(data?.role==="admin"){if(profileTitle){profileTitle.textContent="Administrator";profileDescription.textContent="Akun pengelola TacTic Drama.";profileEmail.textContent=session.user.email||"";}panel.dataset.admin="true";panel.hidden=false;$("#loginForm").hidden=true;$("#signupForm").hidden=true;$("#moderationSection").hidden=false;$("#adminIdentity").textContent="Admin masuk sebagai "+session.user.email;setStatus("#loginStatus","Mode admin aktif. Kamu dapat mengelola katalog resmi.");loadModeration();return}$("#viewerAccount").hidden=false;$("#viewerEmail").textContent=session.user.email||"Akun penonton aktif";if(profileTitle){profileTitle.textContent="Akun penonton aktif";profileDescription.textContent="Akunmu sudah terhubung dan siap digunakan.";profileEmail.textContent=session.user.email||"Akun penonton aktif";}$("#loginForm").hidden=true;$("#signupForm").hidden=true;$("#forgotPasswordBtn").hidden=true;$("#resendConfirmationBtn").hidden=true;setStatus("#loginStatus","Login berhasil. Akun penonton aktif.")}
 async function editCreatorDrama(drama,userId){const title=window.prompt("Ubah judul drama:",drama.title);if(title===null)return;if(!title.trim()){setStatus("#loginStatus","Judul drama tidak boleh kosong.");return}const description=window.prompt("Ubah deskripsi drama:",drama.description||"");if(description===null)return;const {data,error}=await supa.from("dramas").update({title:title.trim().slice(0,120),description:description.trim().slice(0,2000)}).eq("id",drama.id).eq("uploader_id",userId).select("id").maybeSingle();if(error){setStatus("#loginStatus","Gagal mengubah drama: "+error.message);return}if(!data){setStatus("#loginStatus","Drama tidak berubah. Pastikan akun memiliki akses edit.");return}setStatus("#loginStatus","Judul dan deskripsi drama berhasil diperbarui.");await loadMyDramas(userId);await loadCatalog()}
 $("#guestPromptLogin").addEventListener("click",()=>{hideGuestPrompt();admin.showModal()});
 $("#guestPromptContinue").addEventListener("click",hideGuestPrompt);
 $("#openAdmin")?.addEventListener("click",()=>admin.showModal());
 $("#profileLoginBtn").addEventListener("click",()=>admin.showModal());
 document.querySelectorAll("[data-profile-tab]").forEach(button=>button.addEventListener("click",()=>{collectionView=button.dataset.profileTab;activeTab="collection";setActiveNav("collection");render();window.scrollTo({top:0,behavior:"smooth"})}));
+document.querySelectorAll("[data-profile-view]").forEach(button=>button.addEventListener("click",()=>{profileCollectionView=button.dataset.profileView;renderProfileCollections()}));
+document.querySelectorAll("[data-profile-filter]").forEach(button=>button.addEventListener("click",()=>{profileHistoryFilter=button.dataset.profileFilter;renderProfileCollections()}));
+$("#profileSettingsBtn")?.addEventListener("click",()=>{if(supa)admin.showModal();else admin.showModal()});
+
 $("#profileLogoutBtn").addEventListener("click",signOutViewer);
 function storagePathFromPublicUrl(url,bucket){if(!url)return null;try{const u=new URL(url);const marker="/storage/v1/object/public/"+bucket+"/";const at=u.pathname.indexOf(marker);return at<0?null:decodeURIComponent(u.pathname.slice(at+marker.length))}catch{return null}}
 async function removeOwnedStorageFiles(bucket,paths){const clean=[...new Set(paths.filter(Boolean))];if(!clean.length)return;const {error}=await supa.storage.from(bucket).remove(clean);if(error)throw error}

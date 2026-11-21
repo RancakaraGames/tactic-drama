@@ -764,3 +764,31 @@ body.clips-mode .player-dialog[open]{z-index:20}
 #adminDialog .auth-brand{display:grid;width:100%;justify-items:center;align-items:center;text-align:center;margin:0 auto;padding:14px 0 22px}
 #adminDialog .auth-brand-mark{margin-inline:auto}
 #adminDialog .auth-brand strong,#adminDialog .auth-brand p{width:100%;text-align:center}
+
+/* Melolo-inspired viewer profile layout v76 */
+.melolo-profile{max-width:760px;margin:0 auto 28px;padding:18px 14px 30px;color:#f5f5f7}
+.melolo-profile-head{display:flex;align-items:center;gap:13px;padding:4px 2px 17px}
+.melolo-avatar{display:grid;place-items:center;flex:0 0 58px;width:58px;height:58px;border-radius:50%;background:linear-gradient(145deg,#e50914,#82000b);color:white;font-size:28px;font-weight:850;box-shadow:0 5px 18px #e5091430}
+.melolo-user-copy{flex:1;min-width:0}.melolo-user-copy h1{margin:0 0 4px;font-size:clamp(17px,4.8vw,23px);font-weight:850;overflow-wrap:anywhere}.melolo-user-copy p{margin:0 0 4px;color:#c3c3ca;font-size:11px;overflow-wrap:anywhere}.melolo-user-copy small{color:#85858e;font-size:10px}
+.profile-settings-btn{flex:0 0 38px;width:38px;height:38px;border:0;background:transparent;color:#eee;font-size:25px}
+.melolo-benefit-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin:0 0 17px}
+.melolo-benefit-card{position:relative;display:grid;align-content:center;gap:5px;min-width:0;min-height:94px;padding:12px;border-radius:20px;overflow:hidden;background:#24242a}
+.melolo-benefit-card strong{font-size:12px;font-weight:850}.melolo-benefit-card small{color:#b7b7bf;font-size:9px;line-height:1.35;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.benefit-icon{position:absolute;right:9px;bottom:8px;font-size:23px;opacity:.45}
+.vip-card{background:linear-gradient(130deg,#3b2924,#241b1c)}.vip-card small{color:#d6a28f}.reward-card{background:linear-gradient(130deg,#33301b,#24220f)}.reward-card small{color:#e3d16c}.download-card{background:linear-gradient(130deg,#29272d,#1d1b22)}
+.melolo-profile-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-bottom:1px solid #ffffff1b;margin:0 -14px 14px;padding:0 18px}
+.melolo-profile-tab{position:relative;display:grid;justify-items:center;gap:5px;min-height:65px;border:0;background:transparent;color:#777982}
+.melolo-profile-tab span{font-size:26px;line-height:1}.melolo-profile-tab small{font-size:10px;color:inherit}.melolo-profile-tab.active{color:#fff}.melolo-profile-tab.active:after{content:"";position:absolute;bottom:0;width:42px;height:3px;border-radius:4px;background:#e50914}
+.melolo-profile-filter{display:flex;gap:8px;overflow-x:auto;padding:2px 0 12px}.melolo-profile-filter[hidden]{display:none!important}
+.melolo-profile-filter button{flex:0 0 auto;padding:10px 14px;border:0;border-radius:12px;background:#25262c;color:#b9bac1;font-size:11px}
+.melolo-profile-filter button.active{background:#3b3100;color:#f4df55}
+.profile-drama-list{display:grid;gap:0;min-height:120px}
+.profile-date-heading{margin:14px 0 10px;color:#a4a5ad;font-size:11px;font-weight:650}
+.profile-drama-row{display:flex;align-items:center;gap:13px;padding:9px 0 14px;cursor:pointer}
+.profile-drama-poster{display:grid;place-items:center;flex:0 0 82px;width:82px;height:116px;overflow:hidden;border-radius:9px;background:#262832;color:#e50914;font-size:24px;font-weight:900}
+.profile-drama-poster img{width:100%;height:100%;object-fit:cover}
+.profile-drama-info{display:grid;gap:8px;min-width:0}.profile-drama-info strong{color:#f0f0f2;font-size:13px;line-height:1.4}.profile-drama-info span{color:#a4a5ad;font-size:11px;line-height:1.4}.profile-drama-info small{color:#858790;font-size:11px}
+.profile-account-footer{display:grid;gap:9px;margin-top:20px;padding:15px;border:1px solid #ffffff14;border-radius:15px;background:#15161b}
+.profile-footer-info{display:grid;gap:4px}.profile-footer-info strong{font-size:12px}.profile-footer-info small{font-size:10px;color:#a4a5ad;line-height:1.5}
+.profile-account-footer .profile-action{min-height:40px}
+.profile-page-status{color:#a4a5ad;font-size:10px}
+@media(max-width:370px){.melolo-profile{padding-right:11px;padding-left:11px}.melolo-benefit-card{min-height:86px;padding:10px;border-radius:16px}.melolo-benefit-card strong{font-size:11px}.profile-drama-poster{flex-basis:74px;width:74px;height:105px}}
