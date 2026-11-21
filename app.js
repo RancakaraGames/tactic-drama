@@ -390,5 +390,25 @@ window.addEventListener("online",()=>{updateNetworkStatus();loadCatalog()});wind
 render();
 const cfg=window.TACTIC_SUPABASE_CONFIG||{};
 if(window.supabase?.createClient&&cfg.url?.startsWith("https://")&&!cfg.url.includes("YOUR-PROJECT")&&cfg.anonKey&&!cfg.anonKey.includes("YOUR-SUPABASE")){supa=window.supabase.createClient(cfg.url,cfg.anonKey);$("#backendNotice").textContent="Daftar akun untuk mengirim video. Email perlu dikonfirmasi sebelum login jika verifikasi email aktif.";loadCatalog();supa.auth.getSession().then(({data})=>verifySession(data.session));supa.auth.onAuthStateChange((_event,session)=>{verifySession(session)})}else{$("#backendNotice").textContent="Koneksi backend belum diisi. Website dan katalog contoh tetap bisa dibuka; upload online aktif setelah konfigurasi Supabase."}
-let installPrompt;window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();installPrompt=e;const btn=$("#installBtn");btn.hidden=false;btn.addEventListener("click",async()=>{if(!installPrompt)return;installPrompt.prompt();await installPrompt.userChoice;installPrompt=null;btn.hidden=true},{once:true})});
+const installBtn=$("#installBtn");
+let installPrompt=null;
+const isInstalled=()=>window.matchMedia("(display-mode: standalone)").matches||navigator.standalone===true;
+if(isInstalled())installBtn.hidden=true;
+window.addEventListener("beforeinstallprompt",event=>{
+ event.preventDefault();installPrompt=event;installBtn.hidden=false;
+ installBtn.title="Pasang TacTic Drama";installBtn.setAttribute("aria-label","Pasang TacTic Drama");
+});
+installBtn.addEventListener("click",async()=>{
+ if(!installPrompt){setStatus("#catalogStatus","Untuk memasang aplikasi, buka menu Chrome ⋮ lalu pilih Tambahkan ke layar utama.");return}
+ const promptEvent=installPrompt;installPrompt=null;
+ try{await promptEvent.prompt();const choice=await promptEvent.userChoice;
+  if(choice?.outcome==="accepted")setStatus("#catalogStatus","TacTic Drama sedang dipasang ke layar utama.");
+  else setStatus("#catalogStatus","Pemasangan belum dilakukan. Kamu bisa mencoba lagi melalui menu Chrome.");
+ }catch(error){setStatus("#catalogStatus","Tidak dapat membuka pemasangan. Gunakan menu Chrome ⋮ lalu Tambahkan ke layar utama.")}
+ installBtn.hidden=true;
+});
+window.addEventListener("appinstalled",()=>{
+ installPrompt=null;installBtn.hidden=true;
+ setStatus("#catalogStatus","TacTic Drama berhasil dipasang di perangkat ini.");
+});
 if("serviceWorker"in navigator&&location.protocol.startsWith("http"))navigator.serviceWorker.register("./sw.js").catch(()=>{});

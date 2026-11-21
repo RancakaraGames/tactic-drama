@@ -1,1 +1,18 @@
-{"name":"TacTic Drama","short_name":"TacTic","start_url":"./","display":"standalone","background_color":"#101014","theme_color":"#101014","description":"Drama pendek favoritmu."}
+{
+  "name": "TacTic Drama",
+  "short_name": "TacTic",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#09090d",
+  "theme_color": "#09090d",
+  "description": "Drama pendek favoritmu.",
+  "icons": [
+    {
+      "src": "icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
