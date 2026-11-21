@@ -308,6 +308,16 @@ $("#creatorAppealForm")?.addEventListener("submit",async event=>{
   $("#creatorAppealStatus").textContent=err?.message?.includes("menunggu")?"Masih ada permohonan yang menunggu keputusan.":(err?.message||"Permohonan belum berhasil dikirim.");
  }finally{button.disabled=false}
 });
+async function loadCreatorViewAppealHistoryAdmin(){
+ const list=$("#creatorAppealHistoryAdminList");if(!supa||!list)return;
+ list.innerHTML='<p class="notice">Memuat riwayat keputusan...</p>';
+ try{
+  const {data,error}=await supa.rpc("list_creator_view_appeal_events");if(error)throw error;
+  const rows=data||[];
+  if(!rows.length){list.innerHTML='<p class="notice">Belum ada keputusan banding yang tercatat.</p>';return}
+  list.innerHTML=rows.map(row=>'<article class="creator-appeal-admin-item"><div><strong>'+escapeHtml(row.creator_email||row.creator_id)+'</strong><span>'+new Date(row.created_at).toLocaleString("id-ID")+' · '+(row.decision==="accepted"?"Diterima":"Ditolak")+'</span><p><b>Alasan kreator:</b> '+escapeHtml(row.appeal_reason||"—")+'</p>'+(row.admin_note?'<small>Catatan admin: '+escapeHtml(row.admin_note)+'</small>':'<small>Tidak ada catatan admin.</small>')+'</div></article>').join("");
+ }catch(err){list.innerHTML='<p class="notice">Riwayat keputusan tidak dapat dimuat. Pastikan akun admin memiliki izin.</p>';console.warn("Riwayat banding admin gagal:",err?.message||err)}
+}
 async function loadCreatorViewAppealsAdmin(){
  const list=$("#creatorAppealsAdminList");if(!supa||!list)return;
  list.innerHTML='<p class="notice">Memuat permohonan peninjauan...</p>';
@@ -328,6 +338,7 @@ $("#creatorAppealsAdminList")?.addEventListener("click",async event=>{
   if(error)throw error;
   if(!data)throw new Error("Permohonan sudah diproses atau tidak ditemukan.");
   await loadCreatorViewAppealsAdmin();
+  await loadCreatorViewAppealHistoryAdmin();
  }catch(err){window.alert("Keputusan belum tersimpan: "+(err?.message||String(err)));button.disabled=false}
 });
 async function loadCreatorViewIntegrity(){
@@ -485,7 +496,7 @@ $("#creatorProfileForm").addEventListener("submit",async e=>{
  }catch(err){setStatus("#profileStatus","Gagal menyimpan profil: "+(err?.message||String(err)))}
  finally{btn.disabled=false}
 });
-async function verifySession(session){$("#uploadSection").hidden=true;$("#loginForm").hidden=false;$("#signupForm").hidden=false;$("#moderationSection").hidden=true;if(!session||!supa)return;const {data,error}=await supa.from("user_roles").select("role").eq("user_id",session.user.id).maybeSingle();if(error){setStatus("#loginStatus","Gagal memeriksa akun: "+error.message);return}const isAdmin=data?.role==="admin";renderCreatorProfile(session.user);$("#uploadSection").hidden=false;$("#loginForm").hidden=true;$("#signupForm").hidden=true;$("#adminIdentity").textContent=(isAdmin?"Admin masuk sebagai ":"Masuk sebagai ")+session.user.email;setStatus("#loginStatus",isAdmin?"Login admin berhasil.":"Login berhasil. Kamu bisa langsung mengunggah dan menerbitkan drama.");loadMyDramas(session.user.id);if(isAdmin){$("#moderationSection").hidden=false;loadModeration();loadCreatorViewAppealsAdmin()}}
+async function verifySession(session){$("#uploadSection").hidden=true;$("#loginForm").hidden=false;$("#signupForm").hidden=false;$("#moderationSection").hidden=true;if(!session||!supa)return;const {data,error}=await supa.from("user_roles").select("role").eq("user_id",session.user.id).maybeSingle();if(error){setStatus("#loginStatus","Gagal memeriksa akun: "+error.message);return}const isAdmin=data?.role==="admin";renderCreatorProfile(session.user);$("#uploadSection").hidden=false;$("#loginForm").hidden=true;$("#signupForm").hidden=true;$("#adminIdentity").textContent=(isAdmin?"Admin masuk sebagai ":"Masuk sebagai ")+session.user.email;setStatus("#loginStatus",isAdmin?"Login admin berhasil.":"Login berhasil. Kamu bisa langsung mengunggah dan menerbitkan drama.");loadMyDramas(session.user.id);if(isAdmin){$("#moderationSection").hidden=false;loadModeration();loadCreatorViewAppealsAdmin();loadCreatorViewAppealHistoryAdmin()}}
 async function editCreatorDrama(drama,userId){const title=window.prompt("Ubah judul drama:",drama.title);if(title===null)return;if(!title.trim()){setStatus("#loginStatus","Judul drama tidak boleh kosong.");return}const description=window.prompt("Ubah deskripsi drama:",drama.description||"");if(description===null)return;const {data,error}=await supa.from("dramas").update({title:title.trim().slice(0,120),description:description.trim().slice(0,2000)}).eq("id",drama.id).eq("uploader_id",userId).select("id").maybeSingle();if(error){setStatus("#loginStatus","Gagal mengubah drama: "+error.message);return}if(!data){setStatus("#loginStatus","Drama tidak berubah. Pastikan akun memiliki akses edit.");return}setStatus("#loginStatus","Judul dan deskripsi drama berhasil diperbarui.");await loadMyDramas(userId);await loadCatalog()}
 $("#openAdmin").addEventListener("click",()=>admin.showModal());
 function storagePathFromPublicUrl(url,bucket){if(!url)return null;try{const u=new URL(url);const marker="/storage/v1/object/public/"+bucket+"/";const at=u.pathname.indexOf(marker);return at<0?null:decodeURIComponent(u.pathname.slice(at+marker.length))}catch{return null}}
