@@ -305,7 +305,7 @@ $("#creatorAppealForm")?.addEventListener("submit",async event=>{
   form.reset();$("#creatorAppealStatus").textContent="Permohonan berhasil dikirim. Status akan diperbarui setelah pemeriksaan.";
   await loadCreatorViewAppeal();
  }catch(err){
-  $("#creatorAppealStatus").textContent=err?.message?.includes("menunggu")?"Masih ada permohonan yang menunggu keputusan.":(err?.message||"Permohonan belum berhasil dikirim.");
+  $("#creatorAppealStatus").textContent=err?.message?.includes("menunggu")?"Masih ada permohonan yang menunggu keputusan.":err?.message?.includes("7 hari")?"Batas pengajuan banding adalah satu kali setiap 7 hari, termasuk setelah keputusan sebelumnya.":(err?.message||"Permohonan belum berhasil dikirim.");
  }finally{button.disabled=false}
 });
 async function loadCreatorViewAppealHistoryAdmin(){
