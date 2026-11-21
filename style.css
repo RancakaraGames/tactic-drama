@@ -429,3 +429,6 @@ dialog{overscroll-behavior:contain}
 
 /* Per-episode viewing progress */
 .episode-list button{display:grid;gap:6px;align-content:center;white-space:normal;min-height:66px}.episode-button-title{display:block;overflow:hidden;text-overflow:ellipsis}.episode-progress-label{display:block;color:#a99eaa;font-size:9px;line-height:1.2}.episode-progress-track{display:block;width:100%;height:3px;overflow:hidden;border-radius:8px;background:#ffffff18}.episode-progress-fill{display:block;height:100%;border-radius:8px;background:linear-gradient(90deg,#b98250,#f0d5a0);transition:width .25s ease}.episode-list button.active .episode-progress-label{color:#e9c58a}
+
+/* Clear resume cue for episode rows */
+.episode-progress-label{letter-spacing:.01em}.episode-list button:focus-visible{outline:2px solid #e8c58f;outline-offset:2px}
