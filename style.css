@@ -407,3 +407,12 @@ dialog{overscroll-behavior:contain}
 .password-input-wrap input{flex:1;min-width:0}
 .password-toggle{flex:0 0 auto;min-width:88px;padding:0 12px;border:1px solid #62513e;border-radius:10px;background:#2b241f;color:#f0d3a2;font:inherit;font-size:11px;font-weight:700}
 .password-toggle:focus-visible{outline:2px solid #e9c58a;outline-offset:3px}
+
+
+/* Password recovery form */
+#resetPasswordForm{display:grid;gap:12px;margin:14px 0;padding:15px;border:1px solid #e9c58a45;border-radius:14px;background:linear-gradient(135deg,#211a27,#121116)}
+#resetPasswordForm[hidden]{display:none}
+#resetPasswordForm label{display:grid;gap:7px;color:#d9ced7;font-size:12px}
+#resetPasswordForm input{width:100%;min-width:0}
+.text-btn{display:block;margin:9px 0 14px;padding:7px 0;border:0;background:transparent;color:#e9c58a;font:inherit;font-size:11px;text-align:left;text-decoration:underline;text-underline-offset:3px}
+.text-btn:disabled{opacity:.55}

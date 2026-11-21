@@ -59,6 +59,12 @@
       <button class="primary-btn full" type="submit">Masuk</button>
     </form>
     <button id="forgotPasswordBtn" class="text-btn" type="button">Lupa password?</button>
+    <form id="resetPasswordForm" hidden>
+      <p class="notice">Buat password baru untuk akun TacTic Drama kamu.</p>
+      <label>Password baru<input name="password" type="password" autocomplete="new-password" minlength="6" required placeholder="Minimal 6 karakter"></label>
+      <label>Ulangi password<input name="confirmPassword" type="password" autocomplete="new-password" minlength="6" required placeholder="Ulangi password baru"></label>
+      <button class="primary-btn full" type="submit">Simpan password baru</button>
+    </form>
     <form id="signupForm">
       <label>Email untuk daftar<input name="email" type="email" autocomplete="email" required placeholder="Email kamu"></label>
       <label>Buat password<input name="password" type="password" autocomplete="new-password" minlength="6" required placeholder="Minimal 6 karakter"></label>
