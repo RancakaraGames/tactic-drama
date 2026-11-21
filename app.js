@@ -730,7 +730,7 @@ $("#creatorProfileForm").addEventListener("submit",async e=>{
  }catch(err){setStatus("#profileStatus","Gagal menyimpan profil: "+(err?.message||String(err)))}
  finally{btn.disabled=false}
 });
-async function verifySession(session){if(session)hideGuestPrompt();const profileTitle=$("#profileAccountTitle"),profileDescription=$("#profileAccountDescription"),profileEmail=$("#profileEmail"),profileLogin=$("#profileLoginBtn"),profileLogout=$("#profileLogoutBtn");const profileAvatar=$("#profileAvatar"),profileSince=$("#profileSince");if(profileAvatar){const email=session?.user?.email||"";profileAvatar.textContent=(email.split("@")[0].trim().charAt(0)||"T").toUpperCase()}if(profileSince){const created=session?.user?.created_at?new Date(session.user.created_at):null;const days=created?Math.max(0,Math.floor((Date.now()-created.getTime())/86400000)):null;profileSince.textContent=session?(days===null?"Penonton TacTic Drama":days+" hari bersama TacTic Drama"):"Nikmati drama bersama TacTic Drama"}if(profileTitle){profileTitle.textContent=session?"Memeriksa akun…":"Mode tamu";profileDescription.textContent=session?"Memeriksa status akunmu.":"Masuk untuk mengelola akun penontonmu.";profileEmail.textContent=session?.user?.email||"Kamu sedang menonton sebagai tamu.";profileLogin.hidden=!!session;profileLogout.hidden=!session;}const panel=$("#uploadSection");panel.hidden=true;panel.removeAttribute("data-admin");$("#viewerAccount").hidden=true;setAuthMode("login");$("#resetPasswordForm").hidden=true;$("#moderationSection").hidden=true;if(!session||!supa)return;const {data,error}=await supa.from("user_roles").select("role").eq("user_id",session.user.id).maybeSingle();if(error){setStatus("#loginStatus","Gagal memeriksa akun. Coba masuk kembali.");return}if(data?.role==="admin"){if(profileTitle){profileTitle.textContent="Administrator";profileDescription.textContent="Akun pengelola TacTic Drama.";profileEmail.textContent=session.user.email||"";}panel.dataset.admin="true";panel.hidden=false;$("#loginForm").hidden=true;$("#signupForm").hidden=true;$("#moderationSection").hidden=false;$("#adminIdentity").textContent="Admin masuk sebagai "+session.user.email;setStatus("#loginStatus","Mode admin aktif. Kamu dapat mengelola katalog resmi.");loadModeration();return}$("#viewerAccount").hidden=false;$("#viewerEmail").textContent=session.user.email||"Akun penonton aktif";if(profileTitle){profileTitle.textContent="Akun penonton aktif";profileDescription.textContent="Akunmu sudah terhubung dan siap digunakan.";profileEmail.textContent=session.user.email||"Akun penonton aktif";}$("#loginForm").hidden=true;$("#signupForm").hidden=true;$("#forgotPasswordBtn").hidden=true;$("#resendConfirmationBtn").hidden=true;setStatus("#loginStatus","Login berhasil. Akun penonton aktif.")}
+async function verifySession(session){if(session)hideGuestPrompt();const profileTitle=$("#profileAccountTitle"),profileDescription=$("#profileAccountDescription"),profileEmail=$("#profileEmail"),profileLogin=$("#profileLoginBtn"),profileLogout=$("#profileLogoutBtn");const profileAvatar=$("#profileAvatar"),profileSince=$("#profileSince");if(profileAvatar){const email=session?.user?.email||"";profileAvatar.textContent=(email.split("@")[0].trim().charAt(0)||"T").toUpperCase()}if(profileSince){const created=session?.user?.created_at?new Date(session.user.created_at):null;const days=created?Math.max(0,Math.floor((Date.now()-created.getTime())/86400000)):null;profileSince.textContent=session?(days===null?"Penonton TacTic Drama":days+" hari bersama TacTic Drama"):"Nikmati drama bersama TacTic Drama"}if(profileTitle){profileTitle.textContent=session?"Memeriksa akun…":"Mode tamu";profileDescription.textContent=session?"Memeriksa status akunmu.":"Masuk untuk mengelola akun penontonmu.";profileEmail.textContent=session?.user?.email||"Kamu sedang menonton sebagai tamu.";profileLogin.hidden=!!session;profileLogout.hidden=!session;}const panel=$("#uploadSection");panel.hidden=true;panel.removeAttribute("data-admin");$("#viewerAccount").hidden=true;setAuthMode("login");$("#resetPasswordForm").hidden=true;$("#moderationSection").hidden=true;if(!session||!supa)return;const {data,error}=await supa.from("user_roles").select("role").eq("user_id",session.user.id).maybeSingle();if(error){setStatus("#loginStatus","Gagal memeriksa akun. Coba masuk kembali.");return}if(data?.role==="admin"){if(profileTitle){profileTitle.textContent="Administrator";profileDescription.textContent="Akun pengelola TacTic Drama.";profileEmail.textContent=session.user.email||"";}panel.dataset.admin="true";panel.hidden=false;$("#loginForm").hidden=true;$("#signupForm").hidden=true;$("#moderationSection").hidden=false;$("#adminIdentity").textContent="Admin masuk sebagai "+session.user.email;setStatus("#loginStatus","Mode admin aktif. Kamu dapat mengelola katalog resmi.");loadModeration();return}renderViewerProfile(session.user);$("#viewerAccount").hidden=false;$("#viewerEmail").textContent=session.user.email||"Akun penonton aktif";if(profileTitle){profileTitle.textContent="Akun penonton aktif";profileDescription.textContent="Akunmu sudah terhubung dan siap digunakan.";profileEmail.textContent=session.user.email||"Akun penonton aktif";}$("#loginForm").hidden=true;$("#signupForm").hidden=true;$("#forgotPasswordBtn").hidden=true;$("#resendConfirmationBtn").hidden=true;setStatus("#loginStatus","Login berhasil. Akun penonton aktif.")}
 async function editCreatorDrama(drama,userId){const title=window.prompt("Ubah judul drama:",drama.title);if(title===null)return;if(!title.trim()){setStatus("#loginStatus","Judul drama tidak boleh kosong.");return}const description=window.prompt("Ubah deskripsi drama:",drama.description||"");if(description===null)return;const {data,error}=await supa.from("dramas").update({title:title.trim().slice(0,120),description:description.trim().slice(0,2000)}).eq("id",drama.id).eq("uploader_id",userId).select("id").maybeSingle();if(error){setStatus("#loginStatus","Gagal mengubah drama: "+error.message);return}if(!data){setStatus("#loginStatus","Drama tidak berubah. Pastikan akun memiliki akses edit.");return}setStatus("#loginStatus","Judul dan deskripsi drama berhasil diperbarui.");await loadMyDramas(userId);await loadCatalog()}
 $("#guestPromptLogin").addEventListener("click",()=>{hideGuestPrompt();admin.showModal()});
 $("#guestPromptContinue").addEventListener("click",hideGuestPrompt);
@@ -757,6 +757,89 @@ function openProfileSettings(){
 $("#profileSettingsBtn")?.addEventListener("click",openProfileSettings);
 $("#closeProfileSettings")?.addEventListener("click",()=>profileSettingsDialog?.close());
 $("#closeProfileSettingsBottom")?.addEventListener("click",()=>profileSettingsDialog?.close());
+const editViewerProfileDialog=$("#editViewerProfileDialog");
+const editViewerProfileForm=$("#editViewerProfileForm");
+const editViewerAvatarInput=$("#editViewerAvatarInput");
+const editViewerAvatarPreview=$("#editViewerAvatarPreview");
+let editViewerAvatarObjectUrl=null,editViewerSelectedAvatar=null;
+function paintViewerAvatar(element,user,name){
+ if(!element)return;
+ const url=user?.user_metadata?.avatar_url||"";
+ element.replaceChildren();
+ if(url){const img=document.createElement("img");img.src=url;img.alt="Foto profil";img.loading="lazy";img.onerror=()=>{element.textContent=(name||"T").trim().charAt(0).toUpperCase()||"T"};element.append(img)}
+ else element.textContent=(name||"T").trim().charAt(0).toUpperCase()||"T";
+}
+function renderViewerProfile(user){
+ const meta=user?.user_metadata||{},name=String(meta.display_name||"").trim()||"Penonton TacTic";
+ const title=$("#profileTitle");if(title)title.textContent=name;
+ paintViewerAvatar($("#profileAvatar"),user,name);
+ paintViewerAvatar($("#settingsAccountAvatar"),user,name);
+ const accountName=$("#settingsAccountName");if(accountName)accountName.textContent=name;
+}
+function resetViewerAvatarPreview(){
+ if(editViewerAvatarObjectUrl){URL.revokeObjectURL(editViewerAvatarObjectUrl);editViewerAvatarObjectUrl=null}
+ editViewerSelectedAvatar=null;if(editViewerAvatarInput)editViewerAvatarInput.value="";
+}
+function openEditViewerProfile(){
+ if(!supa){$("#editViewerProfileStatus").textContent="Layanan akun belum siap. Coba lagi nanti.";return}
+ supa.auth.getUser().then(({data,error})=>{
+  if(error||!data.user){$("#editViewerProfileStatus").textContent="Silakan masuk kembali untuk mengubah profil.";return}
+  const user=data.user,meta=user.user_metadata||{};
+  $("#editViewerDisplayName").value=String(meta.display_name||"").slice(0,40);
+  $("#editViewerNameCount").textContent=$("#editViewerDisplayName").value.length+"/40 karakter";
+  paintViewerAvatar(editViewerAvatarPreview,user,meta.display_name||"T");
+  resetViewerAvatarPreview();
+  if(editViewerProfileDialog&&!editViewerProfileDialog.open)editViewerProfileDialog.showModal();
+ });
+}
+$("#settingsEditProfileRow")?.addEventListener("click",()=>{profileSettingsDialog?.close();openEditViewerProfile()});
+$("#closeEditViewerProfile")?.addEventListener("click",()=>{editViewerProfileDialog?.close();resetViewerAvatarPreview()});
+$("#editViewerDisplayName")?.addEventListener("input",e=>{$("#editViewerNameCount").textContent=e.currentTarget.value.length+"/40 karakter"});
+editViewerAvatarInput?.addEventListener("change",()=>{
+ const file=editViewerAvatarInput.files?.[0];if(!file)return;
+ if(file.size>2*1024*1024||!["image/jpeg","image/png","image/webp"].includes(file.type)){
+  $("#editViewerProfileStatus").textContent=file.size>2*1024*1024?"Foto profil maksimal 2 MB.":"Format foto harus JPG, PNG, atau WebP.";
+  editViewerAvatarInput.value="";return;
+ }
+ if(editViewerAvatarObjectUrl)URL.revokeObjectURL(editViewerAvatarObjectUrl);
+ editViewerAvatarObjectUrl=URL.createObjectURL(file);editViewerSelectedAvatar=file;
+ editViewerAvatarPreview.replaceChildren();const img=document.createElement("img");img.src=editViewerAvatarObjectUrl;img.alt="Pratinjau foto profil";editViewerAvatarPreview.append(img);
+ $("#editViewerProfileStatus").textContent="Pratinjau foto siap. Tekan Simpan perubahan.";
+});
+editViewerProfileForm?.addEventListener("submit",async e=>{
+ e.preventDefault();if(!supa)return;
+ const name=$("#editViewerDisplayName").value.trim(),button=$("#saveViewerProfileButton");
+ if(!name){$("#editViewerProfileStatus").textContent="Nama tampilan wajib diisi.";return}
+ if(name.length>40){$("#editViewerProfileStatus").textContent="Nama maksimal 40 karakter.";return}
+ const file=editViewerSelectedAvatar;
+ if(file&&(file.size>2*1024*1024||!["image/jpeg","image/png","image/webp"].includes(file.type))){$("#editViewerProfileStatus").textContent="Pilih foto JPG, PNG, atau WebP maksimal 2 MB.";return}
+ button.disabled=true;$("#editViewerProfileStatus").textContent="Menyimpan profil...";
+ let uploadedPath=null;
+ try{
+  const {data:sessionData,error:sessionError}=await supa.auth.getSession();
+  if(sessionError)throw sessionError;
+  const user=sessionData.session?.user;if(!user)throw new Error("Sesi login berakhir. Silakan masuk kembali.");
+  const oldAvatar=user.user_metadata?.avatar_url||null;let avatarUrl=oldAvatar;
+  if(file){
+   const ext=({"image/jpeg":"jpg","image/png":"png","image/webp":"webp"})[file.type];
+   uploadedPath=user.id+"/viewer-avatar-"+crypto.randomUUID()+"."+ext;
+   const uploaded=await supa.storage.from("drama-posters").upload(uploadedPath,file,{contentType:file.type,upsert:false});
+   if(uploaded.error)throw uploaded.error;
+   avatarUrl=supa.storage.from("drama-posters").getPublicUrl(uploadedPath).data.publicUrl;
+  }
+  const updated=await supa.auth.updateUser({data:{display_name:name,avatar_url:avatarUrl}});
+  if(updated.error)throw updated.error;
+  const savedUser=updated.data.user||{...user,user_metadata:{...(user.user_metadata||{}),display_name:name,avatar_url:avatarUrl}};
+  renderViewerProfile(savedUser);
+  if(oldAvatar&&avatarUrl!==oldAvatar){const oldPath=storagePathFromPublicUrl(oldAvatar,"drama-posters");if(oldPath&&oldPath.startsWith(user.id+"/"))await removeOwnedStorageFiles("drama-posters",[oldPath])}
+  $("#editViewerProfileStatus").textContent="Profil berhasil diperbarui.";
+  resetViewerAvatarPreview();
+  setTimeout(()=>editViewerProfileDialog?.close(),650);
+ }catch(err){
+  if(uploadedPath){try{await removeOwnedStorageFiles("drama-posters",[uploadedPath])}catch{}}
+  $("#editViewerProfileStatus").textContent="Gagal menyimpan profil: "+(err?.message||String(err));
+ }finally{button.disabled=false}
+});
 const vipInfoDialog=$("#vipInfoDialog");
 $("#openVipInfo")?.addEventListener("click",()=>{if(vipInfoDialog&&!vipInfoDialog.open)vipInfoDialog.showModal()});
 $("#closeVipInfo")?.addEventListener("click",()=>vipInfoDialog?.close());

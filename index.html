@@ -8,7 +8,7 @@
   <title>TacTic Drama</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
-  <link rel="stylesheet" href="style.css?v=82">
+  <link rel="stylesheet" href="style.css?v=83">
 </head>
 <body>
   <header class="topbar">
@@ -260,6 +260,7 @@
         <div><strong id="settingsAccountName">Penonton TacTic</strong><small id="settingsAccountEmail">Mode tamu</small></div>
       </div>
       <div class="profile-settings-list">
+        <button class="profile-settings-row" id="settingsEditProfileRow" type="button"><span class="settings-row-icon">✎</span><span class="settings-row-copy"><strong>Edit profil</strong><small>Ubah nama dan foto profil</small></span><span class="settings-row-value">›</span></button>
         <button class="profile-settings-row" id="settingsAccountRow" type="button"><span class="settings-row-icon">♙</span><span class="settings-row-copy"><strong>Akun</strong><small id="settingsAccountStatus">Informasi akun penonton</small></span><span class="settings-row-value">›</span></button>
         <button class="profile-settings-row" id="settingsLanguageRow" type="button"><span class="settings-row-icon">文</span><span class="settings-row-copy"><strong>Bahasa aplikasi</strong><small>Bahasa Indonesia</small></span><span class="settings-row-value">ID</span></button>
         <button class="profile-settings-row" id="settingsHelpRow" type="button"><span class="settings-row-icon">?</span><span class="settings-row-copy"><strong>Pusat bantuan</strong><small>Bantuan dan pertanyaan umum</small></span><span class="settings-row-value">›</span></button>
@@ -269,6 +270,20 @@
       <button id="settingsLoginButton" class="profile-settings-login" type="button">Masuk / Daftar</button>
       <button id="settingsLogoutButton" class="profile-settings-logout" type="button" hidden>Keluar dari akun</button>
       <button id="closeProfileSettingsBottom" class="profile-settings-done" type="button">Selesai</button>
+    </div>
+  </dialog>
+  <dialog id="editViewerProfileDialog" class="profile-settings-dialog edit-viewer-profile-dialog" aria-labelledby="editViewerProfileTitle">
+    <div class="profile-settings-shell">
+      <div class="profile-settings-heading"><div><p class="eyebrow">AKUN PENONTON</p><h2 id="editViewerProfileTitle">Edit profil</h2><p>Perbarui identitas profilmu.</p></div><button id="closeEditViewerProfile" class="profile-settings-close" type="button" aria-label="Tutup edit profil">×</button></div>
+      <form id="editViewerProfileForm" class="edit-viewer-profile-form">
+        <div class="edit-viewer-avatar-wrap"><div id="editViewerAvatarPreview" class="edit-viewer-avatar">T</div><label for="editViewerAvatarInput" class="edit-viewer-avatar-action">Ganti foto</label><input id="editViewerAvatarInput" type="file" accept="image/jpeg,image/png,image/webp" hidden></div>
+        <label class="edit-viewer-name-label" for="editViewerDisplayName">Nama tampilan</label>
+        <input id="editViewerDisplayName" name="displayName" type="text" maxlength="40" required placeholder="Masukkan nama tampilan" autocomplete="nickname">
+        <small id="editViewerNameCount" class="edit-viewer-field-note">0/40 karakter</small>
+        <small class="edit-viewer-field-note">Foto JPG, PNG, atau WebP · Maksimal 2 MB</small>
+        <p id="editViewerProfileStatus" class="status" role="status" aria-live="polite"></p>
+        <button id="saveViewerProfileButton" class="profile-settings-login" type="submit">Simpan perubahan</button>
+      </form>
     </div>
   </dialog>
   <dialog id="vipInfoDialog" class="profile-settings-dialog vip-info-dialog" aria-labelledby="vipInfoTitle">
@@ -293,6 +308,6 @@
   </dialog>
 
   <script src="./supabase-config.js"></script>
-  <script src="app.js?v=82"></script>
+  <script src="app.js?v=83"></script>
 </body>
 </html>
