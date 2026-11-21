@@ -263,7 +263,13 @@ async function loadComments(dramaId){
  const list=$("#commentList");if(!list)return;list.innerHTML="";setPlayerCommentCount(0);
  if(!supa||String(dramaId).startsWith("demo-")){setStatus("#commentStatus","Komentar online akan tersedia untuk drama yang terhubung ke katalog.");return}
  setStatus("#commentStatus","Memuat komentar...");
- const result=await supa.from("comments").select("id,display_name,body,created_at").eq("drama_id",dramaId).order("created_at",{ascending:false}).limit(50);
+ let result;
+ try{
+  result=await supa.from("comments").select("id,display_name,body,created_at").eq("drama_id",dramaId).order("created_at",{ascending:false}).limit(50);
+ }catch(error){
+  if(requestToken===commentLoadToken&&String(activeDrama?.id)===requestedDramaId)setStatus("#commentStatus","Koneksi bermasalah. Komentar belum bisa dimuat. Coba buka panel lagi.");
+  return;
+ }
  if(requestToken!==commentLoadToken||String(activeDrama?.id)!==requestedDramaId)return;
  if(result.error){setStatus("#commentStatus","Komentar belum bisa dimuat. Coba lagi nanti.");return}
  setPlayerCommentCount(result.data.length);
@@ -296,11 +302,13 @@ $("#commentForm").addEventListener("submit",async e=>{
  e.preventDefault();
  if(!supa||!activeDrama||String(activeDrama.id).startsWith("demo-")){setStatus("#commentStatus","Komentar belum aktif. Sambungkan Supabase dan gunakan drama dari katalog online.");return}
  const form=e.currentTarget,fd=new FormData(form),body=String(fd.get("body")||"").trim(),btn=form.querySelector("button[type=submit]"),dramaId=activeDrama.id;
- let display_name=String(fd.get("displayName")||"").trim();
+ if(btn.disabled)return;
  if(!body){setStatus("#commentStatus","Tulis komentar terlebih dahulu.");return}
+ btn.disabled=true;setStatus("#commentStatus","Menyiapkan komentar...");
+ let display_name=String(fd.get("displayName")||"").trim();
  if(!display_name){try{const {data}=await supa.auth.getUser();const user=data?.user;display_name=String(user?.user_metadata?.display_name||user?.email?.split("@")[0]||"Penonton").trim().slice(0,40)}catch{display_name="Penonton"}}
  if(!display_name)display_name="Penonton";
- btn.disabled=true;setStatus("#commentStatus","Mengirim komentar...");
+ setStatus("#commentStatus","Mengirim komentar...");
  try{const result=await supa.from("comments").insert({drama_id:dramaId,display_name,body});if(result.error)throw result.error;if(String(activeDrama?.id)===String(dramaId)){form.elements.displayName.value=display_name;form.elements.body.value="";await loadComments(dramaId)}}
  catch(err){if(String(activeDrama?.id)===String(dramaId))setStatus("#commentStatus","Gagal mengirim komentar: "+err.message)}
  finally{btn.disabled=false}
