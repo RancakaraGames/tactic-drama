@@ -258,9 +258,36 @@ async function loadDramaLikeState(dramaId){
  }catch(err){btn.textContent="♡ Suka";console.warn("Jumlah suka belum dapat dimuat:",err?.message||err)}
  finally{btn.disabled=false}
 }
+async function loadCreatorViewIntegrity(){
+ const status=$("#creatorIntegrityStatus");
+ if(!supa||!status)return;
+ status.textContent="Memeriksa ringkasan keamanan tayangan...";
+ try{
+  const {data,error}=await supa.rpc("get_creator_view_integrity");
+  if(error)throw error;
+  const row=Array.isArray(data)?data[0]:data;
+  if(!row)throw new Error("Ringkasan belum tersedia.");
+  const fmt=value=>Number(value||0).toLocaleString("id-ID");
+  $("#integrityTotal").textContent=fmt(row.total_recorded_views);
+  $("#integrityCounted").textContent=fmt(row.verified_views);
+  $("#integrityExcluded").textContent=fmt(row.excluded_flagged_views);
+  $("#integrityFlagged").textContent=fmt(row.flagged_viewers);
+  if(row.latest_flag_at){
+   const date=new Date(row.latest_flag_at);
+   status.textContent="Pembaruan audit terakhir: "+date.toLocaleString("id-ID",{dateStyle:"medium",timeStyle:"short"})+". Flag aktif dihitung untuk periode 30 hari.";
+  }else{
+   status.textContent="Belum ada sinyal risiko aktif pada tayangan drama milikmu.";
+  }
+ }catch(err){
+  status.textContent="Ringkasan integritas belum dapat dimuat. Statistik tontonan biasa tetap tersedia.";
+  console.warn("Audit integritas tayangan gagal:",err?.message||err);
+ }
+}
+
 async function loadCreatorStats(userId){
  const status=$("#creatorStatsStatus"),list=$("#creatorPerformanceList");if(!supa||!userId)return;
  status.textContent="Memuat statistik kreator...";
+ loadCreatorViewIntegrity();
  creatorPerformanceData=[];const exportBtn=$("#exportCreatorStats");if(exportBtn)exportBtn.disabled=true;
  if(list)list.innerHTML='<p class="notice">Memuat performa drama...</p>';
  try{

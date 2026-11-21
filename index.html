@@ -143,6 +143,17 @@
           </ul>
           <small class="creator-eligibility-note">Pemeriksaan dihitung dari data akun, episode yang disetujui, dan penonton unik tercatat. Memenuhi syarat belum berarti pendapatan aktif; program menunggu sumber iklan dan pembayaran resmi.</small>
         </section>
+        <section class="creator-integrity" aria-label="Audit integritas tayangan">
+          <div class="creator-heading"><h3>Integritas tayangan</h3><span class="creator-count">Audit otomatis</span></div>
+          <div class="creator-integrity-grid">
+            <article><strong id="integrityTotal">—</strong><span>Tayangan tercatat</span></article>
+            <article><strong id="integrityCounted">—</strong><span>Tidak dikecualikan</span></article>
+            <article><strong id="integrityExcluded">—</strong><span>Dikecualikan</span></article>
+            <article><strong id="integrityFlagged">—</strong><span>Penonton bertanda</span></article>
+          </div>
+          <p id="creatorIntegrityStatus" class="creator-integrity-status" role="status" aria-live="polite">Memuat ringkasan keamanan tayangan...</p>
+          <small class="creator-integrity-note">Tayangan dikecualikan jika identitas penonton memiliki flag risiko aktif. Identitas pribadi tidak ditampilkan. Flag adalah sinyal otomatis, bukan bukti pelanggaran; tayangan tanpa flag juga bukan jaminan bahwa aktivitasnya organik.</small>
+        </section>
         <p class="notice" id="creatorStatsStatus" role="status">Statistik diperbarui otomatis saat daftar drama dimuat.</p>
         <section class="creator-performance" aria-label="Performa setiap drama"><div class="creator-heading"><h3>Performa drama</h3><button id="exportCreatorStats" class="secondary-btn creator-export-btn" type="button" disabled>↓ Unduh CSV</button></div><p class="creator-performance-caption">Peringkat berdasarkan jumlah tayangan · Data seluruh waktu</p><div id="creatorPerformanceList" class="creator-performance-list"><p class="notice">Memuat performa drama...</p></div></section>
       </section>
