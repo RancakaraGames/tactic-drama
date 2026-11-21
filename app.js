@@ -222,9 +222,10 @@ function syncPlayerActionRail(){
  if(!activeDrama)return;
  const fav=favoriteIds.has(activeDrama.id),btn=$("#playerFavoriteAction");
  btn.setAttribute("aria-pressed",String(fav));btn.querySelector(".rail-icon").textContent=fav?"♥":"♡";btn.querySelector("small").textContent=fav?"Favorit":"Favorit";
- const like=$("#likeDrama"),likeBtn=$("#playerLikeAction");
- likeBtn.setAttribute("aria-pressed",like?.dataset.liked==="true"?"true":"false");
- likeBtn.classList.toggle("is-active",like?.dataset.liked==="true");
+ const like=$("#likeDrama"),likeBtn=$("#playerLikeAction"),likeAvailable=Boolean(like&&!like.hidden&&!String(activeDrama.id).startsWith("demo-"));
+ likeBtn.hidden=!likeAvailable;
+ likeBtn.setAttribute("aria-pressed",likeAvailable&&like.dataset.liked==="true"?"true":"false");
+ likeBtn.classList.toggle("is-active",likeAvailable&&like.dataset.liked==="true");
 }
 $("#playerFavoriteAction").addEventListener("click",()=>{
  if(!activeDrama)return;
@@ -232,7 +233,7 @@ $("#playerFavoriteAction").addEventListener("click",()=>{
  try{localStorage.setItem("tactic-favorites",JSON.stringify([...favoriteIds]))}catch{}
  syncPlayerActionRail();renderProfileCollections?.();render();showPlayerControls();
 });
-$("#playerLikeAction").addEventListener("click",()=>{$("#likeDrama").click();setTimeout(syncPlayerActionRail,250);showPlayerControls()});
+$("#playerLikeAction").addEventListener("click",()=>{if($("#playerLikeAction").hidden)return;$("#likeDrama").click();setTimeout(syncPlayerActionRail,250);showPlayerControls()});
 $("#playerShareAction").addEventListener("click",()=>{$("#shareDrama").click();showPlayerControls()});
 $("#playerCommentAction").addEventListener("click",()=>{
  const drawer=$("#playerCommentsDrawer"),open=drawer.hidden;drawer.hidden=!open;

@@ -1138,3 +1138,13 @@ body:has(.melolo-watch-player[open]){overflow:hidden}
 .player-comments-drawer .player-drawer-heading{position:sticky;top:-18px;padding:5px 0 12px;background:#121016f7;z-index:1}
 .player-comments-drawer .comments .status{margin:0 0 8px}
 @media(max-height:560px){.player-right-rail{right:8px;gap:9px;transform:translateY(-45%)}.player-rail-action .rail-icon{width:36px;height:36px}.player-bottom-overlay{padding-bottom:12px}.player-main-controls{gap:10px}}
+
+
+/* Player action rail polish v95 */
+.player-rail-action{cursor:pointer;transition:transform .18s ease,opacity .18s ease}
+.player-rail-action:active{transform:scale(.92)}
+.player-rail-action:focus-visible{outline:2px solid #f2c27d;outline-offset:4px;border-radius:12px}
+.player-rail-action[hidden]{display:none!important}
+.player-comments-drawer button:focus-visible{outline:2px solid #f2c27d;outline-offset:3px}
+@media(hover:hover){.player-rail-action:hover .rail-icon{transform:translateY(-2px);border-color:#f2c27d}}
+@media(max-width:380px){.player-right-rail{right:6px;gap:14px}.player-rail-action{min-width:42px}.player-rail-action .rail-icon{width:39px;height:39px;font-size:20px}.player-rail-action small{font-size:8px}}
