@@ -31,6 +31,17 @@ async function loadComments(dramaId){
  setStatus("#commentStatus",result.data.length+" komentar terbaru");
  result.data.forEach(item=>{const el=document.createElement("article");el.className="comment-item";const who=document.createElement("strong");who.textContent=item.display_name;const body=document.createElement("p");body.textContent=item.body;const time=document.createElement("small");time.textContent=new Date(item.created_at).toLocaleString("id-ID");el.append(who,body,time);list.append(el)})
 }
+function updateCommentCounters(){
+ const form=$("#commentForm");if(!form)return;
+ const name=form.elements.displayName,body=form.elements.body;
+ const nameCount=$("#commentNameCount"),bodyCount=$("#commentBodyCount");
+ if(nameCount)nameCount.textContent=name.value.length+"/40 karakter";
+ if(bodyCount)bodyCount.textContent=body.value.length.toLocaleString("id-ID")+"/1.000 karakter";
+}
+$("#commentForm").elements.displayName.addEventListener("input",updateCommentCounters);
+$("#commentForm").elements.body.addEventListener("input",updateCommentCounters);
+$("#commentForm").addEventListener("reset",()=>setTimeout(updateCommentCounters,0));
+updateCommentCounters();
 $("#commentForm").addEventListener("submit",async e=>{
  e.preventDefault();
  if(!supa||!activeDrama||String(activeDrama.id).startsWith("demo-")){setStatus("#commentStatus","Komentar belum aktif. Sambungkan Supabase dan gunakan drama dari katalog online.");return}
