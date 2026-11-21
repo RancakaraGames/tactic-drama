@@ -68,6 +68,11 @@ function updateSeekTime(){
 }
 $("#seekBack").addEventListener("click",()=>seekVideoBy(-10));
 $("#seekForward").addEventListener("click",()=>seekVideoBy(10));
+function updateFullscreenButton(){const btn=$("#fullscreenVideo");if(!btn)return;const active=Boolean(document.fullscreenElement||video.webkitDisplayingFullscreen);btn.textContent=active?"⤢ Keluar layar penuh":"⛶ Layar penuh";btn.setAttribute("aria-pressed",String(active));btn.setAttribute("aria-label",active?"Keluar dari layar penuh":"Tampilkan video layar penuh")}
+$("#fullscreenVideo").addEventListener("click",async()=>{try{if(document.fullscreenElement){await document.exitFullscreen()}else if(video.webkitDisplayingFullscreen&&video.webkitExitFullscreen){video.webkitExitFullscreen()}else if(video.requestFullscreen){await video.requestFullscreen()}else if(video.webkitEnterFullscreen){video.webkitEnterFullscreen()}else{setStatus("#shareStatus","Mode layar penuh tidak didukung browser ini.")}}catch(err){setStatus("#shareStatus","Tidak dapat membuka layar penuh: "+(err?.message||"coba lagi"))}updateFullscreenButton()});
+document.addEventListener("fullscreenchange",updateFullscreenButton);
+video.addEventListener("webkitbeginfullscreen",updateFullscreenButton);
+video.addEventListener("webkitendfullscreen",updateFullscreenButton);
 video.addEventListener("timeupdate",updateSeekTime);
 video.addEventListener("loadedmetadata",updateSeekTime);
 video.addEventListener("durationchange",updateSeekTime);
