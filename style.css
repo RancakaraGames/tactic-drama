@@ -312,3 +312,72 @@ input:focus,textarea:focus{outline:1px solid #e9c58a80;border-color:var(--gold)}
 
 /* Subtitle upload helper text */
 .subtitle-help{display:block;margin:-5px 2px 10px;color:#a7a0aa;font-size:10px;line-height:1.5}
+
+
+/* Premium finish: refined spacing, tactile controls and cinematic surfaces */
+:root{--gold:#e9c58a;--gold-soft:#f4dfba;--surface-glass:#17131de8}
+::selection{background:#e9c58a55;color:#fff}
+button,a,input,textarea,select{-webkit-tap-highlight-color:transparent}
+button{font-family:inherit;cursor:pointer}
+button:focus-visible,a:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+.topbar{isolation:isolate}
+.network-status{padding:6px 9px;border:1px solid #ffffff12;border-radius:30px;background:#ffffff08}
+.network-status.is-offline{border-color:#d77c8560;background:#6d283022}
+.hero{isolation:isolate}
+.hero:before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(115deg,transparent 35%,#e9c58a0a 70%,transparent)}
+.hero .eyebrow{display:flex;align-items:center;gap:9px}
+.hero .eyebrow:before{content:"";width:22px;height:1px;background:var(--gold)}
+.hero-copy{max-width:360px}
+.section-heading{gap:12px}
+.section-heading>div{min-width:0}
+.refresh-btn{transition:background .2s,border-color .2s,transform .2s}
+.refresh-btn:hover{background:#3a2a2c;border-color:var(--gold)}
+.catalog-tools{padding-top:2px}
+.sort-control select{transition:border-color .2s,background .2s}
+.sort-control select:hover{border-color:#e9c58a80}
+.drama-card{position:relative;min-width:0}
+.poster{box-shadow:0 12px 28px #0006,inset 0 1px #ffffff12}
+.poster:after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;border-radius:inherit;background:linear-gradient(135deg,#ffffff0c,transparent 38%,#0003)}
+.poster .poster-title{max-width:95%;text-wrap:balance}
+.card-meta strong{line-height:1.4}
+.card-meta span{line-height:1.5}
+.favorite-btn{box-shadow:0 5px 16px #0005;transition:transform .2s,background .2s}
+.favorite-btn:active{transform:scale(.9)}
+.admin-callout{position:relative;overflow:hidden}
+.admin-callout:after{content:"✦";position:absolute;right:18px;top:12px;color:#e9c58a22;font-size:76px;line-height:1;pointer-events:none}
+.admin-callout>div,.admin-callout>button{position:relative;z-index:1}
+.admin-callout .primary-btn{min-width:145px}
+.bottom-nav{padding-top:9px}
+.nav-item{position:relative;gap:4px;padding:2px 0 3px;transition:color .2s}
+.nav-item.active:before{content:"";position:absolute;top:-10px;width:25px;height:2px;border-radius:2px;background:var(--gold);box-shadow:0 0 12px #e9c58a80}
+.nav-item.active span{filter:drop-shadow(0 0 7px #e9c58a55)}
+.primary-btn,.secondary-btn,.danger-btn{transition:transform .16s,filter .2s,border-color .2s}
+.primary-btn:hover{filter:brightness(1.07)}
+.secondary-btn:hover{border-color:#e9c58a75;background:#302632}
+.danger-btn:hover{background:#522631}
+input,textarea,select{transition:border-color .18s,box-shadow .18s}
+input:focus,textarea:focus,select:focus{box-shadow:0 0 0 3px #e9c58a12}
+dialog{overscroll-behavior:contain}
+.player-layout video{box-shadow:0 22px 55px #0009,0 0 0 1px #e9c58a12}
+.episode-list button:hover{border-color:#e9c58a80;background:#302632}
+.creator-stats-grid article{transition:transform .2s,border-color .2s}
+.creator-stats-grid article:hover{transform:translateY(-2px);border-color:#e9c58a55}
+.upload-progress progress{color:var(--gold)}
+@media(min-width:700px){
+ .topbar{height:72px}
+ .hero{border-radius:28px}
+ .drama-grid{gap:24px}
+ .poster{border-radius:19px}
+ .admin-callout{display:flex;align-items:center;justify-content:space-between;gap:28px}
+ .admin-callout>div{max-width:650px}
+}
+@media(max-width:420px){
+ .hero{margin:12px 10px 25px;padding:35px 20px 31px;border-radius:21px}
+ .section-heading{padding-left:15px;padding-right:15px}
+ .drama-grid{gap:13px;padding-left:12px;padding-right:12px}
+ .poster{border-radius:14px;padding:11px}
+ .catalog-tools{padding-left:12px;padding-right:12px}
+ .catalog-count{margin-left:14px}
+ .admin-callout{margin-left:12px;margin-right:12px;padding:18px}
+ .nav-item{font-size:9px}
+}
