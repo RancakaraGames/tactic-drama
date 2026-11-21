@@ -73,6 +73,14 @@ $("#fullscreenVideo").addEventListener("click",async()=>{try{if(document.fullscr
 document.addEventListener("fullscreenchange",updateFullscreenButton);
 video.addEventListener("webkitbeginfullscreen",updateFullscreenButton);
 video.addEventListener("webkitendfullscreen",updateFullscreenButton);
+function supportsPictureInPicture(){return Boolean((document.pictureInPictureEnabled&&!video.disablePictureInPicture)||typeof video.webkitSetPresentationMode==="function")}
+function updatePipButton(){const btn=$("#pipVideo");if(!btn)return;const active=document.pictureInPictureElement===video||video.webkitPresentationMode==="picture-in-picture";btn.hidden=!supportsPictureInPicture();btn.textContent=active?"▣ Tutup video mengambang":"▣ Video mengambang";btn.setAttribute("aria-pressed",String(active));btn.setAttribute("aria-label",active?"Keluar dari video mengambang":"Aktifkan video mengambang")}
+$("#pipVideo").addEventListener("click",async()=>{try{if(document.pictureInPictureElement===video){await document.exitPictureInPicture()}else if(video.webkitPresentationMode==="picture-in-picture"){video.webkitSetPresentationMode("inline")}else if(document.pictureInPictureEnabled&&video.requestPictureInPicture){await video.requestPictureInPicture()}else if(typeof video.webkitSetPresentationMode==="function"){video.webkitSetPresentationMode("picture-in-picture")}else{setStatus("#shareStatus","Video mengambang tidak didukung browser ini.")}}catch(err){setStatus("#shareStatus","Tidak dapat mengaktifkan video mengambang: "+(err?.message||"coba lagi"))}updatePipButton()});
+video.addEventListener("enterpictureinpicture",updatePipButton);
+video.addEventListener("leavepictureinpicture",updatePipButton);
+video.addEventListener("webkitpresentationmodechanged",updatePipButton);
+updatePipButton();
+
 video.addEventListener("timeupdate",updateSeekTime);
 video.addEventListener("loadedmetadata",updateSeekTime);
 video.addEventListener("durationchange",updateSeekTime);
