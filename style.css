@@ -756,3 +756,11 @@ body.clips-mode .player-dialog[open]{z-index:20}
 #adminDialog .auth-terms{margin:14px 4px 0;color:#858692;font-size:9px;line-height:1.6;text-align:center}
 #adminDialog .status{margin:10px 0 0;line-height:1.55}
 @media(max-width:420px){#adminDialog.admin-dialog{width:calc(100vw - 28px);padding:24px 18px 20px;border-radius:22px}}
+
+
+/* Auth brand alignment: keep the logo group centered independently of the close control */
+#adminDialog.admin-dialog{position:relative}
+#adminDialog.admin-dialog>.close-btn{position:absolute;float:none;top:14px;right:14px;z-index:5;margin:0}
+#adminDialog .auth-brand{display:grid;width:100%;justify-items:center;align-items:center;text-align:center;margin:0 auto;padding:14px 0 22px}
+#adminDialog .auth-brand-mark{margin-inline:auto}
+#adminDialog .auth-brand strong,#adminDialog .auth-brand p{width:100%;text-align:center}
