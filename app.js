@@ -109,7 +109,18 @@ async function renderProfileCollections(){
   const title=document.createElement("strong");title.textContent=drama.title||"Drama";
   const genre=document.createElement("span");genre.textContent=drama.genre||((drama.episodes||[]).length+" episode");
   const episode=document.createElement("small");episode.textContent=entry?"Ep."+entry.episode_number+" / Ep."+(drama.episodes||[]).length:(drama.episodes||[]).length+" episode";
-  info.append(title,genre,episode);card.append(poster,info);
+  info.append(title,genre,episode);
+  if(view==="history"&&entry){
+   const watchedEpisode=(drama.episodes||[]).find(item=>Number(item.episode_number)===Number(entry.episode_number));
+   const progress=watchedEpisode?episodeProgress[String(drama.id)+":"+String(watchedEpisode.id||"")]:null;
+   const percent=Math.max(0,Math.min(100,Number(progress?.percent)||0));
+   const progressLabel=document.createElement("small");progressLabel.className="profile-progress-label";
+   progressLabel.textContent=percent>=95?"Episode selesai":percent>0?"Progres "+percent+"% · "+formatPlaybackTime(progress.seconds):"Belum ada progres";
+   const track=document.createElement("span");track.className="profile-progress-track";
+   const fill=document.createElement("span");fill.className="profile-progress-fill";fill.style.width=percent+"%";track.append(fill);
+   info.append(progressLabel,track);
+  }
+  card.append(poster,info);
   card.addEventListener("click",()=>{openDrama(drama);if(entry){const idx=(drama.episodes||[]).findIndex(ep=>Number(ep.episode_number)===Number(entry.episode_number));if(idx>=0)playEpisode(idx,true,Number(entry.position_seconds)||0)}});
   list.append(card);
  });

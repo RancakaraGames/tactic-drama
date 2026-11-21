@@ -1187,3 +1187,8 @@ body:has(.melolo-watch-player[open]){overflow:hidden}
 .player-comments-drawer,.player-episode-drawer{overscroll-behavior:contain}
 .player-comments-drawer .player-drawer-heading button,.player-episode-drawer .player-drawer-heading button{display:grid;place-items:center;flex:0 0 36px;width:36px;height:36px;border:1px solid #ffffff1c;border-radius:50%;background:#ffffff0a;color:#fff;font-size:22px;line-height:1}
 .player-comments-drawer .player-drawer-heading button:active,.player-episode-drawer .player-drawer-heading button:active{transform:scale(.94)}
+
+
+/* Profile watch progress v105 */
+.profile-drama-row{align-items:center;transition:background .18s ease,transform .18s ease}.profile-drama-row:active{transform:scale(.99)}.profile-drama-info{flex:1}.profile-drama-info .profile-progress-label{margin-top:1px;color:#c4c5cc;font-size:10px}.profile-progress-track{display:block;width:100%;height:4px;overflow:hidden;border-radius:99px;background:#ffffff18}.profile-progress-fill{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#e50914,#ff5964);transition:width .25s ease}
+@media(prefers-reduced-motion:reduce){.profile-drama-row{transition:none}.profile-progress-fill{transition:none}}
