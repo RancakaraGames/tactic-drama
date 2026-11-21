@@ -190,28 +190,26 @@ function render(){
 function renderContinueWatching(){
  const section=$("#continueSection"),list=$("#continueGrid");
  if(!section||!list)return;
- const entries=Object.entries(watchHistory).map(([id,entry])=>({drama:dramas.find(item=>String(item.id)===String(id)),entry})).filter(item=>item.drama).sort((a,b)=>new Date(b.entry.watched_at||0)-new Date(a.entry.watched_at||0)).slice(0,3);
+ const entries=Object.entries(watchHistory).map(([id,entry])=>({drama:dramas.find(item=>String(item.id)===String(id)),entry})).filter(item=>item.drama&&(item.drama.episodes||[]).some(ep=>Number(ep.episode_number)===Number(item.entry.episode_number))).sort((a,b)=>new Date(b.entry.watched_at||0)-new Date(a.entry.watched_at||0)).slice(0,3);
  const visible=activeTab==="home"&&!searchQuery&&entries.length>0;
- section.hidden=!visible;
- if(!visible)return;
- list.innerHTML="";
+ section.hidden=!visible;if(!visible)return;list.innerHTML="";
  entries.forEach(({drama,entry})=>{
-  const episode=(drama.episodes||[]).find(item=>Number(item.episode_number)===Number(entry.episode_number));
-  if(!episode)return;
-  const key=String(drama.id)+":"+String(episode.id||"");
-  const progress=episodeProgress[key]?.percent||0;
+  const episode=(drama.episodes||[]).find(item=>Number(item.episode_number)===Number(entry.episode_number));if(!episode)return;
+  const key=String(drama.id)+":"+String(episode.id||""),progressData=episodeProgress[key]||{},progress=Math.max(0,Math.min(100,Number(progressData.percent)||0));
   const card=document.createElement("article");card.className="continue-card";
+  const poster=document.createElement("div");poster.className="continue-card-poster";
+  if(drama.poster_url){const image=document.createElement("img");image.src=drama.poster_url;image.alt="";image.loading="lazy";poster.append(image)}else poster.textContent=String(drama.title||"T").trim().charAt(0).toLocaleUpperCase("id-ID")||"T";
   const info=document.createElement("div");info.className="continue-card-info";
-  const title=document.createElement("strong");title.textContent=drama.title;
+  const title=document.createElement("strong");title.textContent=drama.title||"Drama";
   const meta=document.createElement("span");meta.textContent="Episode "+entry.episode_number+(entry.episode_title?" · "+entry.episode_title:"");
-  const time=document.createElement("small");time.textContent=progress>=95?"Episode selesai":progress>0?"Progres "+progress+"% · "+formatPlaybackTime(entry.position_seconds):"Mulai menonton";
+  const time=document.createElement("small");time.textContent=progress>=95?"Episode selesai":progress>0?"Progres "+progress+"% · "+formatPlaybackTime(progressData.seconds??entry.position_seconds):"Mulai menonton";
   info.append(title,meta,time);
-  const button=document.createElement("button");button.type="button";button.className="continue-play-btn";button.textContent="Lanjutkan →";
-  button.addEventListener("click",()=>{openDrama(drama);const index=(drama.episodes||[]).findIndex(item=>Number(item.episode_number)===Number(entry.episode_number));if(index>=0)playEpisode(index,true,Number(entry.position_seconds)||0)});
-  card.append(info,button);
-  const track=document.createElement("span");track.className="continue-progress-track";const fill=document.createElement("span");fill.style.width=Math.min(100,Number(progress)||0)+"%";track.append(fill);card.append(track);
-  list.append(card);
+  const button=document.createElement("button");button.type="button";button.className="continue-play-btn";button.textContent=progress>=95?"Tonton lagi":"Lanjutkan";button.setAttribute("aria-label",(progress>=95?"Tonton lagi ":"Lanjutkan menonton ")+drama.title+", episode "+entry.episode_number);
+  button.addEventListener("click",()=>{openDrama(drama);const index=(drama.episodes||[]).findIndex(item=>Number(item.episode_number)===Number(entry.episode_number));if(index>=0)playEpisode(index,true,progress>=95?0:Number(entry.position_seconds)||0)});
+  card.append(poster,info,button);
+  const track=document.createElement("span");track.className="continue-progress-track";const fill=document.createElement("span");fill.style.width=progress+"%";track.append(fill);card.append(track);list.append(card);
  });
+ if(!list.children.length)section.hidden=true;
 }
 function getVideoUrl(path){const value=String(path||"");if(/^https:\/\//i.test(value))return value;return supa?.storage?.from("drama-videos").getPublicUrl(value).data.publicUrl||""}
 function saveWatchHistory(ep,positionSeconds=0){if(!activeDrama||!ep?.id)return;watchHistory[activeDrama.id]={episode_number:ep.episode_number,episode_title:ep.title||"",position_seconds:Math.max(0,Math.floor(Number(positionSeconds)||0)),watched_at:new Date().toISOString()};try{localStorage.setItem("tactic-watch-history",JSON.stringify(watchHistory))}catch{}renderContinueWatching()}

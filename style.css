@@ -1223,3 +1223,18 @@ body:has(.melolo-watch-player[open]){overflow:hidden}
 @media(min-width:650px){.drama-grid{column-gap:20px;row-gap:26px}.poster{border-radius:18px}.card-meta{padding-top:12px}.card-meta strong{font-size:14px}}
 @media(max-width:360px){.drama-grid{gap:12px}.poster{border-radius:13px;padding:10px}.poster .tag{font-size:7px}.favorite-btn{width:31px;height:31px}}
 @media(prefers-reduced-motion:reduce){.drama-card,.poster-art{transition:none}}
+
+
+/* Continue-watching shelf refinement v108 */
+.continue-card{gap:11px;padding:11px 11px 16px;min-height:91px}
+.continue-card-poster{display:grid;place-items:center;flex:0 0 52px;width:52px;height:68px;overflow:hidden;border:1px solid #ffffff20;border-radius:9px;background:linear-gradient(145deg,#71324e,#252344);color:#fff;font-size:22px;font-weight:900}
+.continue-card-poster img{width:100%;height:100%;object-fit:cover}
+.continue-card-info{align-self:center;gap:5px}
+.continue-card-info strong{font-size:11px;line-height:1.35}
+.continue-card-info span{font-size:9px}
+.continue-card-info small{font-size:9px;line-height:1.35}
+.continue-play-btn{min-height:34px;padding:0 11px;white-space:nowrap}
+.continue-card:focus-within{border-color:#e9c58a88;box-shadow:0 0 0 3px #e9c58a12}
+.continue-play-btn:focus-visible{outline:2px solid #f2c27d;outline-offset:3px}
+@media(min-width:620px){.continue-card{align-items:center;flex-direction:row}.continue-card-poster{flex-basis:48px;width:48px;height:62px}.continue-play-btn{width:auto;margin:0}}
+@media(max-width:360px){.continue-card{gap:8px;padding-left:9px;padding-right:9px}.continue-card-poster{flex-basis:44px;width:44px;height:60px}.continue-play-btn{padding:0 8px;font-size:9px}}
