@@ -952,3 +952,19 @@ body.clips-mode .player-dialog[open]{z-index:20}
 .settings-info-body h3{margin:7px 0 -5px;color:#fff;font-size:13px}
 .settings-info-body strong{color:#ffe0a0}
 .settings-info-dialog .profile-settings-shell{padding-bottom:18px}
+
+/* VIP membership information v82 */
+.vip-card{position:relative;border:1px solid #b98a3b!important;cursor:pointer;font:inherit;color:inherit;text-align:left}
+.vip-card:focus-visible{outline:2px solid #f1c875;outline-offset:3px}
+.vip-card-hint{display:block;margin-top:5px;color:#f1c875;font-size:9px;font-weight:800}
+.vip-info-hero{display:grid;justify-items:center;gap:6px;padding:20px 14px;border:1px solid #9e783b;border-radius:18px;background:radial-gradient(ellipse at 50% 0%,#6a4a1d66,transparent 70%),#1b1711}
+.vip-info-crown{font-size:31px;color:#f2c875}
+.vip-info-hero strong{font-size:22px;letter-spacing:3px;color:#f2c875}
+.vip-info-hero small{font-size:11px;color:#d6c8a9}
+.vip-benefit-list{display:grid;gap:13px;margin-top:18px}
+.vip-benefit-list>div{display:flex;gap:11px;align-items:flex-start}
+.vip-benefit-list>div>span{display:grid;place-items:center;flex:0 0 22px;height:22px;border-radius:50%;background:#25452f;color:#8ce0a0;font-weight:900}
+.vip-benefit-list p{display:grid;gap:3px;margin:0}
+.vip-benefit-list strong{font-size:12px;color:#fff}
+.vip-benefit-list small{font-size:11px;line-height:1.5;color:#aaa5b0}
+.vip-info-note{margin:17px 0;padding:12px;border:1px solid #6d542b;border-radius:12px;background:#241d12;color:#d9c9a7;font-size:10px;line-height:1.6}

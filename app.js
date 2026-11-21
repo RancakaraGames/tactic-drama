@@ -757,6 +757,10 @@ function openProfileSettings(){
 $("#profileSettingsBtn")?.addEventListener("click",openProfileSettings);
 $("#closeProfileSettings")?.addEventListener("click",()=>profileSettingsDialog?.close());
 $("#closeProfileSettingsBottom")?.addEventListener("click",()=>profileSettingsDialog?.close());
+const vipInfoDialog=$("#vipInfoDialog");
+$("#openVipInfo")?.addEventListener("click",()=>{if(vipInfoDialog&&!vipInfoDialog.open)vipInfoDialog.showModal()});
+$("#closeVipInfo")?.addEventListener("click",()=>vipInfoDialog?.close());
+$("#closeVipInfoBottom")?.addEventListener("click",()=>vipInfoDialog?.close());
 const settingsInfoDialog=$("#settingsInfoDialog");
 function showSettingsInfo(title,subtitle,body){
  $("#settingsInfoTitle").textContent=title;
