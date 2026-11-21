@@ -15,10 +15,10 @@ let lastHistoryPersist=0;
 let episodeProgress={};try{episodeProgress=JSON.parse(localStorage.getItem("tactic-episode-progress")||"{}")||{}}catch{}
 let lastEpisodeProgressPersist=0;
 const grid=document.querySelector("#dramaGrid"),player=document.querySelector("#playerDialog"),admin=document.querySelector("#adminDialog"),video=document.querySelector("#videoPlayer");
+const $=s=>document.querySelector(s);
 const guestPrompt=$("#guestPromptDialog");
 function showGuestPrompt(){if(!guestPrompt?.open)guestPrompt?.showModal()}
 function hideGuestPrompt(){if(guestPrompt?.open)guestPrompt.close()}
-const $=s=>document.querySelector(s);
 function escapeHtml(s=""){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
 function formatPlaybackTime(seconds=0){const n=Math.max(0,Math.floor(Number(seconds)||0)),h=Math.floor(n/3600),m=Math.floor((n%3600)/60),sec=n%60;return h?[h,m,sec].map(v=>String(v).padStart(2,"0")).join(":"):[m,sec].map(v=>String(v).padStart(2,"0")).join(":")}
 function renderFeaturedHero(){const hero=$(".hero"),art=$("#heroArtwork"),button=$("#featuredPlay");if(!hero||!art||!button)return;const featured=dramas.find(d=>!String(d.id).startsWith("demo-")&&(d.episodes||[]).length);if(!featured){art.hidden=true;art.removeAttribute("src");button.hidden=true;return}let poster="";try{const url=new URL(String(featured.poster_url||""),location.href);if(url.protocol==="https:")poster=url.href}catch{}if(poster){art.src=poster;art.hidden=false}else{art.hidden=true;art.removeAttribute("src")}const title=hero.querySelector("h1"),copy=hero.querySelector(".hero-copy");if(title)title.innerHTML=escapeHtml(featured.title)+"<br><span>Drama pilihan hari ini.</span>";if(copy)copy.textContent=featured.description||"Mulai cerita pilihanmu sekarang.";button.hidden=false;button.onclick=()=>openDrama(featured)}
