@@ -220,13 +220,25 @@ video.addEventListener("pause",persistCurrentPlayback);
 window.addEventListener("pagehide",persistCurrentPlayback);
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden")persistCurrentPlayback()});
 
-function getViewerKey(){
- const keyName="tactic-drama-viewer-key";
- try{let key=localStorage.getItem(keyName);if(!key){key=crypto.randomUUID();localStorage.setItem(keyName,key)}return key}catch{return crypto.randomUUID()}
-}
-async function recordEpisodeView(ep){
+let pendingViewListener=null;
+function recordEpisodeView(ep){
  if(!supa||!activeDrama||String(activeDrama.id).startsWith("demo-")||!ep?.id)return;
- try{const {error}=await supa.from("drama_views").insert({drama_id:activeDrama.id,episode_id:ep.id,viewer_key:getViewerKey()});if(error&&error.code!=="23505")console.warn("Pencatatan penayangan gagal:",error.message)}catch(err){console.warn("Pencatatan penayangan gagal:",err?.message||err)}
+ if(pendingViewListener)video.removeEventListener("timeupdate",pendingViewListener);
+ const dramaId=activeDrama.id,episodeId=ep.id;
+ let watchedSeconds=0,lastMediaTime=video.currentTime;
+ const onTimeUpdate=()=>{
+  const current=video.currentTime,delta=current-lastMediaTime;
+  if(!video.paused&&!video.seeking&&delta>0&&delta<=2.5)watchedSeconds+=delta;
+  lastMediaTime=current;
+  if(watchedSeconds>=10){
+   video.removeEventListener("timeupdate",onTimeUpdate);pendingViewListener=null;
+   supa.functions.invoke("record-episode-view",{body:{drama_id:dramaId,episode_id:episodeId}})
+    .then(({error})=>{if(error)console.warn("Pencatatan penayangan gagal:",error.message)})
+    .catch(error=>console.warn("Pencatatan penayangan gagal:",error?.message||error));
+  }
+ };
+ pendingViewListener=onTimeUpdate;
+ video.addEventListener("timeupdate",onTimeUpdate);
 }
 async function loadDramaLikeState(dramaId){
  const btn=$("#likeDrama");if(!btn)return;
