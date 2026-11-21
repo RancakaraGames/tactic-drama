@@ -1203,3 +1203,23 @@ body:has(.melolo-watch-player[open]){overflow:hidden}
 .history-card-resume:active{transform:scale(.97)}
 .history-card-resume:focus-visible{outline:2px solid #f2c27d;outline-offset:3px}
 @media(prefers-reduced-motion:reduce){.history-card-progress-fill{transition:none}}
+
+
+/* Premium drama cards refinement v107 */
+.drama-grid{column-gap:15px;row-gap:22px}
+.drama-card{min-width:0;border-radius:16px;transition:transform .2s ease}
+.drama-card:active{transform:scale(.985)}
+.poster{height:auto;aspect-ratio:3/4;min-height:0;padding:12px;border:1px solid #ffffff12;border-radius:16px;background-color:#17131d;box-shadow:0 8px 22px #0003}
+.poster:before{background:linear-gradient(180deg,#09090d30 0%,transparent 35%,#09090dcc 100%)}
+.poster-art{transition:transform .45s cubic-bezier(.2,.7,.2,1),filter .3s ease}
+.poster .poster-title{max-width:95%;font-size:clamp(14px,4vw,19px);line-height:1.12;letter-spacing:-.35px;text-wrap:pretty}
+.poster .tag{top:9px;left:9px;max-width:calc(100% - 58px);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:5px 8px;border:1px solid #ffffff26;background:#17121dcc;backdrop-filter:blur(8px);font-size:8px;letter-spacing:.55px}
+.favorite-btn{top:8px;right:8px;width:34px;height:34px;border:1px solid #ffffff55;background:#09090dbd;backdrop-filter:blur(9px);box-shadow:0 4px 14px #0005}
+.card-meta{display:grid;gap:4px;padding:10px 2px 0;min-width:0}
+.card-meta strong{overflow:hidden;color:#f8f4ef;font-size:13px;font-weight:800;line-height:1.35;text-overflow:ellipsis;white-space:nowrap}
+.card-meta>span{display:block;overflow:hidden;color:#aaa4b0;font-size:10px;line-height:1.45;text-overflow:ellipsis;white-space:nowrap}
+.card-meta .card-likes{color:#d7b17e;font-size:9px}
+@media(hover:hover){.drama-card:hover .poster-art{transform:scale(1.045);filter:saturate(1.08)}.drama-card:hover .poster{border-color:#e9c58a55}.drama-card:hover .card-meta strong{color:#f2d5a7}}
+@media(min-width:650px){.drama-grid{column-gap:20px;row-gap:26px}.poster{border-radius:18px}.card-meta{padding-top:12px}.card-meta strong{font-size:14px}}
+@media(max-width:360px){.drama-grid{gap:12px}.poster{border-radius:13px;padding:10px}.poster .tag{font-size:7px}.favorite-btn{width:31px;height:31px}}
+@media(prefers-reduced-motion:reduce){.drama-card,.poster-art{transition:none}}
