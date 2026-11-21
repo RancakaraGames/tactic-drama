@@ -154,11 +154,21 @@
           <p id="creatorIntegrityStatus" class="creator-integrity-status" role="status" aria-live="polite">Memuat ringkasan keamanan tayangan...</p>
           <small class="creator-integrity-note">Tayangan dikecualikan jika identitas penonton memiliki flag risiko aktif. Identitas pribadi tidak ditampilkan. Flag adalah sinyal otomatis, bukan bukti pelanggaran; tayangan tanpa flag juga bukan jaminan bahwa aktivitasnya organik.</small>
         </section>
+        <section id="creatorAppealPanel" class="creator-appeal" hidden aria-label="Peninjauan tayangan kreator">
+          <div class="creator-heading"><h3>Peninjauan tayangan</h3><span class="creator-count">Hak kreator</span></div>
+          <p id="creatorAppealStatus" class="creator-appeal-status" role="status" aria-live="polite">Memeriksa status peninjauan...</p>
+          <form id="creatorAppealForm">
+            <label for="creatorAppealReason">Jelaskan jika ada tayangan yang menurutmu salah ditandai</label>
+            <textarea id="creatorAppealReason" name="reason" minlength="20" maxlength="1000" rows="3" placeholder="Contoh: penonton berasal dari keluarga atau jaringan Wi-Fi bersama..." required></textarea>
+            <button class="secondary-btn" type="submit">Ajukan peninjauan</button>
+          </form>
+          <small class="creator-appeal-note">Permohonan hanya tersedia jika ada tayangan bertanda risiko aktif. Tim dapat menerima atau menolak setelah pemeriksaan; pengajuan tidak otomatis mengubah hitungan tayangan.</small>
+        </section>
         <p class="notice" id="creatorStatsStatus" role="status">Statistik diperbarui otomatis saat daftar drama dimuat.</p>
         <section class="creator-performance" aria-label="Performa setiap drama"><div class="creator-heading"><h3>Performa drama</h3><button id="exportCreatorStats" class="secondary-btn creator-export-btn" type="button" disabled>↓ Unduh CSV</button></div><p class="creator-performance-caption">Peringkat berdasarkan jumlah tayangan · Data seluruh waktu</p><div id="creatorPerformanceList" class="creator-performance-list"><p class="notice">Memuat performa drama...</p></div></section>
       </section>
       <section id="creatorLibrary" class="creator-library"><div class="creator-heading"><h3>Drama saya</h3><span class="creator-count" id="creatorCount">0 drama</span></div><p class="notice">Kelola dan buka kembali drama yang sudah kamu terbitkan.</p><div id="myDramaList" class="my-drama-list"><p class="notice">Memuat daftar drama...</p></div></section>
-      <section id="moderationSection" hidden><h3>Laporan video dari pengguna</h3><p class="notice">Tinjau laporan. Jika terbukti melanggar, sembunyikan drama dari katalog.</p><div id="moderationList"></div></section>
+      <section id="moderationSection" hidden><h3>Peninjauan kreator</h3><p class="notice">Permohonan peninjauan tayangan yang diberi tanda risiko. Keputusan dicatat dan tidak menghapus jejak audit.</p><div id="creatorAppealsAdminList" class="creator-appeals-admin-list"><p class="notice">Memuat permohonan...</p></div><h3>Laporan video dari pengguna</h3><p class="notice">Tinjau laporan. Jika terbukti melanggar, sembunyikan drama dari katalog.</p><div id="moderationList"></div></section>
       <form id="uploadForm">
         <label>Tujuan unggahan<select name="targetDrama" id="targetDrama"><option value="">Buat drama baru</option></select></label>
         <label>Judul drama<input name="title" required placeholder="Contoh: Cinta di Ujung Senja"></label>

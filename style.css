@@ -485,3 +485,21 @@ dialog{overscroll-behavior:contain}
 .creator-integrity-status{margin:9px 0 6px;color:#e9c58a;font-size:10px;line-height:1.55}
 .creator-integrity-note{display:block;color:#9f96a3;font-size:9px;line-height:1.6}
 @media(max-width:390px){.creator-integrity{padding:12px}.creator-integrity-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.creator-integrity-grid article{padding:10px}}
+
+/* Creator view appeal and admin review */
+.creator-appeal{margin:15px 0;padding:16px;border:1px solid #d6ad7650;border-radius:16px;background:linear-gradient(145deg,#241d2a,#15121a)}
+.creator-appeal-status{margin:9px 0;color:#f0d5a0;font-size:10px;line-height:1.6}
+.creator-appeal form{display:grid;gap:9px;margin-top:12px}
+.creator-appeal label{color:#d9cbd8;font-size:10px}
+.creator-appeal textarea{width:100%;box-sizing:border-box;resize:vertical;padding:11px;border:1px solid #ffffff20;border-radius:10px;background:#100e16;color:#f5e8d7;font:inherit;font-size:11px;line-height:1.5}
+.creator-appeal textarea:focus{outline:0;border-color:#e9c58a99;box-shadow:0 0 0 3px #e9c58a13}
+.creator-appeal form button{justify-self:start}
+.creator-appeal-note{display:block;margin-top:9px;color:#9f96a3;font-size:9px;line-height:1.6}
+.creator-appeals-admin-list{display:grid;gap:9px;margin:12px 0 20px}
+.creator-appeal-admin-item{display:grid;gap:10px;padding:12px;border:1px solid #ffffff16;border-radius:12px;background:#19151f}
+.creator-appeal-admin-item>div:first-child{display:grid;gap:5px;min-width:0}
+.creator-appeal-admin-item strong{color:#f0d5a0;font-size:11px;overflow-wrap:anywhere}
+.creator-appeal-admin-item span,.creator-appeal-admin-item small{color:#a99eaa;font-size:9px}
+.creator-appeal-admin-item p{margin:2px 0;color:#e4d9e3;font-size:10px;line-height:1.55;overflow-wrap:anywhere}
+.creator-appeal-admin-actions{display:flex;flex-wrap:wrap;gap:8px}
+.creator-appeal-admin-actions button{font-size:10px}
