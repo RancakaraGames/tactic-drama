@@ -246,21 +246,36 @@ async function loadDramaLikeState(dramaId){
  finally{btn.disabled=false}
 }
 async function loadCreatorStats(userId){
- const status=$("#creatorStatsStatus");if(!supa||!userId)return;
+ const status=$("#creatorStatsStatus"),list=$("#creatorPerformanceList");if(!supa||!userId)return;
  status.textContent="Memuat statistik kreator...";
+ if(list)list.innerHTML='<p class="notice">Memuat performa drama...</p>';
  try{
-  const {data,error}=await supa.from("dramas").select("id,episodes(id)").eq("uploader_id",userId);
+  const {data,error}=await supa.from("dramas").select("id,title,episodes(id)").eq("uploader_id",userId);
   if(error)throw error;
-  const ids=(data||[]).map(d=>d.id),episodeCount=(data||[]).reduce((sum,d)=>sum+(d.episodes||[]).length,0);
-  let views=0,likes=0;
+  const owned=data||[],ids=owned.map(d=>d.id),episodeCount=owned.reduce((sum,d)=>sum+(d.episodes||[]).length,0);
+  let viewRows=[],likeRows=[];
   if(ids.length){
-   const v=await supa.from("drama_views").select("id",{count:"exact",head:true}).in("drama_id",ids);if(v.error)throw v.error;views=v.count||0;
-   const l=await supa.from("drama_like_counts").select("like_count").in("drama_id",ids);if(l.error)throw l.error;likes=(l.data||[]).reduce((sum,row)=>sum+Number(row.like_count||0),0);
+   const [v,l]=await Promise.all([
+    supa.from("drama_views").select("drama_id").in("drama_id",ids),
+    supa.from("drama_like_counts").select("drama_id,like_count").in("drama_id",ids)
+   ]);
+   if(v.error)throw v.error;if(l.error)throw l.error;
+   viewRows=v.data||[];likeRows=l.data||[];
   }
+  const performance=owned.map(d=>({
+   id:d.id,title:d.title||"Drama tanpa judul",
+   episodes:(d.episodes||[]).length,
+   views:viewRows.filter(v=>String(v.drama_id)===String(d.id)).length,
+   likes:Number(likeRows.find(x=>String(x.drama_id)===String(d.id))?.like_count||0)
+  })).sort((a,b)=>b.views-a.views||b.likes-a.likes||a.title.localeCompare(b.title,"id"));
+  const views=viewRows.length,likes=likeRows.reduce((sum,row)=>sum+Number(row.like_count||0),0);
   $("#statDrama").textContent=String(ids.length);$("#statEpisode").textContent=String(episodeCount);
   $("#statViews").textContent=views.toLocaleString("id-ID");$("#statLikes").textContent=likes.toLocaleString("id-ID");
+  if(list){
+   list.innerHTML=performance.length?performance.map((d,i)=>'<article class="creator-performance-item"><div class="creator-performance-rank">'+(i+1)+'</div><div class="creator-performance-main"><strong>'+escapeHtml(d.title)+'</strong><span>'+d.episodes.toLocaleString("id-ID")+' episode'+(d.episodes===1?"":"")+'</span><div class="creator-performance-metrics"><span>▶ '+d.views.toLocaleString("id-ID")+' tayangan</span><span>♥ '+d.likes.toLocaleString("id-ID")+' suka</span></div></div><div class="creator-performance-bar" aria-hidden="true"><span style="width:'+(views?Math.max(3,d.views/Math.max(1,performance[0].views)*100):0)+'%"></span></div></article>').join(""):'<p class="notice">Belum ada drama yang diterbitkan. Drama yang kamu unggah akan muncul di sini.</p>';
+  }
   status.textContent="Statistik akun diperbarui.";
- }catch(err){status.textContent="Statistik belum dapat dimuat: "+(err?.message||String(err))}
+ }catch(err){status.textContent="Statistik belum dapat dimuat: "+(err?.message||String(err));if(list)list.innerHTML='<p class="notice">Performa drama belum dapat dimuat.</p>'}
 }
 
 function renderCreatorProfile(user){
