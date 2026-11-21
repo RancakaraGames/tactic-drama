@@ -511,3 +511,5 @@ dialog{overscroll-behavior:contain}
 
 /* Creator payout readiness: status only, no sensitive bank details */
 .creator-payout-readiness{margin:15px 0;padding:14px;border:1px solid #e9c58a35;border-radius:13px;background:#100e16a8}.creator-payout-readiness h4{margin:0;color:#f0d5a0;font-size:12px}.creator-payout-status{margin:9px 0;color:#cbbdcc;font-size:10px;line-height:1.6}.creator-payout-checks{display:grid;gap:8px;margin:11px 0;padding:0;list-style:none}.creator-payout-checks li{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 9px;border:1px solid #ffffff12;border-radius:9px;background:#17131d}.creator-payout-checks span{color:#b9aebd;font-size:10px}.creator-payout-checks strong{color:#e9c58a;font-size:10px;text-align:right}
+
+.text-btn[hidden]{display:none}
