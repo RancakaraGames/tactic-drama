@@ -931,7 +931,7 @@ body.clips-mode .player-dialog[open]{z-index:20}
 .profile-settings-list{display:grid;gap:8px}
 .profile-settings-row{display:flex;align-items:center;gap:12px;min-height:58px;padding:9px 11px;border:1px solid #ffffff0c;border-radius:14px;background:#ffffff05}
 .settings-row-icon{display:grid;place-items:center;flex:0 0 34px;width:34px;height:34px;border-radius:11px;background:#e5091418;color:#ff6872;font-size:17px;font-weight:800}
-.profile-settings-row div{display:grid;gap:3px;flex:1;min-width:0}
+
 .profile-settings-row strong{font-size:11px}.profile-settings-row small{font-size:9px;color:#9998a2}
 .settings-row-value{color:#d5b86e;font-size:18px}
 .profile-settings-notice{margin:13px 2px;color:#8f8d97;font-size:9px;line-height:1.5}
@@ -982,3 +982,9 @@ body.clips-mode .player-dialog[open]{z-index:20}
 .edit-viewer-field-note{font-size:10px;color:#96909e}
 .edit-viewer-profile-form .status{min-height:18px;margin:3px 0;color:#f2c2cf;font-size:11px;line-height:1.5}
 .edit-viewer-profile-form button:disabled{opacity:.55;cursor:wait}
+
+
+/* Account and profile are managed together in one screen */
+.edit-viewer-account-email{display:grid;gap:4px;margin:0 0 14px;padding:11px 12px;border:1px solid #ffffff12;border-radius:12px;background:#ffffff06}
+.edit-viewer-account-email span{color:#96939e;font-size:10px}
+.edit-viewer-account-email strong{color:#f4eef0;font-size:12px;overflow-wrap:anywhere}

@@ -785,6 +785,7 @@ function openEditViewerProfile(){
  supa.auth.getUser().then(({data,error})=>{
   if(error||!data.user){editViewerProfileDialog?.close();profileSettingsDialog?.close();admin.showModal();return}
   const user=data.user,meta=user.user_metadata||{};
+  $("#editViewerProfileEmail").textContent=user.email||"Email tidak tersedia";
   $("#editViewerDisplayName").value=String(meta.display_name||"").slice(0,40);
   $("#editViewerNameCount").textContent=$("#editViewerDisplayName").value.length+"/40 karakter";
   paintViewerAvatar(editViewerAvatarPreview,user,meta.display_name||"T");
@@ -792,7 +793,6 @@ function openEditViewerProfile(){
   if(editViewerProfileDialog&&!editViewerProfileDialog.open)editViewerProfileDialog.showModal();
  });
 }
-$("#settingsEditProfileRow")?.addEventListener("click",()=>{profileSettingsDialog?.close();openEditViewerProfile()});
 $("#closeEditViewerProfile")?.addEventListener("click",()=>{editViewerProfileDialog?.close();resetViewerAvatarPreview()});
 $("#editViewerDisplayName")?.addEventListener("input",e=>{$("#editViewerNameCount").textContent=e.currentTarget.value.length+"/40 karakter"});
 editViewerAvatarInput?.addEventListener("change",()=>{
@@ -852,10 +852,8 @@ function showSettingsInfo(title,subtitle,body){
  if(settingsInfoDialog&&!settingsInfoDialog.open)settingsInfoDialog.showModal();
 }
 $("#settingsAccountRow")?.addEventListener("click",()=>{
- const email=$("#profileEmail")?.textContent||"";
- const signedIn=!!(supa&&email&&email!=="Kamu sedang menonton sebagai tamu.");
- if(!signedIn){profileSettingsDialog?.close();admin.showModal();return}
- showSettingsInfo("Akun penonton","Informasi akun yang sedang digunakan",'<p>Akunmu sedang aktif di TacTic Drama.</p><p><strong>Email:</strong> '+escapeHtml(email)+'</p><p>Untuk keluar, gunakan tombol Keluar dari akun pada menu Pengaturan.</p>');
+ profileSettingsDialog?.close();
+ openEditViewerProfile();
 });
 $("#settingsLanguageRow")?.addEventListener("click",()=>showSettingsInfo("Bahasa aplikasi","Preferensi bahasa",'<p><strong>Bahasa Indonesia</strong> adalah bahasa yang saat ini tersedia.</p><p>Dukungan bahasa lain akan ditambahkan pada pembaruan berikutnya.</p>'));
 $("#settingsHelpRow")?.addEventListener("click",()=>showSettingsInfo("Pusat bantuan","Bantuan penggunaan TacTic Drama",'<h3>Bagaimana cara menonton?</h3><p>Pilih drama dari Beranda atau Cuplikan, lalu tekan tombol tonton untuk membuka episode.</p><h3>Bagaimana menyimpan drama?</h3><p>Tekan tombol Favorit pada halaman drama. Daftar favorit dapat ditemukan di menu Koleksi.</p><h3>Bagaimana jika video tidak diputar?</h3><p>Periksa koneksi internet, lalu coba muat ulang halaman atau tekan tombol Coba lagi pada pemutar.</p><p>Fitur kontak bantuan langsung akan tersedia pada pembaruan berikutnya.</p>'));
