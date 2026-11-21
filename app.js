@@ -191,7 +191,17 @@ $("#uploadForm").addEventListener("submit",async e=>{
  if(posterFile&&posterFile.size>10*1024*1024){setStatus("#uploadStatus","Ukuran poster maksimal 10 MB.");return}
  if(posterFile&&!["image/jpeg","image/png","image/webp"].includes(posterFile.type)){setStatus("#uploadStatus","Poster harus JPG, PNG, atau WebP.");return}
  if(!file||!["video/mp4","video/webm","video/quicktime"].includes(file.type)){setStatus("#uploadStatus","Pilih video MP4, WebM, atau MOV.");return}
+ if(file.size===0){setStatus("#uploadStatus","File video kosong. Pilih video lain.");return}
  if(file.size>500*1024*1024){setStatus("#uploadStatus","Ukuran video maksimal 500 MB.");return}
+ if(targetDrama){
+  setStatus("#uploadStatus","Memeriksa drama dan nomor episode...");
+  const exists=await supa.from("dramas").select("id").eq("id",targetDrama).eq("uploader_id",user.id).eq("status","approved").maybeSingle();
+  if(exists.error){setStatus("#uploadStatus","Gagal memeriksa drama tujuan: "+exists.error.message);return}
+  if(!exists.data){setStatus("#uploadStatus","Drama tujuan tidak ditemukan atau bukan milik akun ini.");return}
+  const duplicate=await supa.from("episodes").select("id").eq("drama_id",targetDrama).eq("episode_number",episode).maybeSingle();
+  if(duplicate.error){setStatus("#uploadStatus","Gagal memeriksa nomor episode: "+duplicate.error.message);return}
+  if(duplicate.data){setStatus("#uploadStatus","Nomor episode tersebut sudah ada. Ubah nomor sebelum mengunggah.");return}
+ }
  const btn=f.querySelector('button[type="submit"]');btn.disabled=true;
  let dramaId=targetDrama||null,createdDrama=false,videoPath=null,posterPath=null;
  setStatus("#uploadStatus","Menyiapkan unggahan video...");
@@ -205,7 +215,7 @@ $("#uploadForm").addEventListener("submit",async e=>{
   }
   await uploadVideoResumable(file,videoPath,session,pct=>setStatus("#uploadStatus","Mengunggah video... "+pct+"% (jangan tutup halaman)."));
   setStatus("#uploadStatus","Video selesai diunggah. Menyimpan episode...");
-  if(!dramaId){const created=await supa.from("dramas").insert({title,description:String(data.get("description")||""),poster_url:posterPath?supa.storage.from("drama-posters").getPublicUrl(posterPath).data.publicUrl:null,uploader_id:user.id,status:"approved"}).select("id").single();if(created.error)throw created.error;dramaId=created.data.id;createdDrama=true;}else{const exists=await supa.from("dramas").select("id").eq("id",dramaId).eq("uploader_id",user.id).eq("status","approved").maybeSingle();if(exists.error)throw exists.error;if(!exists.data)throw new Error("Drama tujuan tidak ditemukan atau bukan milik akun ini.");const duplicate=await supa.from("episodes").select("id").eq("drama_id",dramaId).eq("episode_number",episode).maybeSingle();if(duplicate.error)throw duplicate.error;if(duplicate.data)throw new Error("Nomor episode tersebut sudah ada di drama ini.");}
+  if(!dramaId){const created=await supa.from("dramas").insert({title,description:String(data.get("description")||""),poster_url:posterPath?supa.storage.from("drama-posters").getPublicUrl(posterPath).data.publicUrl:null,uploader_id:user.id,status:"approved"}).select("id").single();if(created.error)throw created.error;dramaId=created.data.id;createdDrama=true;}else{/* Drama and episode were checked before uploading; keep DB insert as final race-safe validation. */}
   const saved=await supa.from("episodes").insert({drama_id:dramaId,episode_number:episode,title:String(data.get("episodeTitle")||""),video_path:videoPath,uploader_id:user.id,status:"approved"});
   if(saved.error)throw saved.error;
   setStatus("#uploadStatus",createdDrama?"Berhasil! Drama baru dan episode sudah langsung diterbitkan.":"Berhasil! Episode baru sudah ditambahkan ke drama pilihan.");
