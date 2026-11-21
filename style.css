@@ -1070,3 +1070,12 @@ body.clips-mode .player-dialog[open]{z-index:20}
 .vip-empty-transactions strong{font-size:11px;color:#e9e4ea}
 .vip-empty-transactions small{font-size:9px;line-height:1.5;color:#a7a1ac}
 .vip-info-note{font-size:10px;line-height:1.65}
+
+
+/* VIP transaction history v90 */
+.vip-transaction-list{display:grid;gap:8px}
+.vip-transaction-item{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px;border:1px solid #ffffff14;border-radius:12px;background:linear-gradient(110deg,#ffffff09,#ffffff03)}
+.vip-transaction-item>div{display:grid;gap:5px;min-width:0}
+.vip-transaction-item strong{color:#f4eef0;font-size:11px}
+.vip-transaction-item small{color:#a9a3ae;font-size:9px;line-height:1.45}
+.vip-transaction-item>b{flex:0 0 auto;color:#f0d18b;font-size:10px;font-variant-numeric:tabular-nums}
