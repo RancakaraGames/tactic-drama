@@ -1192,3 +1192,14 @@ body:has(.melolo-watch-player[open]){overflow:hidden}
 /* Profile watch progress v105 */
 .profile-drama-row{align-items:center;transition:background .18s ease,transform .18s ease}.profile-drama-row:active{transform:scale(.99)}.profile-drama-info{flex:1}.profile-drama-info .profile-progress-label{margin-top:1px;color:#c4c5cc;font-size:10px}.profile-progress-track{display:block;width:100%;height:4px;overflow:hidden;border-radius:99px;background:#ffffff18}.profile-progress-fill{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#e50914,#ff5964);transition:width .25s ease}
 @media(prefers-reduced-motion:reduce){.profile-drama-row{transition:none}.profile-progress-fill{transition:none}}
+
+
+/* Collection history progress and resume action v106 */
+.history-card-progress{display:grid;gap:7px;margin-top:9px;padding-top:9px;border-top:1px solid #ffffff12}
+.history-card-progress-label{color:#c7c3cc;font-size:10px;line-height:1.4}
+.history-card-progress-track{display:block;width:100%;height:4px;overflow:hidden;border-radius:99px;background:#ffffff18}
+.history-card-progress-fill{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#e50914,#ff5964);transition:width .25s ease}
+.history-card-resume{justify-self:start;min-height:32px;padding:0 12px;border:1px solid #e9c58a55;border-radius:18px;background:#e9c58a14;color:#f0cb91;font-size:10px;font-weight:800}
+.history-card-resume:active{transform:scale(.97)}
+.history-card-resume:focus-visible{outline:2px solid #f2c27d;outline-offset:3px}
+@media(prefers-reduced-motion:reduce){.history-card-progress-fill{transition:none}}

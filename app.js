@@ -168,6 +168,19 @@ function render(){
   card.innerHTML=`<div class="poster" role="button" tabindex="0" style="background:linear-gradient(145deg,${d.colors?.[0]||"#61365f"},${d.colors?.[1]||"#20243a"})"><span class="tag">${escapeHtml(tag)}</span><span class="poster-title">${escapeHtml(d.title)}</span><button class="favorite-btn ${favoriteIds.has(d.id)?"is-favorite":""}" type="button" aria-label="${favoriteIds.has(d.id)?"Hapus dari":"Tambah ke"} favorit">${favoriteIds.has(d.id)?"♥":"♡"}</button></div><div class="card-meta"><strong>${escapeHtml(d.title)}</strong><span>${escapeHtml(d.genre||((d.episodes||[]).length+" episode"))}</span><span class="card-likes">♥ ${Number(d.like_count||0).toLocaleString("id-ID")} suka</span></div>`;
   const poster=card.querySelector(".poster");
   const openCardDrama=()=>{const saved=watchHistory[d.id];const resumeNumber=saved?.episode_number??null,resumeSeconds=Number(saved?.position_seconds||0);openDrama(d);if(resumeNumber!=null){const resumeIndex=(d.episodes||[]).findIndex(ep=>Number(ep.episode_number)===Number(resumeNumber));if(resumeIndex>=0)playEpisode(resumeIndex,false,resumeSeconds)}};
+  if(historyPage&&historyEntry){
+   const watchedEpisode=(d.episodes||[]).find(ep=>Number(ep.episode_number)===Number(historyEntry.episode_number));
+   const progress=watchedEpisode?episodeProgress[String(d.id)+":"+String(watchedEpisode.id||"")]:null;
+   const percent=Math.max(0,Math.min(100,Number(progress?.percent)||0));
+   const historyProgress=document.createElement("div");historyProgress.className="history-card-progress";
+   const progressLabel=document.createElement("small");progressLabel.className="history-card-progress-label";
+   progressLabel.textContent=percent>=95?"Episode selesai":percent>0?"Progres "+percent+"% · "+formatPlaybackTime(progress.seconds):"Belum ada progres tersimpan";
+   const progressTrack=document.createElement("span");progressTrack.className="history-card-progress-track";
+   const progressFill=document.createElement("span");progressFill.className="history-card-progress-fill";progressFill.style.width=percent+"%";progressTrack.append(progressFill);
+   const resumeButton=document.createElement("button");resumeButton.type="button";resumeButton.className="history-card-resume";resumeButton.textContent=percent>=95?"Tonton lagi":"Lanjutkan menonton";
+   resumeButton.addEventListener("click",openCardDrama);
+   historyProgress.append(progressLabel,progressTrack,resumeButton);card.querySelector(".card-meta").append(historyProgress);
+  }
   poster.addEventListener("click",openCardDrama);poster.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();openCardDrama()}});
   if(d.poster_url){const art=document.createElement("img");art.className="poster-art";art.src=d.poster_url;art.alt="Poster "+d.title;art.loading="lazy";poster.prepend(art)}
   card.querySelector(".favorite-btn").addEventListener("click",e=>{e.stopPropagation();if(favoriteIds.has(d.id))favoriteIds.delete(d.id);else favoriteIds.add(d.id);try{localStorage.setItem("tactic-favorites",JSON.stringify([...favoriteIds]))}catch{}render()});
