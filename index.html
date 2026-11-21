@@ -127,6 +127,16 @@
           </div>
           <p id="creatorEarningsStatus" class="creator-earnings-status" role="status" aria-live="polite">Program monetisasi belum aktif. Saldo hanya akan bertambah dari pendapatan iklan yang sudah diverifikasi.</p>
           <small class="creator-earnings-note">Tidak ada saldo simulasi, pengubahan manual, atau pencairan sebelum sumber pendapatan dan verifikasi pembayaran tersedia.</small>
+          <section class="creator-payout-readiness" aria-label="Kesiapan pembayaran kreator">
+            <div class="creator-heading"><h4>Kesiapan pembayaran</h4><span id="creatorPayoutBadge" class="creator-count">Belum tersedia</span></div>
+            <p id="creatorPayoutStatus" class="creator-payout-status" role="status" aria-live="polite">Memeriksa status pembayaran...</p>
+            <ul class="creator-payout-checks">
+              <li><span>Identitas dan verifikasi</span><strong id="creatorPayoutVerification">Belum dimulai</strong></li>
+              <li><span>Penyedia pembayaran resmi</span><strong id="creatorPayoutProvider">Belum terhubung</strong></li>
+              <li><span>Pencairan</span><strong id="creatorPayoutEnabled">Belum diaktifkan</strong></li>
+            </ul>
+            <small class="creator-earnings-note">Untuk keamanan, jangan kirim nomor rekening, PIN, kata sandi bank, foto identitas, atau OTP melalui chat maupun formulir TacTic Drama. Pengaturan pembayaran baru dibuka setelah penyedia resmi dipilih dan integrasi diverifikasi.</small>
+          </section>
           <div class="creator-transaction-section">
             <div class="creator-heading"><h4>Riwayat transaksi</h4><span class="creator-count">20 terbaru</span></div>
             <button id="exportCreatorEarnings" class="secondary-button creator-earnings-export" type="button">Ekspor riwayat CSV</button>

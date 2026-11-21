@@ -443,6 +443,7 @@ async function loadCreatorEarnings(userId){
  if(!supa||!userId||!status)return;
  status.textContent="Memeriksa buku transaksi...";
  if(history)history.innerHTML='<p class="creator-transaction-empty">Memuat riwayat transaksi...</p>';
+ await loadCreatorPayoutSetupStatus();
  try{
   const {data,error}=await supa.rpc("get_creator_earnings_summary");
   if(error)throw error;
@@ -477,6 +478,29 @@ async function loadCreatorEarnings(userId){
   status.textContent="Data penghasilan belum dapat dimuat. Saldo tidak dapat diubah dari aplikasi.";
   if(history)history.innerHTML='<p class="creator-transaction-empty">Riwayat transaksi belum dapat dimuat. Coba lagi nanti.</p>';
   console.warn("Ringkasan atau riwayat penghasilan kreator belum dapat dimuat:",err?.message||err);
+ }
+}
+
+async function loadCreatorPayoutSetupStatus(){
+ const status=$("#creatorPayoutStatus"),badge=$("#creatorPayoutBadge");
+ if(!supa||!status)return;
+ try{
+  const {data,error}=await supa.rpc("get_creator_payout_setup_status");
+  if(error)throw error;
+  const row=Array.isArray(data)?data[0]:data;
+  const state=row?.verification_status||"not_configured";
+  const labels={not_configured:"Belum dimulai",pending:"Sedang diverifikasi",verified:"Terverifikasi",rejected:"Perlu diperbaiki",restricted:"Dibatasi"};
+  $("#creatorPayoutVerification").textContent=labels[state]||"Belum tersedia";
+  $("#creatorPayoutProvider").textContent=row?.provider_connected?"Terhubung":"Belum terhubung";
+  $("#creatorPayoutEnabled").textContent=row?.payouts_enabled?"Aktif":"Belum diaktifkan";
+  badge.textContent=row?.payouts_enabled?"Siap setelah pemeriksaan":"Belum tersedia";
+  status.textContent=row?.payouts_enabled
+   ?"Status pembayaran tercatat aktif. Pencairan tetap mengikuti verifikasi dan kebijakan penyedia resmi."
+   :"Pengaturan pembayaran belum dibuka. TacTic Drama belum menghubungkan penyedia pembayaran, sehingga verifikasi identitas dan pencairan belum tersedia.";
+ }catch(err){
+  status.textContent="Status pembayaran belum dapat diperiksa. Tidak ada data rekening yang diminta atau disimpan.";
+  badge.textContent="Status tidak tersedia";
+  console.warn("Status pembayaran kreator gagal dimuat:",err?.message||err);
  }
 }
 
