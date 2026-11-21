@@ -1079,3 +1079,44 @@ body.clips-mode .player-dialog[open]{z-index:20}
 .vip-transaction-item strong{color:#f4eef0;font-size:11px}
 .vip-transaction-item small{color:#a9a3ae;font-size:9px;line-height:1.45}
 .vip-transaction-item>b{flex:0 0 auto;color:#f0d18b;font-size:10px;font-variant-numeric:tabular-nums}
+
+
+/* Melolo-inspired immersive vertical drama player */
+body:has(.melolo-watch-player[open]){overflow:hidden}
+.melolo-watch-player{position:fixed;inset:0;width:100vw;height:100dvh;max-width:none;max-height:none;margin:0;padding:0;border:0;border-radius:0;background:#050507;color:#fff;overflow:hidden}
+.melolo-watch-player::backdrop{background:#000}
+.melolo-watch-player .player-layout{position:absolute;inset:0;display:block;overflow:hidden;background:#050507}
+.melolo-watch-player #videoPlayer{position:absolute;inset:0;width:100%;height:100%;max-height:none;aspect-ratio:auto;object-fit:contain;border-radius:0;background:#000;z-index:0}
+.player-screen-shade{position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(180deg,#0009 0%,transparent 20%,transparent 48%,#0002 62%,#000d 100%)}
+.player-back-btn{position:absolute;z-index:12;top:max(12px,env(safe-area-inset-top));left:12px;float:none;width:42px;height:42px;padding:0;border-radius:50%;background:#08080a88;border:1px solid #ffffff30;font-size:32px;line-height:1}
+.player-top-actions{position:absolute;z-index:4;top:max(16px,env(safe-area-inset-top));left:66px;right:16px;display:flex;align-items:center;justify-content:space-between;pointer-events:none}
+.player-live-mark{font-size:10px;font-weight:900;letter-spacing:1.5px;color:#fff;text-shadow:0 2px 10px #000}
+.player-live-mark b{color:#f04b5b}
+.player-top-actions button{pointer-events:auto;border:1px solid #ffffff40;border-radius:22px;padding:9px 13px;background:#08080a88;color:#fff;font-size:11px;font-weight:800;backdrop-filter:blur(10px)}
+.player-bottom-overlay{position:absolute;z-index:3;left:0;right:0;bottom:0;padding:30px 18px max(24px,env(safe-area-inset-bottom));background:linear-gradient(0deg,#050507f5 0%,#050507c9 72%,transparent 100%);transition:opacity .2s ease}
+.player-bottom-overlay .eyebrow{margin-bottom:7px;font-size:9px;color:#f0bd78}
+.player-bottom-overlay h2{margin:0 0 6px;font-size:20px;line-height:1.2;text-shadow:0 2px 12px #000}
+.player-bottom-overlay #playerDescription{margin:0 0 14px;color:#e5dfe4;font-size:11px;line-height:1.5}
+.player-progress-row{display:grid;grid-template-columns:40px minmax(0,1fr) 40px;align-items:center;gap:8px;margin-bottom:11px}
+.player-progress-row span{font-size:9px;color:#eee;font-variant-numeric:tabular-nums}
+.player-progress-row input{width:100%;height:4px;margin:0;padding:0;accent-color:#f04b5b;background:#ffffff55;border:0;border-radius:9px}
+.player-main-controls{display:flex;align-items:center;justify-content:center;gap:18px}
+.player-main-controls button{display:grid;place-items:center;min-width:38px;height:38px;padding:0;border:0;background:transparent;color:#fff;font-size:20px}
+.player-main-controls #playerPlayPause{width:48px;height:48px;border:1px solid #ffffff65;border-radius:50%;background:#ffffff20;font-size:22px}
+.player-main-controls #playerSpeed{min-width:44px;height:32px;border:1px solid #ffffff55;border-radius:20px;font-size:11px;font-weight:800}
+.player-center-play{position:absolute;z-index:5;top:50%;left:50%;transform:translate(-50%,-50%);width:66px;height:66px;border:1px solid #ffffff80;border-radius:50%;background:#09090b77;color:#fff;font-size:25px;backdrop-filter:blur(9px)}
+.player-center-play[hidden]{display:none}
+.player-episode-drawer{position:absolute;z-index:9;top:0;right:0;bottom:0;width:min(340px,86vw);padding:max(70px,calc(env(safe-area-inset-top) + 62px)) 15px max(20px,env(safe-area-inset-bottom));background:#111015f5;border-left:1px solid #ffffff20;box-shadow:-18px 0 50px #0009;overflow:auto;backdrop-filter:blur(18px)}
+.player-episode-drawer[hidden]{display:none}
+.player-drawer-heading{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.player-drawer-heading div{display:grid;gap:4px}.player-drawer-heading small{font-size:8px;letter-spacing:1.5px;color:#d8ad72;font-weight:900}.player-drawer-heading strong{font-size:16px}
+.player-drawer-heading button{width:34px;height:34px;border:1px solid #ffffff20;border-radius:50%;background:#ffffff0b;color:#fff;font-size:22px}
+.player-episode-list{display:grid;gap:8px}
+.player-episode-item{display:grid;gap:5px;width:100%;padding:12px;text-align:left;border:1px solid #ffffff16;border-radius:12px;background:#ffffff08;color:#fff}
+.player-episode-item strong{font-size:11px}.player-episode-item small{font-size:9px;color:#aaa2ae}.player-episode-item.active{border-color:#e9b96d;background:#e9b96d18}
+.melolo-watch-player .player-info{display:none}
+.melolo-watch-player .video-status{position:absolute;z-index:8;top:50%;left:16px;right:16px;transform:translateY(-50%);padding:13px;border:1px solid #ffffff22;border-radius:12px;background:#09090ddd;text-align:center;color:#fff;font-size:11px}
+.melolo-watch-player .video-status[hidden]{display:none}
+.melolo-watch-player:not(.controls-visible) .player-bottom-overlay,.melolo-watch-player:not(.controls-visible) .player-top-actions,.melolo-watch-player:not(.controls-visible) .player-back-btn{opacity:0;pointer-events:none}
+@media(min-width:700px){.melolo-watch-player .player-layout{max-width:520px;margin:0 auto;left:50%;transform:translateX(-50%);width:100%;border-left:1px solid #ffffff12;border-right:1px solid #ffffff12}.melolo-watch-player .player-back-btn{left:max(calc((100vw - 520px)/2 + 12px),12px)}}
+@media(prefers-reduced-motion:reduce){.player-bottom-overlay{transition:none}}
