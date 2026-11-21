@@ -1148,3 +1148,9 @@ body:has(.melolo-watch-player[open]){overflow:hidden}
 .player-comments-drawer button:focus-visible{outline:2px solid #f2c27d;outline-offset:3px}
 @media(hover:hover){.player-rail-action:hover .rail-icon{transform:translateY(-2px);border-color:#f2c27d}}
 @media(max-width:380px){.player-right-rail{right:6px;gap:14px}.player-rail-action{min-width:42px}.player-rail-action .rail-icon{width:39px;height:39px;font-size:20px}.player-rail-action small{font-size:8px}}
+
+
+/* Player structure cleanup v96 */
+.player-right-rail{isolation:isolate}
+.player-comments-drawer{overscroll-behavior:contain}
+.player-comments-drawer .comments textarea{box-sizing:border-box;width:100%}
