@@ -54,6 +54,26 @@ $("#commentForm").addEventListener("submit",async e=>{
 });
 
 $("#reportDrama").addEventListener("click",async()=>{if(!activeDrama||String(activeDrama.id).startsWith("demo-")){setStatus("#reportStatus","Laporan tersedia untuk drama dari katalog online.");return}if(!supa){setStatus("#reportStatus","Backend belum tersambung.");return}const {data}=await supa.auth.getSession();if(!data.session){setStatus("#reportStatus","Masuk atau daftar akun untuk melaporkan video.");admin.showModal();return}const reason=window.prompt("Apa alasan laporan? Contoh: hak cipta, kekerasan, spam, atau konten tidak pantas.");if(!reason)return;if(reason.trim().length<3){setStatus("#reportStatus","Alasan laporan minimal 3 karakter.");return}const details=window.prompt("Keterangan tambahan (opsional):")||"";const {error}=await supa.from("video_reports").insert({drama_id:activeDrama.id,reporter_id:data.session.user.id,reason:reason.trim().slice(0,80),details:details.trim().slice(0,1000)});if(error){setStatus("#reportStatus","Gagal mengirim laporan: "+error.message);return}setStatus("#reportStatus","Terima kasih. Laporan sudah dikirim ke tim admin.")});
+function setVideoStatus(message="",retry=false){
+ const panel=$("#videoStatus"),label=$("#videoStatusText"),button=$("#retryVideo");
+ if(!panel||!label||!button)return;
+ panel.hidden=!message;label.textContent=message;button.hidden=!retry;
+}
+video.addEventListener("loadstart",()=>setVideoStatus("Menghubungkan ke video…"));
+video.addEventListener("waiting",()=>setVideoStatus("Video sedang memuat. Periksa koneksi jika terlalu lama."));
+video.addEventListener("canplay",()=>setVideoStatus(""));
+video.addEventListener("playing",()=>setVideoStatus(""));
+video.addEventListener("error",()=>{
+ const messages={1:"Pemutaran video dibatalkan.",2:"Koneksi terputus saat memuat video.",3:"Format atau data video tidak dapat diproses.",4:"Video tidak tersedia atau formatnya tidak didukung."};
+ const code=video.error?.code;
+ setVideoStatus(messages[code]||"Video gagal diputar. Periksa koneksi lalu coba lagi.",true);
+});
+$("#retryVideo").addEventListener("click",()=>{
+ if(!video.src)return;
+ setVideoStatus("Mencoba memuat ulang video…");
+ video.load();
+ video.play().catch(()=>setVideoStatus("Tekan tombol putar pada video untuk melanjutkan.",true));
+});
 video.addEventListener("ended",()=>{if(activeDrama&&activeEpisodeIndex<(activeDrama.episodes||[]).length-1){if(autoNextEnabled)playEpisode(activeEpisodeIndex+1);else setStatus("#playerDescription","Episode selesai. Putar otomatis nonaktif — pilih episode berikutnya jika ingin lanjut.")}else setStatus("#playerDescription","Kamu sudah menyelesaikan episode terbaru. Pilih drama lain atau tonton ulang episode ini.");});
 
 function seekVideoBy(seconds){
