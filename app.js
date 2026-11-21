@@ -757,6 +757,24 @@ function openProfileSettings(){
 $("#profileSettingsBtn")?.addEventListener("click",openProfileSettings);
 $("#closeProfileSettings")?.addEventListener("click",()=>profileSettingsDialog?.close());
 $("#closeProfileSettingsBottom")?.addEventListener("click",()=>profileSettingsDialog?.close());
+const settingsInfoDialog=$("#settingsInfoDialog");
+function showSettingsInfo(title,subtitle,body){
+ $("#settingsInfoTitle").textContent=title;
+ $("#settingsInfoSubtitle").textContent=subtitle;
+ $("#settingsInfoBody").innerHTML=body;
+ if(settingsInfoDialog&&!settingsInfoDialog.open)settingsInfoDialog.showModal();
+}
+$("#settingsAccountRow")?.addEventListener("click",()=>{
+ const email=$("#profileEmail")?.textContent||"";
+ const signedIn=!!(supa&&email&&email!=="Kamu sedang menonton sebagai tamu.");
+ if(!signedIn){profileSettingsDialog?.close();admin.showModal();return}
+ showSettingsInfo("Akun penonton","Informasi akun yang sedang digunakan",'<p>Akunmu sedang aktif di TacTic Drama.</p><p><strong>Email:</strong> '+escapeHtml(email)+'</p><p>Untuk keluar, gunakan tombol Keluar dari akun pada menu Pengaturan.</p>');
+});
+$("#settingsLanguageRow")?.addEventListener("click",()=>showSettingsInfo("Bahasa aplikasi","Preferensi bahasa",'<p><strong>Bahasa Indonesia</strong> adalah bahasa yang saat ini tersedia.</p><p>Dukungan bahasa lain akan ditambahkan pada pembaruan berikutnya.</p>'));
+$("#settingsHelpRow")?.addEventListener("click",()=>showSettingsInfo("Pusat bantuan","Bantuan penggunaan TacTic Drama",'<h3>Bagaimana cara menonton?</h3><p>Pilih drama dari Beranda atau Cuplikan, lalu tekan tombol tonton untuk membuka episode.</p><h3>Bagaimana menyimpan drama?</h3><p>Tekan tombol Favorit pada halaman drama. Daftar favorit dapat ditemukan di menu Koleksi.</p><h3>Bagaimana jika video tidak diputar?</h3><p>Periksa koneksi internet, lalu coba muat ulang halaman atau tekan tombol Coba lagi pada pemutar.</p><p>Fitur kontak bantuan langsung akan tersedia pada pembaruan berikutnya.</p>'));
+$("#settingsPrivacyRow")?.addEventListener("click",()=>showSettingsInfo("Privasi dan keamanan","Pengelolaan data penonton",'<p>TacTic Drama menggunakan informasi akun untuk proses masuk dan menyinkronkan fitur yang memerlukan akun.</p><p>Riwayat tontonan dan preferensi tertentu dapat tersimpan di perangkat ini agar pengalaman menonton berlanjut.</p><p>Jangan bagikan kata sandi atau kode verifikasi kepada siapa pun. Keluar dari akun jika menggunakan perangkat bersama.</p><p>Kebijakan privasi lengkap akan ditampilkan sebelum layanan dirilis secara publik.</p>'));
+$("#closeSettingsInfo")?.addEventListener("click",()=>settingsInfoDialog?.close());
+$("#closeSettingsInfoBottom")?.addEventListener("click",()=>settingsInfoDialog?.close());
 $("#settingsLoginButton")?.addEventListener("click",()=>{profileSettingsDialog?.close();admin.showModal()});
 $("#settingsLogoutButton")?.addEventListener("click",async()=>{profileSettingsDialog?.close();await signOutViewer()});
 

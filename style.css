@@ -941,3 +941,14 @@ body.clips-mode .player-dialog[open]{z-index:20}
 .profile-settings-done{border:1px solid #ffffff16;background:transparent;color:#c9c5cc}
 .profile-settings-dialog button:focus-visible{outline:2px solid #f2c76c;outline-offset:3px}
 @media(max-width:370px){.profile-settings-shell{padding:18px 14px 14px}.profile-settings-dialog{border-radius:21px}}
+
+/* Interactive profile settings rows and information sheet v81 */
+.profile-settings-row{width:100%;text-align:left;color:#f7f4f5;font:inherit;cursor:pointer;transition:background .16s ease,border-color .16s ease,transform .16s ease}
+.profile-settings-row:hover,.profile-settings-row:focus-visible{background:#ffffff0c;border-color:#e509144d}
+.profile-settings-row:active{transform:scale(.99)}
+.profile-settings-row .settings-row-copy{display:grid;gap:3px;flex:1;min-width:0}
+.settings-info-body{display:grid;gap:11px;color:#c9c6cf;font-size:12px;line-height:1.65}
+.settings-info-body p{margin:0}
+.settings-info-body h3{margin:7px 0 -5px;color:#fff;font-size:13px}
+.settings-info-body strong{color:#ffe0a0}
+.settings-info-dialog .profile-settings-shell{padding-bottom:18px}

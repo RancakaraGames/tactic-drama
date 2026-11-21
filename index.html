@@ -8,7 +8,7 @@
   <title>TacTic Drama</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
-  <link rel="stylesheet" href="style.css?v=80">
+  <link rel="stylesheet" href="style.css?v=81">
 </head>
 <body>
   <header class="topbar">
@@ -260,10 +260,10 @@
         <div><strong id="settingsAccountName">Penonton TacTic</strong><small id="settingsAccountEmail">Mode tamu</small></div>
       </div>
       <div class="profile-settings-list">
-        <div class="profile-settings-row"><span class="settings-row-icon">♙</span><div><strong>Akun</strong><small id="settingsAccountStatus">Informasi akun penonton</small></div><span class="settings-row-value">›</span></div>
-        <div class="profile-settings-row"><span class="settings-row-icon">文</span><div><strong>Bahasa aplikasi</strong><small>Bahasa Indonesia</small></div><span class="settings-row-value">ID</span></div>
-        <div class="profile-settings-row"><span class="settings-row-icon">?</span><div><strong>Pusat bantuan</strong><small>Bantuan dan pertanyaan umum</small></div><span class="settings-row-value">›</span></div>
-        <div class="profile-settings-row"><span class="settings-row-icon">◇</span><div><strong>Privasi dan keamanan</strong><small>Informasi perlindungan akun</small></div><span class="settings-row-value">›</span></div>
+        <button class="profile-settings-row" id="settingsAccountRow" type="button"><span class="settings-row-icon">♙</span><span class="settings-row-copy"><strong>Akun</strong><small id="settingsAccountStatus">Informasi akun penonton</small></span><span class="settings-row-value">›</span></button>
+        <button class="profile-settings-row" id="settingsLanguageRow" type="button"><span class="settings-row-icon">文</span><span class="settings-row-copy"><strong>Bahasa aplikasi</strong><small>Bahasa Indonesia</small></span><span class="settings-row-value">ID</span></button>
+        <button class="profile-settings-row" id="settingsHelpRow" type="button"><span class="settings-row-icon">?</span><span class="settings-row-copy"><strong>Pusat bantuan</strong><small>Bantuan dan pertanyaan umum</small></span><span class="settings-row-value">›</span></button>
+        <button class="profile-settings-row" id="settingsPrivacyRow" type="button"><span class="settings-row-icon">◇</span><span class="settings-row-copy"><strong>Privasi dan keamanan</strong><small>Informasi perlindungan akun</small></span><span class="settings-row-value">›</span></button>
       </div>
       <p id="profileSettingsNotice" class="profile-settings-notice" role="status">Beberapa pengaturan akan tersedia pada pembaruan berikutnya.</p>
       <button id="settingsLoginButton" class="profile-settings-login" type="button">Masuk / Daftar</button>
@@ -271,8 +271,15 @@
       <button id="closeProfileSettingsBottom" class="profile-settings-done" type="button">Selesai</button>
     </div>
   </dialog>
+  <dialog id="settingsInfoDialog" class="profile-settings-dialog settings-info-dialog" aria-labelledby="settingsInfoTitle">
+    <div class="profile-settings-shell">
+      <div class="profile-settings-heading"><div><p class="eyebrow">TACTIC DRAMA</p><h2 id="settingsInfoTitle">Informasi</h2><p id="settingsInfoSubtitle">Informasi aplikasi</p></div><button id="closeSettingsInfo" class="profile-settings-close" type="button" aria-label="Tutup">×</button></div>
+      <div id="settingsInfoBody" class="settings-info-body"></div>
+      <button id="closeSettingsInfoBottom" class="profile-settings-done" type="button">Mengerti</button>
+    </div>
+  </dialog>
 
   <script src="./supabase-config.js"></script>
-  <script src="app.js?v=80"></script>
+  <script src="app.js?v=81"></script>
 </body>
 </html>
