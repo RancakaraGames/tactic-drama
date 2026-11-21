@@ -1032,3 +1032,15 @@ body.clips-mode .player-dialog[open]{z-index:20}
 .account-security-button:active{background:#e5091435;border-color:#f06a75}
 .edit-viewer-profile-dialog button:focus-visible,.edit-viewer-profile-dialog input:focus-visible,.edit-viewer-profile-dialog label:focus-visible{outline:2px solid #ff6875;outline-offset:3px}
 @media(max-width:380px){.edit-viewer-profile-dialog .profile-settings-shell{padding:17px 15px}.edit-viewer-profile-dialog .profile-settings-heading h2{font-size:20px}.edit-viewer-avatar{width:88px;height:88px}}
+
+
+/* Friendly logout confirmation v88 */
+.logout-confirm-dialog{width:min(390px,calc(100% - 32px));max-width:390px}
+.logout-confirm-shell{display:grid;justify-items:center;text-align:center;padding:27px 22px 22px}
+.logout-confirm-icon{display:grid;place-items:center;width:54px;height:54px;margin:0 0 13px;border:1px solid #e5091445;border-radius:18px;background:#e5091419;color:#ff8a94;font-size:26px}
+.logout-confirm-shell h2{margin:0;color:#fff;font-size:19px;letter-spacing:-.3px}
+.logout-confirm-shell p{margin:9px 0 19px;max-width:300px;color:#aaa5b0;font-size:11px;line-height:1.65}
+.logout-confirm-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;width:100%}
+.logout-confirm-actions button{min-height:43px;margin:0;border-radius:12px}
+.logout-confirm-actions .profile-settings-logout{border:1px solid #e94d5b;background:#e5091420;color:#ffb8bf;font-size:11px;font-weight:800}
+.logout-confirm-actions button:disabled{opacity:.55}

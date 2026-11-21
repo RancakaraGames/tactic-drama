@@ -741,6 +741,8 @@ document.querySelectorAll("[data-profile-view]").forEach(button=>button.addEvent
 document.querySelectorAll("[data-profile-filter]").forEach(button=>button.addEventListener("click",()=>{profileHistoryFilter=button.dataset.profileFilter;renderProfileCollections()}));
 
 const profileSettingsDialog=$("#profileSettingsDialog");
+const logoutConfirmDialog=$("#logoutConfirmDialog");
+function openLogoutConfirmation(){if(logoutConfirmDialog&&!logoutConfirmDialog.open)logoutConfirmDialog.showModal()}
 function openProfileSettings(){
  const email=$("#profileEmail")?.textContent||"";
  const title=$("#profileTitle")?.textContent||"Penonton TacTic";
@@ -878,10 +880,12 @@ $("#settingsPrivacyRow")?.addEventListener("click",()=>showSettingsInfo("Privasi
 $("#closeSettingsInfo")?.addEventListener("click",()=>settingsInfoDialog?.close());
 $("#closeSettingsInfoBottom")?.addEventListener("click",()=>settingsInfoDialog?.close());
 $("#settingsLoginButton")?.addEventListener("click",()=>{profileSettingsDialog?.close();admin.showModal()});
-$("#settingsLogoutButton")?.addEventListener("click",async()=>{profileSettingsDialog?.close();await signOutViewer()});
+$("#settingsLogoutButton")?.addEventListener("click",openLogoutConfirmation);
+$("#cancelLogoutButton")?.addEventListener("click",()=>logoutConfirmDialog?.close());
+$("#confirmLogoutButton")?.addEventListener("click",async()=>{const button=$("#confirmLogoutButton");button.disabled=true;button.textContent="Sedang keluar...";try{await signOutViewer();logoutConfirmDialog?.close();profileSettingsDialog?.close();editViewerProfileDialog?.close()}catch(error){const p=logoutConfirmDialog?.querySelector("p");if(p)p.textContent="Gagal keluar: "+(error?.message||String(error))}finally{button.disabled=false;button.textContent="Ya, keluar"}});
 
 
-$("#profileLogoutBtn").addEventListener("click",signOutViewer);
+$("#profileLogoutBtn").addEventListener("click",openLogoutConfirmation);
 function storagePathFromPublicUrl(url,bucket){if(!url)return null;try{const u=new URL(url);const marker="/storage/v1/object/public/"+bucket+"/";const at=u.pathname.indexOf(marker);return at<0?null:decodeURIComponent(u.pathname.slice(at+marker.length))}catch{return null}}
 async function removeOwnedStorageFiles(bucket,paths){const clean=[...new Set(paths.filter(Boolean))];if(!clean.length)return;const {error}=await supa.storage.from(bucket).remove(clean);if(error)throw error}
 async function editCreatorEpisode(drama,ep,userId){

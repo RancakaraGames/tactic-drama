@@ -8,7 +8,7 @@
   <title>TacTic Drama</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
-  <link rel="stylesheet" href="style.css?v=87">
+  <link rel="stylesheet" href="style.css?v=88">
 </head>
 <body>
   <header class="topbar">
@@ -271,6 +271,17 @@
       <button id="closeProfileSettingsBottom" class="profile-settings-done" type="button">Selesai</button>
     </div>
   </dialog>
+  <dialog id="logoutConfirmDialog" class="profile-settings-dialog logout-confirm-dialog" aria-labelledby="logoutConfirmTitle">
+    <div class="profile-settings-shell logout-confirm-shell">
+      <div class="logout-confirm-icon" aria-hidden="true">↪</div>
+      <h2 id="logoutConfirmTitle">Keluar dari akun?</h2>
+      <p>Kamu bisa masuk kembali kapan saja. Favorit dan riwayat tontonan yang tersimpan tetap tersedia saat kamu masuk lagi.</p>
+      <div class="logout-confirm-actions">
+        <button id="cancelLogoutButton" class="profile-settings-done" type="button">Batal</button>
+        <button id="confirmLogoutButton" class="profile-settings-logout" type="button">Ya, keluar</button>
+      </div>
+    </div>
+  </dialog>
   <dialog id="editViewerProfileDialog" class="profile-settings-dialog edit-viewer-profile-dialog" aria-labelledby="editViewerProfileTitle">
     <div class="profile-settings-shell">
       <div class="profile-settings-heading"><div><p class="eyebrow">AKUN PENONTON</p><h2 id="editViewerProfileTitle">Akun &amp; profil</h2><p>Kelola identitas dan informasi akunmu.</p></div><button id="closeEditViewerProfile" class="profile-settings-close" type="button" aria-label="Tutup edit profil">×</button></div>
@@ -314,6 +325,6 @@
   </dialog>
 
   <script src="./supabase-config.js"></script>
-  <script src="app.js?v=87"></script>
+  <script src="app.js?v=88"></script>
 </body>
 </html>
