@@ -8,7 +8,7 @@
   <title>TacTic Drama</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
-  <link rel="stylesheet" href="style.css?v=96">
+  <link rel="stylesheet" href="style.css?v=97">
 </head>
 <body>
   <header class="topbar">
@@ -99,7 +99,7 @@
       </div>
       <aside id="playerEpisodeDrawer" class="player-episode-drawer" aria-label="Daftar episode" hidden><div class="player-drawer-heading"><div><small>DAFTAR TAYANGAN</small><strong id="playerDrawerTitle">Episode</strong></div><button id="playerEpisodeClose" type="button" aria-label="Tutup daftar episode">×</button></div><div id="playerEpisodeList" class="player-episode-list"></div></aside>
       <aside id="playerCommentsDrawer" class="player-comments-drawer" aria-label="Komentar penonton" hidden>
-        <div class="player-drawer-heading"><div><small>RUANG PENONTON</small><strong>Komentar</strong></div><button id="playerCommentsClose" type="button" aria-label="Tutup komentar">×</button></div>
+        <div class="player-drawer-heading"><div><small>RUANG PENONTON</small><strong>Komentar <span id="playerCommentCount" class="player-comment-count">0</span></strong></div><button id="playerCommentsClose" type="button" aria-label="Tutup komentar">×</button></div>
         <div id="playerCommentsContent"></div>
       </aside>
       <div id="videoStatus" class="video-status" role="status" aria-live="polite" hidden><span id="videoStatusText">Memuat video…</span><button id="retryVideo" class="secondary-btn" type="button" hidden>Coba lagi</button></div>
@@ -354,6 +354,6 @@
   </dialog>
 
   <script src="./supabase-config.js"></script>
-  <script src="app.js?v=96"></script>
+  <script src="app.js?v=97"></script>
 </body>
 </html>

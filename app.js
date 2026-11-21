@@ -247,15 +247,36 @@ function syncPlayerEpisodeDrawer(){const source=$("#episodeList"),target=$("#pla
 function openDrama(d,startPlayback=false){pauseClipsFeed();activeDrama=d;activeEpisodeIndex=0;$("#playerSeries").textContent=d.genre||"TAC TIC DRAMA";$("#playerTitle").textContent=d.title;$("#playerDescription").textContent=d.description||"Nikmati episode drama ini.";const list=$("#episodeList");list.innerHTML="";const episodeSearch=$("#episodeSearch"),episodeCount=$("#episodeSearchCount");if(episodeSearch){episodeSearch.value="";episodeSearch.oninput=()=>{const query=episodeSearch.value.trim().toLocaleLowerCase("id");let shown=0;list.querySelectorAll("button").forEach(button=>{const match=button.textContent.toLocaleLowerCase("id").includes(query);button.hidden=!match;if(match)shown++});if(episodeCount)episodeCount.textContent=query?shown+" episode ditemukan":list.children.length+" episode"};}const eps=[...(d.episodes||[])].sort((a,b)=>a.episode_number-b.episode_number);d.episodes=eps;if(!eps.length){list.textContent="Episode belum tersedia.";video.pause();video.removeAttribute("src")}if(episodeCount)episodeCount.textContent=eps.length+" episode";eps.forEach((ep,i)=>{const b=document.createElement("button");b.dataset.progressKey=String(d.id)+":"+String(ep.id||"");const title=document.createElement("span");title.className="episode-button-title";title.textContent="Episode "+ep.episode_number+(ep.title?" · "+ep.title:"");const meta=document.createElement("small");meta.className="episode-progress-label";const saved=episodeProgress[b.dataset.progressKey];meta.textContent=saved?.percent>=95?"Selesai":saved?.percent>0?"Lanjutkan · "+formatEpisodeTime(saved.seconds)+" · "+saved.percent+"%":"Belum ditonton";const track=document.createElement("span");track.className="episode-progress-track";const fill=document.createElement("span");fill.className="episode-progress-fill";fill.style.width=Math.min(100,Number(saved?.percent)||0)+"%";track.append(fill);b.append(title,meta,track);b.addEventListener("click",()=>{const saved=episodeProgress[b.dataset.progressKey],resume=saved&&saved.percent>0&&saved.percent<95?Math.max(0,Number(saved.seconds)||0):0;playEpisode(i,true,resume)});list.append(b)});if(eps.length)playEpisode(0,startPlayback);loadComments(d.id);loadDramaLikeState(d.id);player.showModal();player.classList.add("controls-visible");syncPlayerEpisodeDrawer();syncPlayerOverlay();syncPlayerActionRail();showPlayerControls()}
 async function loadCatalog(){const status=$("#catalogStatus"),reload=$("#reloadCatalog"),grid=$("#dramaGrid");if(!supa){if(status)status.textContent="Katalog online belum tersambung.";return}if(status)status.textContent="Menyiapkan pilihan drama…";if(reload){reload.disabled=true;reload.textContent="Memuat…"}if(grid){grid.classList.add("is-loading");grid.innerHTML=Array.from({length:4},()=>'<article class="skeleton-card" aria-hidden="true"><div class="skeleton-poster"></div><div class="skeleton-line"></div><div class="skeleton-line short"></div></article>').join("")}try{const {data,error}=await supa.from("dramas").select("id,title,description,poster_url,episodes(id,episode_number,title,video_path,subtitle_path,status)").eq("status","approved").eq("episodes.status","approved").order("created_at",{ascending:false});if(error)throw error;if(data){const likesResult=await supa.from("drama_like_counts").select("drama_id,like_count");const likesByDrama=new Map((likesResult.data||[]).map(row=>[String(row.drama_id),Number(row.like_count||0)]));if(likesResult.error)console.warn("Jumlah suka katalog belum dapat dimuat:",likesResult.error.message);dramas=data.length?data.map(d=>({...d,like_count:likesByDrama.get(String(d.id))||0,genre:(d.episodes||[]).length+" episode",colors:["#71324e","#252344"]})): [...demoDramas];render();const sharedId=new URLSearchParams(location.search).get("drama");if(sharedId&&!sharedDramaOpened){const sharedDrama=dramas.find(item=>String(item.id)===sharedId);if(sharedDrama){sharedDramaOpened=true;openDrama(sharedDrama);const sharedEpisode=Number(new URLSearchParams(location.search).get("episode"));if(Number.isInteger(sharedEpisode)&&sharedEpisode>0){const episodeIndex=(sharedDrama.episodes||[]).findIndex(ep=>Number(ep.episode_number)===sharedEpisode);if(episodeIndex>=0)playEpisode(episodeIndex,false)}}}if(status)status.textContent=data.length?data.length+" drama tersedia. Katalog berhasil diperbarui.":"Belum ada drama resmi. Menampilkan 2 konten DEMO dengan video uji CC0 dari MDN."}}catch(e){console.warn("Catalog online belum dapat dimuat:",e.message);render();if(status)status.textContent="Katalog gagal dimuat. Periksa koneksi lalu coba muat ulang."}finally{grid?.classList.remove("is-loading");if(reload){reload.disabled=false;reload.textContent="↻ Muat ulang"}}}
 function setStatus(id,msg){$(id).textContent=msg}
+function setPlayerCommentCount(count){const badge=$("#playerCommentCount");if(badge)badge.textContent=Number.isFinite(count)?count.toLocaleString("id-ID")+" komentar":""}
+function formatCommentAge(value){
+ const date=new Date(value),seconds=Math.max(0,Math.floor((Date.now()-date.getTime())/1000));
+ if(!Number.isFinite(date.getTime()))return "";
+ if(seconds<60)return "Baru saja";
+ if(seconds<3600)return Math.floor(seconds/60)+" mnt lalu";
+ if(seconds<86400)return Math.floor(seconds/3600)+" jam lalu";
+ if(seconds<604800)return Math.floor(seconds/86400)+" hari lalu";
+ return date.toLocaleDateString("id-ID",{day:"numeric",month:"short",year:date.getFullYear()===new Date().getFullYear()?undefined:"numeric"});
+}
 async function loadComments(dramaId){
- const list=$("#commentList");list.innerHTML="";
- if(!supa||String(dramaId).startsWith("demo-")){setStatus("#commentStatus","Komentar online aktif setelah Supabase tersambung.");return}
+ const list=$("#commentList");if(!list)return;list.innerHTML="";setPlayerCommentCount(0);
+ if(!supa||String(dramaId).startsWith("demo-")){setStatus("#commentStatus","Komentar online akan tersedia untuk drama yang terhubung ke katalog.");return}
  setStatus("#commentStatus","Memuat komentar...");
  const result=await supa.from("comments").select("id,display_name,body,created_at").eq("drama_id",dramaId).order("created_at",{ascending:false}).limit(50);
- if(result.error){setStatus("#commentStatus","Komentar belum bisa dimuat. Jalankan pembaruan schema Supabase.");return}
+ if(result.error){setStatus("#commentStatus","Komentar belum bisa dimuat. Coba lagi nanti.");return}
+ setPlayerCommentCount(result.data.length);
  if(!result.data.length){setStatus("#commentStatus","Belum ada komentar. Jadilah yang pertama!");return}
- setStatus("#commentStatus",result.data.length+" komentar terbaru");
- result.data.forEach(item=>{const el=document.createElement("article");el.className="comment-item";const who=document.createElement("strong");who.textContent=item.display_name;const body=document.createElement("p");body.textContent=item.body;const time=document.createElement("small");time.textContent=new Date(item.created_at).toLocaleString("id-ID");el.append(who,body,time);list.append(el)})
+ setStatus("#commentStatus","");
+ result.data.forEach(item=>{
+  const name=String(item.display_name||"Pengguna").trim()||"Pengguna";
+  const el=document.createElement("article");el.className="comment-item";
+  const avatar=document.createElement("span");avatar.className="comment-avatar";avatar.textContent=Array.from(name)[0].toLocaleUpperCase("id-ID");avatar.setAttribute("aria-hidden","true");
+  const content=document.createElement("div");content.className="comment-content";
+  const meta=document.createElement("div");meta.className="comment-meta";
+  const who=document.createElement("strong");who.textContent=name;
+  const time=document.createElement("time");time.dateTime=item.created_at;time.textContent=formatCommentAge(item.created_at);time.title=new Date(item.created_at).toLocaleString("id-ID");
+  const body=document.createElement("p");body.textContent=item.body;
+  meta.append(who,time);content.append(meta,body);el.append(avatar,content);list.append(el);
+ })
 }
 function updateCommentCounters(){
  const form=$("#commentForm");if(!form)return;
