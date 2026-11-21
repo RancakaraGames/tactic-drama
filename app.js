@@ -5,6 +5,7 @@ const demoDramas=[
  {id:"demo-4",title:"Cinta Terlarang",genre:"Romantis • Drama pilihan",description:"Dua hati terjebak di antara cinta dan rahasia.",colors:["#61365f","#1d3450"],episodes:[]}
 ];
 let dramas=[...demoDramas],activeDrama=null,activeEpisodeIndex=0,supa=null,activeTab="home",sharedDramaOpened=false;
+let creatorPerformanceData=[];
 let autoNextEnabled=true;try{autoNextEnabled=localStorage.getItem("tactic-auto-next")!=="false"}catch{}
 let searchQuery="";
 let favoriteIds=new Set();try{favoriteIds=new Set(JSON.parse(localStorage.getItem("tactic-favorites")||"[]"))}catch{}
@@ -248,6 +249,7 @@ async function loadDramaLikeState(dramaId){
 async function loadCreatorStats(userId){
  const status=$("#creatorStatsStatus"),list=$("#creatorPerformanceList");if(!supa||!userId)return;
  status.textContent="Memuat statistik kreator...";
+ creatorPerformanceData=[];const exportBtn=$("#exportCreatorStats");if(exportBtn)exportBtn.disabled=true;
  if(list)list.innerHTML='<p class="notice">Memuat performa drama...</p>';
  try{
   const {data,error}=await supa.from("dramas").select("id,title,episodes(id)").eq("uploader_id",userId);
@@ -268,6 +270,8 @@ async function loadCreatorStats(userId){
    views:viewRows.filter(v=>String(v.drama_id)===String(d.id)).length,
    likes:Number(likeRows.find(x=>String(x.drama_id)===String(d.id))?.like_count||0)
   })).sort((a,b)=>b.views-a.views||b.likes-a.likes||a.title.localeCompare(b.title,"id"));
+  creatorPerformanceData=performance;
+  if(exportBtn)exportBtn.disabled=!performance.length;
   const views=viewRows.length,likes=likeRows.reduce((sum,row)=>sum+Number(row.like_count||0),0);
   $("#statDrama").textContent=String(ids.length);$("#statEpisode").textContent=String(episodeCount);
   $("#statViews").textContent=views.toLocaleString("id-ID");$("#statLikes").textContent=likes.toLocaleString("id-ID");
@@ -275,8 +279,19 @@ async function loadCreatorStats(userId){
    list.innerHTML=performance.length?performance.map((d,i)=>'<article class="creator-performance-item"><div class="creator-performance-rank">'+(i+1)+'</div><div class="creator-performance-main"><strong>'+escapeHtml(d.title)+'</strong><span>'+d.episodes.toLocaleString("id-ID")+' episode'+(d.episodes===1?"":"")+'</span><div class="creator-performance-metrics"><span>▶ '+d.views.toLocaleString("id-ID")+' tayangan</span><span>♥ '+d.likes.toLocaleString("id-ID")+' suka</span></div></div><div class="creator-performance-bar" aria-hidden="true"><span style="width:'+(views?Math.max(3,d.views/Math.max(1,performance[0].views)*100):0)+'%"></span></div></article>').join(""):'<p class="notice">Belum ada drama yang diterbitkan. Drama yang kamu unggah akan muncul di sini.</p>';
   }
   status.textContent="Statistik akun diperbarui.";
- }catch(err){status.textContent="Statistik belum dapat dimuat: "+(err?.message||String(err));if(list)list.innerHTML='<p class="notice">Performa drama belum dapat dimuat.</p>'}
+ }catch(err){creatorPerformanceData=[];if(exportBtn)exportBtn.disabled=true;status.textContent="Statistik belum dapat dimuat: "+(err?.message||String(err));if(list)list.innerHTML='<p class="notice">Performa drama belum dapat dimuat.</p>'}
 }
+
+function exportCreatorStatsCsv(){
+ if(!creatorPerformanceData.length)return;
+ const safeCell=value=>{let text=String(value??"");if(/^[=+@-]/.test(text))text="'"+text;return '"'+text.replace(/"/g,'""')+'"'};
+ const rows=[["Peringkat","Judul drama","Jumlah episode","Tayangan","Suka"],...creatorPerformanceData.map((d,i)=>[i+1,d.title,d.episodes,d.views,d.likes])];
+ const csv="\\uFEFF"+rows.map(row=>row.map(safeCell).join(",")).join("\\r\\n");
+ const url=URL.createObjectURL(new Blob([csv],{type:"text/csv;charset=utf-8"}));
+ const link=document.createElement("a");link.href=url;link.download="tactic-drama-statistik-"+new Date().toISOString().slice(0,10)+".csv";
+ document.body.appendChild(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+$("#exportCreatorStats")?.addEventListener("click",exportCreatorStatsCsv);
 
 function renderCreatorProfile(user){
  const meta=user?.user_metadata||{},name=String(meta.display_name||"").trim()||"Kreator TacTic";
