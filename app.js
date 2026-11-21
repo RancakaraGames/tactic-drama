@@ -428,8 +428,22 @@ video.addEventListener("volumechange",()=>{try{localStorage.setItem("tactic-play
 applyPlaybackPreferences();
 updateAutoNextButton();
 $("#nextEpisode").addEventListener("click",()=>playEpisode(activeEpisodeIndex+1));
-let swipeStartY=null;video.addEventListener("touchstart",e=>{swipeStartY=e.changedTouches[0].clientY},{passive:true});video.addEventListener("touchend",e=>{if(swipeStartY===null)return;const delta=swipeStartY-e.changedTouches[0].clientY;swipeStartY=null;if(Math.abs(delta)>55)playEpisode(activeEpisodeIndex+(delta>0?1:-1))},{passive:true});
-player.addEventListener("keydown",e=>{if(e.key==="ArrowUp"){e.preventDefault();playEpisode(activeEpisodeIndex+1)}else if(e.key==="ArrowDown"){e.preventDefault();playEpisode(activeEpisodeIndex-1)}});
+let swipeStart=null;
+video.addEventListener("touchstart",event=>{
+ if(event.touches.length!==1){swipeStart=null;return}
+ const touch=event.touches[0];swipeStart={x:touch.clientX,y:touch.clientY};
+},{passive:true});
+video.addEventListener("touchend",event=>{
+ if(!swipeStart||event.changedTouches.length!==1){swipeStart=null;return}
+ const touch=event.changedTouches[0],deltaX=touch.clientX-swipeStart.x,deltaY=swipeStart.y-touch.clientY;
+ swipeStart=null;
+ if(!$("#playerEpisodeDrawer").hidden||!$("#playerCommentsDrawer").hidden)return;
+ if(Math.abs(deltaY)<65||Math.abs(deltaY)<Math.abs(deltaX)*1.25)return;
+ const nextIndex=activeEpisodeIndex+(deltaY>0?1:-1);
+ if(nextIndex<0||nextIndex>=(activeDrama?.episodes?.length||0))return;
+ playEpisode(nextIndex);showPlayerControls();
+},{passive:true});
+video.addEventListener("touchcancel",()=>{swipeStart=null},{passive:true});
 
 function persistCurrentPlayback(){if(!activeDrama||!video.currentTime||!Number.isFinite(video.currentTime))return;const ep=activeDrama.episodes?.[activeEpisodeIndex];if(ep?.id){saveWatchHistory(ep,video.currentTime);lastHistoryPersist=Date.now()}}
 video.addEventListener("timeupdate",()=>{if(Date.now()-lastHistoryPersist<5000)return;persistCurrentPlayback()});
