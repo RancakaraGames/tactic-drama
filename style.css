@@ -840,3 +840,75 @@ body.clips-mode .player-dialog[open]{z-index:20}
 @media(min-width:600px){.melolo-profile{padding-left:22px;padding-right:22px}.melolo-profile-tabs{margin-left:-22px;margin-right:-22px}.melolo-benefit-card{min-height:112px;padding:16px}.profile-drama-poster{flex-basis:94px;width:94px;height:130px}}
 @media(max-width:370px){.melolo-benefit-row{gap:7px}.melolo-benefit-card{padding:10px 9px;min-height:92px}.melolo-benefit-card strong{font-size:11px}.melolo-benefit-card small{font-size:8px}.melolo-profile-head{gap:11px}.melolo-avatar{width:57px;height:57px;flex-basis:57px}.profile-drama-row{padding:9px 4px}.profile-drama-poster{flex-basis:76px;width:76px;height:106px}}
 @media(prefers-reduced-motion:reduce){.melolo-benefit-card,.melolo-profile-tab span,.profile-drama-row{transition:none}}
+
+
+/* TacTic Drama — premium profile refinement v79 */
+.melolo-profile{
+  position:relative;isolation:isolate;overflow:hidden;
+  background:radial-gradient(ellipse at 8% 0%,#3b101b55 0,transparent 34%),
+             linear-gradient(180deg,#111116 0%,#0c0c11 58%,#0a0a0e 100%);
+  border:1px solid #ffffff0b;border-radius:24px;
+  box-shadow:0 18px 48px #0008,inset 0 1px 0 #ffffff0a;
+}
+.melolo-profile:before{
+  content:"";position:absolute;z-index:-1;top:-92px;right:-76px;width:210px;height:210px;
+  border-radius:50%;background:radial-gradient(circle,#e5091420 0,transparent 70%);pointer-events:none
+}
+.melolo-profile-head{position:relative;align-items:center;padding:9px 4px 23px}
+.melolo-avatar{
+  position:relative;border:2px solid #ff66704d;outline:3px solid #e5091412;
+  background:linear-gradient(145deg,#ff3948 0%,#bd0717 54%,#5e0710 100%);
+  box-shadow:0 7px 22px #e5091440,inset 0 1px 2px #ffffff55
+}
+.melolo-user-copy h1{letter-spacing:-.45px}
+.melolo-user-copy p{color:#d0cbd0}
+.melolo-user-copy small{display:inline-flex;align-items:center;gap:5px}
+.melolo-user-copy small:before{content:"";width:5px;height:5px;border-radius:50%;background:#e5b95c;box-shadow:0 0 8px #e5b95c80}
+.profile-settings-btn{display:grid;place-items:center;border:1px solid #ffffff18!important;border-radius:13px!important;background:linear-gradient(145deg,#25232a,#141319)!important;color:#f4e9eb!important;box-shadow:0 5px 16px #0006;font-size:22px!important}
+.melolo-benefit-row{gap:10px;margin-bottom:22px}
+.melolo-benefit-card{
+  min-height:106px;padding:14px 12px;border:1px solid #ffffff13;
+  border-radius:18px;box-shadow:0 9px 22px #0005,inset 0 1px 0 #ffffff0c;
+  transition:transform .18s ease,border-color .18s ease,filter .18s ease
+}
+.melolo-benefit-card:active{transform:scale(.975);filter:brightness(1.12)}
+.melolo-benefit-card strong{font-size:13px;letter-spacing:.15px}
+.melolo-benefit-card small{font-size:9px;white-space:normal;max-width:90%;line-height:1.35}
+.benefit-icon{right:10px;bottom:8px;font-size:27px;opacity:.34;filter:drop-shadow(0 3px 8px #0008)}
+.vip-card{
+  border-color:#d9b45a50;
+  background:radial-gradient(circle at 100% 0%,#f2ce7130,transparent 48%),
+             linear-gradient(145deg,#49351c 0%,#292019 58%,#1b1718 100%);
+  box-shadow:0 9px 25px #b58a2a17,inset 0 1px 0 #ffe6a32a
+}
+.vip-card:after{content:"PREMIUM";position:absolute;top:10px;right:10px;color:#f4d98d;font-size:7px;font-weight:900;letter-spacing:1.05px}
+.vip-card .benefit-icon{color:#ffe19a;opacity:.62}
+.vip-card strong{color:#ffe8b0}
+.vip-card small{color:#e3c78b}
+.reward-card{border-color:#c4a94c25;background:radial-gradient(circle at 100% 0%,#d4b94a20,transparent 48%),linear-gradient(145deg,#302b1c,#191913)}
+.download-card{border-color:#ffffff14;background:radial-gradient(circle at 100% 0%,#9b26321c,transparent 48%),linear-gradient(145deg,#28232a,#17161d)}
+.melolo-profile-tabs{margin-bottom:17px;border-bottom-color:#ffffff20}
+.melolo-profile-tab{min-height:72px}
+.melolo-profile-tab.active{color:#fff}
+.melolo-profile-tab.active:after{background:linear-gradient(90deg,#a90617,#ff4652);box-shadow:0 0 12px #e5091480}
+.melolo-profile-filter button{border:1px solid #ffffff10}
+.melolo-profile-filter button.active{border-color:#d7b84655;background:linear-gradient(135deg,#4a3b16,#2a2414);color:#ffe6a0;box-shadow:inset 0 1px 0 #ffffff12}
+.profile-date-heading{display:flex;align-items:center;gap:9px;color:#d4d0d4;font-size:12px}
+.profile-date-heading:after{content:"";height:1px;flex:1;background:linear-gradient(90deg,#ffffff20,transparent)}
+.profile-drama-row{border:1px solid #ffffff0a;border-radius:16px;margin:0 0 9px;padding:10px;background:linear-gradient(115deg,#ffffff07,#ffffff02);transition:transform .18s ease,border-color .18s ease}
+.profile-drama-row:active{transform:scale(.99);border-color:#e509143d;background:#ffffff0b}
+.profile-drama-poster{border:1px solid #ffffff20;border-radius:12px;box-shadow:0 7px 17px #0008}
+.profile-drama-info strong{font-size:13px;letter-spacing:.1px}
+.profile-drama-info small{color:#d5a7ab}
+.profile-account-footer{border:1px solid #ffffff16;background:linear-gradient(145deg,#211a20,#111116);box-shadow:0 10px 26px #0006,inset 0 1px 0 #ffffff0a}
+.profile-account-footer .profile-action{min-height:43px}
+.profile-account-footer .profile-action.primary{background:linear-gradient(100deg,#a90819,#ed2434);box-shadow:0 6px 17px #e5091433}
+.melolo-profile :is(button,a,[role="button"]):focus-visible{outline:2px solid #f2c76c;outline-offset:3px}
+@media(max-width:370px){
+ .melolo-profile{border-radius:19px;padding:17px 10px 28px}
+ .melolo-benefit-row{gap:7px}
+ .melolo-benefit-card{min-height:96px;padding:11px 9px;border-radius:15px}
+ .vip-card:after{font-size:6px;letter-spacing:.7px;top:8px;right:8px}
+ .melolo-profile-tabs{margin-left:-10px;margin-right:-10px}
+}
+@media(prefers-reduced-motion:reduce){.melolo-benefit-card,.profile-drama-row{transition:none}}
