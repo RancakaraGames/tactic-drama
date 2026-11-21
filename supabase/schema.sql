@@ -287,3 +287,23 @@ using (
   bucket_id = 'drama-posters'
   and (storage.foldername(name))[1] = (select auth.uid())::text
 );
+
+-- Pause public creator publishing until the viewer-first product phase is complete.
+drop policy if exists "Signed-in users can publish dramas" on public.dramas;
+drop policy if exists "Owners can publish episodes" on public.episodes;
+drop policy if exists "Owners can update own dramas" on public.dramas;
+drop policy if exists "Owners can update own episodes" on public.episodes;
+drop policy if exists "Owners can delete own dramas" on public.dramas;
+drop policy if exists "Owners can delete own episodes" on public.episodes;
+drop policy if exists "Admins can insert dramas" on public.dramas;
+create policy "Admins can insert dramas" on public.dramas for insert to authenticated with check (public.is_admin());
+drop policy if exists "Admins can insert episodes" on public.episodes;
+create policy "Admins can insert episodes" on public.episodes for insert to authenticated with check (public.is_admin());
+drop policy if exists "Users can upload their own drama videos" on storage.objects;
+drop policy if exists "Users can upload their own drama posters" on storage.objects;
+drop policy if exists "Users can delete their own drama videos" on storage.objects;
+drop policy if exists "Users can delete their own drama posters" on storage.objects;
+drop policy if exists "Admins can upload drama videos" on storage.objects;
+create policy "Admins can upload drama videos" on storage.objects for insert to authenticated with check (bucket_id='drama-videos' and public.is_admin());
+drop policy if exists "Admins can upload drama posters" on storage.objects;
+create policy "Admins can upload drama posters" on storage.objects for insert to authenticated with check (bucket_id='drama-posters' and public.is_admin());
