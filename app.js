@@ -768,7 +768,7 @@ const targetSelect=$("#targetDrama");function syncTargetForm(){const existing=Bo
  uploadForm?.elements.poster?.addEventListener("change",updateUploadPreview);
  uploadForm?.elements.video?.addEventListener("change",updateUploadPreview);
  uploadForm?.addEventListener("reset",()=>{setTimeout(()=>{updateUploadPreview();updateUploadProgress(0,false)},0)});
- const searchBox=$("#dramaSearch");searchBox.addEventListener("input",()=>{searchQuery=searchBox.value.trim().toLocaleLowerCase("id");render()});$("#clearSearch")?.addEventListener("click",()=>{searchBox.value="";searchQuery="";render();searchBox.focus()});
+ const searchBox=$("#dramaSearch");searchBox.addEventListener("input",()=>{searchQuery=searchBox.value.trim().toLocaleLowerCase("id");render()});$("#searchSubmit")?.addEventListener("click",()=>{searchBox.dispatchEvent(new Event("input",{bubbles:true}));searchBox.blur()});searchBox.addEventListener("keydown",event=>{if(event.key==="Enter")$("#searchSubmit")?.click()});$("#clearSearch")?.addEventListener("click",()=>{searchBox.value="";searchQuery="";render();searchBox.focus()});
 $("#dramaSort")?.addEventListener("change",render);
 $("#reloadCatalog")?.addEventListener("click",()=>loadCatalog());
 function updateNetworkStatus(){const el=$("#networkStatus");if(!el)return;const online=navigator.onLine;el.textContent=online?"● Online":"● Offline";el.classList.toggle("is-offline",!online)}
