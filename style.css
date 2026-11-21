@@ -688,3 +688,14 @@ body.clips-mode .player-dialog[open]{z-index:20}
  .clips-details{padding:28px}
 }
 @media(prefers-reduced-motion:reduce){body.clips-mode #dramaGrid{scroll-behavior:auto}}
+
+/* Guest welcome prompt: shown on each fresh visit until the visitor signs in */
+.guest-prompt-dialog{width:min(90vw,390px);max-height:86vh;margin:auto;padding:30px 24px 22px;border:1px solid #ffffff24;border-radius:22px;background:linear-gradient(155deg,#20222b,#101116 70%);color:#fff;text-align:center;box-shadow:0 24px 80px #000b}
+.guest-prompt-dialog::backdrop{background:#000c;backdrop-filter:blur(7px)}
+.guest-prompt-mark{display:grid;place-items:center;width:54px;height:54px;margin:0 auto 16px;border-radius:17px;background:#e50914;color:#fff;font-size:23px;box-shadow:0 8px 28px #e5091444}
+.guest-prompt-dialog .eyebrow{margin:0 0 9px;color:#ff626b;font-size:9px;font-weight:900;letter-spacing:1.8px}
+.guest-prompt-dialog h2{margin:0;color:#fff;font-size:23px;font-weight:900;line-height:1.2}
+.guest-prompt-copy{margin:12px 0 20px;color:#c1c3cb;font-size:12px;line-height:1.65}
+.guest-prompt-dialog .primary-btn{min-height:46px;border-radius:10px;background:#e50914;color:#fff;font-size:13px;font-weight:850}
+.guest-continue-btn{display:block;width:100%;margin-top:12px;padding:11px 8px;border:0;background:transparent;color:#d0d1d7;font-size:12px;font-weight:700}
+.guest-continue-btn:active{color:#fff}

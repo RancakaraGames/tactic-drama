@@ -36,7 +36,6 @@
     <section id="collectionTabs" class="collection-tabs" hidden aria-label="Isi koleksi"><button type="button" class="collection-tab active" data-collection-view="saved" aria-pressed="true">♡ Favorit</button><button type="button" class="collection-tab" data-collection-view="history" aria-pressed="false">◷ Riwayat</button></section>
     <section id="historyTools" class="history-tools" hidden><span>Episode yang terakhir kamu tonton tersimpan di perangkat ini.</span><button id="clearHistory" class="secondary-btn" type="button">Hapus riwayat</button></section>
     <section id="dramaGrid" class="drama-grid" aria-live="polite"></section>
-    <section class="viewer-promo"><div><p class="eyebrow">PENGALAMAN PENONTON</p><h2>Drama favorit, kapan saja.</h2><p>Tonton katalog tanpa akun. Masuk untuk menyiapkan fitur akun penonton dan program reward saat resmi diluncurkan.</p></div><button class="primary-btn" id="openAdmin">Masuk / Daftar</button></section>
   </main>
   <nav class="bottom-nav" aria-label="Navigasi utama">
     <button class="nav-item active" data-tab="clips" aria-current="page"><span>▶</span>Cuplikan</button>
@@ -44,6 +43,14 @@
     <button class="nav-item" data-tab="collection"><span>▤</span>Koleksi</button>
     <button class="nav-item" data-tab="profile"><span>♙</span>Profil</button>
   </nav>
+  <dialog id="guestPromptDialog" class="guest-prompt-dialog" aria-labelledby="guestPromptTitle">
+    <div class="guest-prompt-mark" aria-hidden="true">▶</div>
+    <p class="eyebrow">SELAMAT DATANG DI TAC TIC DRAMA</p>
+    <h2 id="guestPromptTitle">Siap menikmati drama?</h2>
+    <p class="guest-prompt-copy">Kamu bisa langsung menonton tanpa akun. Daftar atau masuk untuk menyiapkan akun penonton dan menyimpan koleksimu.</p>
+    <button id="guestPromptLogin" class="primary-btn full" type="button">Daftar / Masuk</button>
+    <button id="guestPromptContinue" class="guest-continue-btn" type="button">Lanjut menonton tanpa akun</button>
+  </dialog>
   <dialog id="playerDialog" class="player-dialog">
     <button class="close-btn" data-close="playerDialog" aria-label="Tutup">×</button>
     <div class="player-layout">
