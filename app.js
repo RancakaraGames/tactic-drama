@@ -779,10 +779,10 @@ if(window.supabase?.createClient&&cfg.url?.startsWith("https://")&&!cfg.url.incl
 const installBtn=$("#installBtn");
 let installPrompt=null;
 const isInstalled=()=>window.matchMedia("(display-mode: standalone)").matches||navigator.standalone===true;
-installBtn.hidden=isInstalled();installBtn.textContent="↓ Pasang";
+installBtn.hidden=isInstalled();installBtn.textContent="↓";
 window.addEventListener("beforeinstallprompt",event=>{
  event.preventDefault();installPrompt=event;installBtn.hidden=false;
- installBtn.title="Pasang TacTic Drama";installBtn.setAttribute("aria-label","Pasang TacTic Drama");installBtn.textContent="↓ Pasang";
+ installBtn.title="Pasang TacTic Drama";installBtn.setAttribute("aria-label","Pasang TacTic Drama");installBtn.textContent="↓";
 });
 installBtn.addEventListener("click",async()=>{
  if(!installPrompt){setStatus("#catalogStatus","Untuk memasang aplikasi, buka menu Chrome ⋮ lalu pilih Tambahkan ke layar utama.");return}

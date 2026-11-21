@@ -565,3 +565,48 @@ body{background:#08090c;color:#f7f7f7;font-family:Inter,Roboto,system-ui,sans-se
 .network-status:before{content:"";display:block;width:9px;height:9px;border-radius:50%;background:#22c55e;box-shadow:0 0 0 3px #22c55e25,0 0 9px #22c55e88}
 .network-status.is-offline:before{background:#ef4444;box-shadow:0 0 0 3px #ef444425,0 0 9px #ef444488}
 @media(max-width:360px){.catalog-tools{gap:6px;padding-left:9px;padding-right:9px}.catalog-tools .install-action{padding:0 8px;font-size:11px}.search-submit{padding:0 10px}}
+
+/* Final compact top navigation: logo | search | install icon | connection dot */
+.catalog-tools{
+ display:grid!important;
+ grid-template-columns:43px minmax(0,1fr) 40px 12px!important;
+ align-items:center!important;
+ gap:8px!important;
+ width:100%;
+ padding:12px 14px 14px!important;
+ margin:0!important;
+ box-sizing:border-box;
+}
+.catalog-tools .search-logo{grid-column:1;width:43px;height:43px;min-width:43px}
+.catalog-tools .search-wrap{
+ grid-column:2;display:flex!important;align-items:center;
+ width:100%;min-width:0;max-width:none;margin:0;
+ height:43px;box-sizing:border-box;
+}
+.catalog-tools .search-wrap input{min-width:0;width:0;flex:1 1 auto;padding:10px 7px!important;font-size:12px}
+.catalog-tools .search-wrap:before{padding-left:10px;font-size:24px}
+.catalog-tools .search-submit{padding:0 10px;min-width:47px;font-size:11px}
+.catalog-tools #installBtn{
+ grid-column:3;position:static!important;inset:auto!important;transform:none!important;
+ display:flex!important;align-items:center;justify-content:center;
+ width:40px!important;min-width:40px!important;height:42px!important;
+ margin:0!important;padding:0!important;border:1px solid #ffffff20!important;
+ border-radius:11px!important;background:#252525!important;color:#fff!important;
+ font-size:23px!important;line-height:1!important;box-shadow:none!important;
+}
+.catalog-tools #installBtn[hidden]{display:none!important}
+.catalog-tools .network-status{
+ grid-column:4;position:static!important;inset:auto!important;transform:none!important;
+ display:flex!important;align-items:center;justify-content:center;
+ width:12px!important;height:12px!important;min-width:12px!important;
+ margin:0!important;padding:0!important;border:0!important;border-radius:50%!important;
+ background:transparent!important;font-size:0!important;line-height:0!important;
+}
+.catalog-tools .network-status:before{width:9px;height:9px;margin:0}
+@media(max-width:360px){
+ .catalog-tools{grid-template-columns:38px minmax(0,1fr) 36px 10px!important;gap:6px!important;padding-left:9px!important;padding-right:9px!important}
+ .catalog-tools .search-logo{width:38px;height:38px;min-width:38px}
+ .catalog-tools .search-wrap{height:40px}
+ .catalog-tools #installBtn{width:36px!important;min-width:36px!important;height:40px!important}
+ .catalog-tools .search-submit{min-width:40px;padding:0 7px}
+}
