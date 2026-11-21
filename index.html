@@ -49,6 +49,31 @@
       <div class="player-info"><p class="eyebrow" id="playerSeries">TAC TIC DRAMA</p><h2 id="playerTitle">Judul drama</h2><p id="playerDescription"></p><div class="seek-controls" aria-label="Kontrol video"><button id="seekBack" class="secondary-btn" type="button" aria-label="Mundur 10 detik">↶ 10 detik</button><span id="seekTime" aria-live="polite">00:00</span><button id="seekForward" class="secondary-btn" type="button" aria-label="Maju 10 detik">10 detik ↷</button><button id="fullscreenVideo" class="secondary-btn fullscreen-video-btn" type="button" aria-label="Tampilkan video layar penuh" aria-pressed="false">⛶ Layar penuh</button><button id="pipVideo" class="secondary-btn pip-video-btn" type="button" aria-label="Aktifkan video mengambang" aria-pressed="false" hidden>▣ Video mengambang</button></div><small class="keyboard-hint">Pintasan: Spasi/K jeda · ←/→ 10 detik · ↑/↓ volume · M mute</small><div class="episode-nav"><button id="prevEpisode" class="secondary-btn" type="button" disabled>← Sebelumnya</button><button id="nextEpisode" class="primary-btn" type="button" disabled>Episode berikutnya →</button></div><button id="autoNextToggle" class="secondary-btn auto-next-toggle" type="button" aria-pressed="true">Putar otomatis: Aktif</button><label class="playback-speed-control">Kecepatan video<select id="playbackSpeed" aria-label="Kecepatan pemutaran"><option value="0.75">0,75×</option><option value="1" selected>Normal · 1×</option><option value="1.25">1,25×</option><option value="1.5">1,5×</option><option value="2">2×</option></select></label><div id="episodeList" class="episode-list"></div><div class="player-actions"><button id="likeDrama" class="secondary-btn" type="button" aria-pressed="false">♡ Suka</button><button id="shareDrama" class="secondary-btn" type="button">↗ Bagikan drama</button><button id="reportDrama" class="secondary-btn" type="button">⚑ Laporkan video</button><span id="shareStatus" class="status" role="status"></span><span id="reportStatus" class="status" role="status"></span></div><section class="comments"><h3>Komentar penonton</h3><p id="commentStatus" class="status" role="status">Komentar akan tampil setelah backend tersambung.</p><div id="commentList" class="comment-list"></div><form id="commentForm"><label>Nama<input name="displayName" maxlength="40" required placeholder="Nama kamu"><small class="comment-counter" id="commentNameCount">0/40 karakter</small></label><label>Tulis komentar<textarea name="body" rows="3" maxlength="1000" required placeholder="Bagaimana menurutmu tentang drama ini?"></textarea><small class="comment-counter" id="commentBodyCount">0/1.000 karakter</small></label><button class="primary-btn full" type="submit">Kirim komentar</button></form></section></div>
     </div>
   </dialog>
+  <dialog id="reportDialog" class="admin-dialog report-dialog" aria-labelledby="reportDialogTitle">
+    <button class="close-btn" data-close="reportDialog" aria-label="Tutup">×</button>
+    <p class="eyebrow">JAGA KOMUNITAS</p>
+    <h2 id="reportDialogTitle">Laporkan drama</h2>
+    <p class="notice">Pilih alasan yang paling sesuai. Laporan akan ditinjau oleh tim admin.</p>
+    <form id="reportForm" class="report-form">
+      <label>Alasan laporan
+        <select name="reason" required>
+          <option value="">Pilih alasan</option>
+          <option value="Pelanggaran hak cipta">Pelanggaran hak cipta</option>
+          <option value="Konten seksual atau tidak pantas">Konten seksual atau tidak pantas</option>
+          <option value="Kekerasan atau tindakan berbahaya">Kekerasan atau tindakan berbahaya</option>
+          <option value="Ujaran kebencian atau perundungan">Ujaran kebencian atau perundungan</option>
+          <option value="Spam atau penipuan">Spam atau penipuan</option>
+          <option value="Informasi menyesatkan">Informasi menyesatkan</option>
+          <option value="Lainnya">Lainnya</option>
+        </select>
+      </label>
+      <label>Keterangan tambahan <span class="optional-label">Opsional</span>
+        <textarea name="details" rows="4" maxlength="1000" placeholder="Jelaskan bagian yang perlu kami periksa…"></textarea>
+      </label>
+      <small id="reportFormStatus" class="status" role="status" aria-live="polite"></small>
+      <button class="primary-btn full" type="submit">Kirim laporan</button>
+    </form>
+  </dialog>
   <dialog id="adminDialog" class="admin-dialog">
     <button class="close-btn" data-close="adminDialog" aria-label="Tutup">×</button>
     <p class="eyebrow">AKUN TAC TIC DRAMA</p><h2>Daftar / Masuk</h2>

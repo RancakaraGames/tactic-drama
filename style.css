@@ -432,3 +432,18 @@ dialog{overscroll-behavior:contain}
 
 /* Clear resume cue for episode rows */
 .episode-progress-label{letter-spacing:.01em}.episode-list button:focus-visible{outline:2px solid #e8c58f;outline-offset:2px}
+
+
+/* In-app content reporting dialog */
+.report-dialog{width:min(92vw,480px);max-height:min(88dvh,720px);overflow:auto;padding:28px 22px 22px;border:1px solid #e9c58a55;border-radius:22px;background:linear-gradient(155deg,#211a27,#100f15 68%);color:#f8f4ef;box-shadow:0 28px 90px #000b}
+.report-dialog::backdrop{background:#050408d9;backdrop-filter:blur(7px)}
+.report-dialog h2{margin:5px 0 9px;font-family:Georgia,"Times New Roman",serif;font-size:27px;font-weight:500;color:#f3e6d2}
+.report-dialog .notice{margin:0 0 18px;color:#b4aab6;font-size:12px;line-height:1.6}
+.report-form{display:grid;gap:15px}
+.report-form label{display:grid;gap:8px;color:#e3d8e2;font-size:12px}
+.report-form select,.report-form textarea{width:100%;min-width:0;padding:12px 13px;border:1px solid #ffffff24;border-radius:12px;background:#15121a;color:#f8f4ef;font:inherit;font-size:12px}
+.report-form textarea{resize:vertical;line-height:1.6}
+.report-form select:focus,.report-form textarea:focus{outline:1px solid #e9c58a;border-color:#e9c58a}
+.optional-label{color:#9f96a3;font-size:10px;font-weight:400}
+.report-form .status{min-height:15px;color:#e9c58a;font-size:11px;line-height:1.5}
+@media(max-width:420px){.report-dialog{padding:25px 17px 18px;border-radius:19px}}
