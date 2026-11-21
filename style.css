@@ -269,3 +269,7 @@ input:focus,textarea:focus{outline:1px solid #e9c58a80;border-color:var(--gold)}
 /* Autoplay preference control */
 .auto-next-toggle{width:100%;margin:0 0 12px;text-align:center;border-color:#e9c58a45;color:#e9c58a;font-size:11px;padding:11px 14px}
 .auto-next-toggle[aria-pressed="false"]{color:#c2b8c4;border-color:#ffffff20;background:#17141d}
+
+
+/* Video playback speed selector */
+.playback-speed-control{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 14px;padding:11px 13px;border:1px solid #e9c58a35;border-radius:12px;background:#17141d;color:#c9bdca;font-size:11px}.playback-speed-control select{min-width:112px;padding:9px 11px;border:1px solid #e9c58a55;border-radius:9px;background:#211c22;color:#e9c58a;font:inherit;font-weight:800}.playback-speed-control select:focus{outline:1px solid #e9c58a80}
