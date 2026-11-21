@@ -44,6 +44,22 @@ $("#commentForm").addEventListener("submit",async e=>{
 
 $("#reportDrama").addEventListener("click",async()=>{if(!activeDrama||String(activeDrama.id).startsWith("demo-")){setStatus("#reportStatus","Laporan tersedia untuk drama dari katalog online.");return}if(!supa){setStatus("#reportStatus","Backend belum tersambung.");return}const {data}=await supa.auth.getSession();if(!data.session){setStatus("#reportStatus","Masuk atau daftar akun untuk melaporkan video.");admin.showModal();return}const reason=window.prompt("Apa alasan laporan? Contoh: hak cipta, kekerasan, spam, atau konten tidak pantas.");if(!reason)return;if(reason.trim().length<3){setStatus("#reportStatus","Alasan laporan minimal 3 karakter.");return}const details=window.prompt("Keterangan tambahan (opsional):")||"";const {error}=await supa.from("video_reports").insert({drama_id:activeDrama.id,reporter_id:data.session.user.id,reason:reason.trim().slice(0,80),details:details.trim().slice(0,1000)});if(error){setStatus("#reportStatus","Gagal mengirim laporan: "+error.message);return}setStatus("#reportStatus","Terima kasih. Laporan sudah dikirim ke tim admin.")});
 video.addEventListener("ended",()=>{if(activeDrama&&activeEpisodeIndex<(activeDrama.episodes||[]).length-1){if(autoNextEnabled)playEpisode(activeEpisodeIndex+1);else setStatus("#playerDescription","Episode selesai. Putar otomatis nonaktif — pilih episode berikutnya jika ingin lanjut.")}else setStatus("#playerDescription","Kamu sudah menyelesaikan episode terbaru. Pilih drama lain atau tonton ulang episode ini.");});
+
+function seekVideoBy(seconds){
+ if(!Number.isFinite(video.duration)||!Number.isFinite(video.currentTime))return;
+ video.currentTime=Math.max(0,Math.min(video.duration,video.currentTime+seconds));
+ updateSeekTime();
+}
+function updateSeekTime(){
+ const current=formatPlaybackTime(video.currentTime||0);
+ const duration=Number.isFinite(video.duration)?formatPlaybackTime(video.duration):"--:--";
+ const label=$("#seekTime");if(label)label.textContent=current+" / "+duration;
+}
+$("#seekBack").addEventListener("click",()=>seekVideoBy(-10));
+$("#seekForward").addEventListener("click",()=>seekVideoBy(10));
+video.addEventListener("timeupdate",updateSeekTime);
+video.addEventListener("loadedmetadata",updateSeekTime);
+video.addEventListener("durationchange",updateSeekTime);
 $("#prevEpisode").addEventListener("click",()=>playEpisode(activeEpisodeIndex-1));
 function readPlaybackPreferences(){
  const prefs={rate:1,volume:1,muted:false};
