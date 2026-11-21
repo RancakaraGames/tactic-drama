@@ -33,14 +33,15 @@
 <section class="profile-account-card"><div class="profile-card-heading"><span class="profile-card-icon">◉</span><div><strong id="profileAccountTitle">Mode tamu</strong><small id="profileAccountDescription">Masuk untuk mengelola akun penontonmu.</small></div></div><button id="profileLoginBtn" class="profile-action primary" type="button">Masuk / Daftar</button><button id="profileLogoutBtn" class="profile-action secondary" type="button" hidden>Keluar dari akun</button></section>
 <div class="profile-shortcuts"><button class="profile-shortcut" type="button" data-profile-tab="saved"><span>♡</span><strong>Drama favorit</strong><small>Lihat koleksi tersimpan</small><b id="profileFavoriteCount">0</b></button><button class="profile-shortcut" type="button" data-profile-tab="history"><span>◷</span><strong>Riwayat tontonan</strong><small>Lanjutkan drama terakhir</small><b id="profileHistoryCount">0</b></button></div>
 <section class="profile-info-card"><p class="eyebrow">TENTANG TAC TIC</p><h2>Hiburan dalam genggaman.</h2><p>Nikmati katalog drama pendek. Fitur reward penonton akan dibuka setelah sumber pendapatan dan sistem pembayaran resmi siap.</p><span class="profile-version">TacTic Drama · Penonton</span></section><p id="profilePageStatus" class="profile-page-status" role="status" aria-live="polite"></p></section>
+    <section id="collectionTabs" class="collection-tabs" hidden aria-label="Isi koleksi"><button type="button" class="collection-tab active" data-collection-view="saved" aria-pressed="true">♡ Favorit</button><button type="button" class="collection-tab" data-collection-view="history" aria-pressed="false">◷ Riwayat</button></section>
     <section id="historyTools" class="history-tools" hidden><span>Episode yang terakhir kamu tonton tersimpan di perangkat ini.</span><button id="clearHistory" class="secondary-btn" type="button">Hapus riwayat</button></section>
     <section id="dramaGrid" class="drama-grid" aria-live="polite"></section>
     <section class="viewer-promo"><div><p class="eyebrow">PENGALAMAN PENONTON</p><h2>Drama favorit, kapan saja.</h2><p>Tonton katalog tanpa akun. Masuk untuk menyiapkan fitur akun penonton dan program reward saat resmi diluncurkan.</p></div><button class="primary-btn" id="openAdmin">Masuk / Daftar</button></section>
   </main>
   <nav class="bottom-nav" aria-label="Navigasi utama">
-    <button class="nav-item active" data-tab="home" aria-current="page"><span>⌂</span>Beranda</button>
-    <button class="nav-item" data-tab="saved"><span>♡</span>Favorit</button>
-    <button class="nav-item" data-tab="history"><span>◷</span>Riwayat</button>
+    <button class="nav-item active" data-tab="clips" aria-current="page"><span>▶</span>Cuplikan</button>
+    <button class="nav-item" data-tab="home"><span>⌂</span>Beranda</button>
+    <button class="nav-item" data-tab="collection"><span>▤</span>Koleksi</button>
     <button class="nav-item" data-tab="profile"><span>♙</span>Profil</button>
   </nav>
   <dialog id="playerDialog" class="player-dialog">
