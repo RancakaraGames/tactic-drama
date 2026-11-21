@@ -237,8 +237,11 @@ async function loadDramaLikeState(dramaId){
   const {data:sessionData}=await supa.auth.getSession(),user=sessionData.session?.user;
   let liked=false;
   if(user){const own=await supa.from("drama_likes").select("drama_id").eq("drama_id",dramaId).eq("user_id",user.id).maybeSingle();if(own.error)throw own.error;liked=Boolean(own.data)}
+  const likeCount=Number(countResult.data?.like_count||0);
   btn.dataset.liked=liked?"true":"false";btn.setAttribute("aria-pressed",String(liked));
-  btn.textContent=(liked?"♥ Disukai · ":"♡ Suka · ")+Number(countResult.data?.like_count||0);
+  btn.textContent=(liked?"♥ Disukai · ":"♡ Suka · ")+likeCount;
+  const catalogDrama=dramas.find(item=>String(item.id)===String(dramaId));
+  if(catalogDrama&&Number(catalogDrama.like_count||0)!==likeCount){catalogDrama.like_count=likeCount;render()}
  }catch(err){btn.textContent="♡ Suka";console.warn("Jumlah suka belum dapat dimuat:",err?.message||err)}
  finally{btn.disabled=false}
 }
