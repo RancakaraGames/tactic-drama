@@ -1180,3 +1180,10 @@ body:has(.melolo-watch-player[open]){overflow:hidden}
 .player-comments-drawer .comments form button{justify-self:end;width:auto;min-width:112px;min-height:37px;padding:0 16px;border-radius:20px;font-size:11px}
 .player-comments-drawer .comments form button:disabled{opacity:.55}
 @media(max-height:600px){.player-comments-drawer{max-height:82dvh}.player-comments-drawer .comment-list{gap:10px}.player-comments-drawer .comments textarea{min-height:44px}}
+
+
+/* Mutually exclusive player drawers v99 */
+.player-comments-drawer::before{content:"";display:block;width:38px;height:4px;margin:0 auto 12px;border-radius:8px;background:#ffffff42}
+.player-comments-drawer,.player-episode-drawer{overscroll-behavior:contain}
+.player-comments-drawer .player-drawer-heading button,.player-episode-drawer .player-drawer-heading button{display:grid;place-items:center;flex:0 0 36px;width:36px;height:36px;border:1px solid #ffffff1c;border-radius:50%;background:#ffffff0a;color:#fff;font-size:22px;line-height:1}
+.player-comments-drawer .player-drawer-heading button:active,.player-episode-drawer .player-drawer-heading button:active{transform:scale(.94)}
