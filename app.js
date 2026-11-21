@@ -292,8 +292,11 @@ updateCommentCounters();
 $("#commentForm").addEventListener("submit",async e=>{
  e.preventDefault();
  if(!supa||!activeDrama||String(activeDrama.id).startsWith("demo-")){setStatus("#commentStatus","Komentar belum aktif. Sambungkan Supabase dan gunakan drama dari katalog online.");return}
- const form=e.currentTarget,fd=new FormData(form),display_name=String(fd.get("displayName")||"").trim(),body=String(fd.get("body")||"").trim(),btn=form.querySelector("button[type=submit]");
- if(!display_name||!body){setStatus("#commentStatus","Isi nama dan komentar terlebih dahulu.");return}
+ const form=e.currentTarget,fd=new FormData(form),body=String(fd.get("body")||"").trim(),btn=form.querySelector("button[type=submit]");
+ let display_name=String(fd.get("displayName")||"").trim();
+ if(!body){setStatus("#commentStatus","Tulis komentar terlebih dahulu.");return}
+ if(!display_name){try{const {data}=await supa.auth.getUser();const user=data?.user;display_name=String(user?.user_metadata?.display_name||user?.email?.split("@")[0]||"Penonton").trim().slice(0,40)}catch{display_name="Penonton"}}
+ if(!display_name)display_name="Penonton";
  btn.disabled=true;setStatus("#commentStatus","Mengirim komentar...");
  try{const result=await supa.from("comments").insert({drama_id:activeDrama.id,display_name,body});if(result.error)throw result.error;form.elements.displayName.value=display_name;form.elements.body.value="";await loadComments(activeDrama.id)}
  catch(err){setStatus("#commentStatus","Gagal mengirim komentar: "+err.message)}

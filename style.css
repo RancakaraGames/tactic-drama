@@ -1172,8 +1172,8 @@ body:has(.melolo-watch-player[open]){overflow:hidden}
 .player-comments-drawer .comment-meta time{color:#89828e;font-size:9px}
 .player-comments-drawer .comment-content p{margin:0;color:#e4dfe6;font-size:12px;line-height:1.55;overflow-wrap:anywhere;white-space:pre-wrap}
 .player-comments-drawer .comments form{flex:0 0 auto;display:grid;grid-template-columns:minmax(0,1fr);gap:8px;margin:0;padding:12px 0 max(2px,env(safe-area-inset-bottom));border-top:1px solid #ffffff16;background:#121016}
-.player-comments-drawer .comments form label:first-child{display:none}
 .player-comments-drawer .comments form label{display:grid;gap:5px;margin:0;color:#aaa3ae;font-size:10px}
+.player-comments-drawer .comments form .comment-compose-label{display:grid;gap:5px}
 .player-comments-drawer .comments textarea{width:100%;min-height:58px;max-height:110px;resize:vertical;padding:11px 13px;border:1px solid #ffffff1b;border-radius:15px;background:#211d26;color:#fff;font-size:12px;line-height:1.5}
 .player-comments-drawer .comments textarea::placeholder{color:#88818d}
 .player-comments-drawer .comments form .comment-counter{display:none}
