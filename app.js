@@ -881,7 +881,26 @@ function updateNetworkStatus(){const el=$("#networkStatus");if(!el)return;const 
 window.addEventListener("online",()=>{updateNetworkStatus();loadCatalog()});window.addEventListener("offline",updateNetworkStatus);updateNetworkStatus();
 render();
 const cfg=window.TACTIC_SUPABASE_CONFIG||{};
-if(window.supabase?.createClient&&cfg.url?.startsWith("https://")&&!cfg.url.includes("YOUR-PROJECT")&&cfg.anonKey&&!cfg.anonKey.includes("YOUR-SUPABASE")){supa=window.supabase.createClient(cfg.url,cfg.anonKey);$("#backendNotice").textContent="Tonton drama tanpa akun atau masuk untuk fitur akun penonton. Email mungkin perlu dikonfirmasi saat mendaftar.";loadCatalog();const guestFallback=setTimeout(()=>showGuestPrompt(),1500);supa.auth.getSession().then(({data})=>{clearTimeout(guestFallback);const session=data.session;verifySession(session);if(!session)showGuestPrompt()}).catch(()=>{clearTimeout(guestFallback);showGuestPrompt()});supa.auth.onAuthStateChange((event,session)=>{if(event==="PASSWORD_RECOVERY"){$("#uploadSection").hidden=true;$("#loginForm").hidden=true;$("#signupForm").hidden=true;$("#forgotPasswordBtn").hidden=true;$("#resetPasswordForm").hidden=false;setStatus("#loginStatus","Tautan pemulihan valid. Silakan buat password baru.")}else{verifySession(session)}})}else{$("#backendNotice").textContent="Koneksi backend belum diisi. Website dan katalog contoh tetap bisa dibuka; upload online aktif setelah konfigurasi Supabase.";showGuestPrompt()}
+const backendConfigured=cfg.url?.startsWith("https://")&&!cfg.url.includes("YOUR-PROJECT")&&cfg.anonKey&&!cfg.anonKey.includes("YOUR-SUPABASE");
+if(backendConfigured){
+ $("#backendNotice").textContent="Tonton drama tanpa akun atau masuk untuk fitur akun penonton. Email mungkin perlu dikonfirmasi saat mendaftar.";
+ const guestFallback=setTimeout(()=>showGuestPrompt(),1500);
+ function startBackend(){
+  if(!window.supabase?.createClient)throw new Error("Pustaka koneksi belum tersedia.");
+  supa=window.supabase.createClient(cfg.url,cfg.anonKey);
+  loadCatalog();
+  supa.auth.getSession().then(({data})=>{clearTimeout(guestFallback);const session=data.session;verifySession(session);if(!session)showGuestPrompt()}).catch(()=>{clearTimeout(guestFallback);showGuestPrompt()});
+  supa.auth.onAuthStateChange((event,session)=>{if(event==="PASSWORD_RECOVERY"){$("#uploadSection").hidden=true;$("#loginForm").hidden=true;$("#signupForm").hidden=true;$("#forgotPasswordBtn").hidden=true;$("#resetPasswordForm").hidden=false;setStatus("#loginStatus","Tautan pemulihan valid. Silakan buat password baru.")}else{verifySession(session)}});
+ }
+ if(window.supabase?.createClient)startBackend();
+ else{
+  const script=document.createElement("script");script.src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2";script.async=true;
+  const timeout=setTimeout(()=>{$("#catalogStatus").textContent="Koneksi katalog lambat. Tampilan dan navigasi tetap bisa digunakan; coba muat ulang saat internet stabil.";},10000);
+  script.onload=()=>{clearTimeout(timeout);try{startBackend()}catch(error){clearTimeout(guestFallback);showGuestPrompt();$("#catalogStatus").textContent="Koneksi katalog gagal dimulai. Coba muat ulang halaman."}};
+  script.onerror=()=>{clearTimeout(timeout);clearTimeout(guestFallback);showGuestPrompt();$("#catalogStatus").textContent="Pustaka katalog gagal dimuat. Periksa koneksi internet lalu coba muat ulang."};
+  document.head.append(script);
+ }
+}else{$("#backendNotice").textContent="Koneksi backend belum diisi. Website dan katalog contoh tetap bisa dibuka; upload online aktif setelah konfigurasi Supabase.";showGuestPrompt()}
 const installBtn=$("#installBtn");
 let installPrompt=null;
 const isInstalled=()=>window.matchMedia("(display-mode: standalone)").matches||navigator.standalone===true;
