@@ -264,3 +264,8 @@ input:focus,textarea:focus{outline:1px solid #e9c58a80;border-color:var(--gold)}
 .upload-preview>div{display:grid;gap:6px;min-width:0}
 .upload-preview strong{font-size:12px;line-height:1.4;overflow-wrap:anywhere;color:#f3e6d2}
 .upload-preview span{font-size:10px;color:#b4aab6;overflow-wrap:anywhere}
+
+
+/* Autoplay preference control */
+.auto-next-toggle{width:100%;margin:0 0 12px;text-align:center;border-color:#e9c58a45;color:#e9c58a;font-size:11px;padding:11px 14px}
+.auto-next-toggle[aria-pressed="false"]{color:#c2b8c4;border-color:#ffffff20;background:#17141d}
