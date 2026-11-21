@@ -1044,3 +1044,29 @@ body.clips-mode .player-dialog[open]{z-index:20}
 .logout-confirm-actions button{min-height:43px;margin:0;border-radius:12px}
 .logout-confirm-actions .profile-settings-logout{border:1px solid #e94d5b;background:#e5091420;color:#ffb8bf;font-size:11px;font-weight:800}
 .logout-confirm-actions button:disabled{opacity:.55}
+
+
+/* VIP membership dashboard preview v89 */
+.vip-member-status{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px;padding:13px 14px;border:1px solid #ffffff16;border-radius:14px;background:#ffffff07}
+.vip-member-status>div{display:grid;gap:4px;min-width:0}
+.vip-member-status small{color:#aaa3ad;font-size:9px;font-weight:800;letter-spacing:.9px}
+.vip-member-status strong{color:#f4edf0;font-size:13px}
+.vip-member-status span:not(.vip-status-pill){color:#aaa5b0;font-size:10px;line-height:1.4}
+.vip-status-pill{flex:0 0 auto;padding:6px 9px;border:1px solid #ffffff20;border-radius:20px;background:#ffffff0a;color:#c3bdc7;font-size:9px;font-weight:900;letter-spacing:.5px}
+.vip-section-title{display:grid;gap:4px;margin:18px 0 10px}
+.vip-section-title strong{font-size:13px;color:#fff}
+.vip-section-title small{font-size:10px;line-height:1.45;color:#a7a1ac}
+.vip-plan-list{display:grid;gap:8px}
+.vip-plan-card{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px;border:1px solid #ffffff14;border-radius:13px;background:linear-gradient(110deg,#ffffff09,#ffffff03)}
+.vip-plan-card>div{display:grid;gap:4px;min-width:0}
+.vip-plan-card strong{font-size:11px;color:#f4eef0}
+.vip-plan-card small{font-size:9px;color:#a9a3ae}
+.vip-plan-card>span{flex:0 0 auto;padding:6px 8px;border-radius:9px;background:#ffffff0a;color:#c9bca0;font-size:9px;font-weight:800}
+.vip-plan-featured{border-color:#a17c3c88;background:linear-gradient(110deg,#b18a3419,#ffffff04)}
+.vip-plan-featured>span{background:#6b501e44;color:#f0d18b}
+.vip-empty-transactions{display:flex;align-items:center;gap:11px;padding:13px;border:1px dashed #ffffff20;border-radius:13px;background:#ffffff04}
+.vip-empty-transactions>span{display:grid;place-items:center;flex:0 0 36px;width:36px;height:36px;border-radius:11px;background:#ffffff0a;color:#c7b17b;font-size:18px}
+.vip-empty-transactions p{display:grid;gap:4px;margin:0}
+.vip-empty-transactions strong{font-size:11px;color:#e9e4ea}
+.vip-empty-transactions small{font-size:9px;line-height:1.5;color:#a7a1ac}
+.vip-info-note{font-size:10px;line-height:1.65}

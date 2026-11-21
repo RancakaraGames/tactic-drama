@@ -8,7 +8,7 @@
   <title>TacTic Drama</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
-  <link rel="stylesheet" href="style.css?v=88">
+  <link rel="stylesheet" href="style.css?v=89">
 </head>
 <body>
   <header class="topbar">
@@ -306,13 +306,23 @@
   <dialog id="vipInfoDialog" class="profile-settings-dialog vip-info-dialog" aria-labelledby="vipInfoTitle">
     <div class="profile-settings-shell">
       <div class="profile-settings-heading"><div><p class="eyebrow">KEANGGOTAAN TACTIC DRAMA</p><h2 id="vipInfoTitle">TacTic VIP</h2><p>Nikmati pengalaman menonton tanpa iklan.</p></div><button id="closeVipInfo" class="profile-settings-close" type="button" aria-label="Tutup">×</button></div>
-      <div class="vip-info-hero"><span class="vip-info-crown">♛</span><strong>VIP</strong><small>Pengalaman menonton lebih nyaman</small></div>
+      <div class="vip-member-status"><div><small>STATUS KEANGGOTAAN</small><strong>Belum berlangganan</strong><span>VIP akan aktif setelah pembayaran diverifikasi.</span></div><span class="vip-status-pill">NON-VIP</span></div>
+      <div class="vip-info-hero"><span class="vip-info-crown">♛</span><strong>TACTIC VIP</strong><small>Nonton drama tanpa gangguan iklan</small></div>
+      <div class="vip-section-title"><strong>Keuntungan VIP</strong><small>Dirancang untuk pengalaman menonton yang lebih nyaman</small></div>
       <div class="vip-benefit-list">
         <div><span>✓</span><p><strong>Bebas iklan</strong><small>Nikmati drama tanpa jeda iklan setelah keanggotaan aktif.</small></p></div>
-        <div><span>✓</span><p><strong>Menonton lebih nyaman</strong><small>Fokus pada cerita favoritmu.</small></p></div>
-        <div><span>✓</span><p><strong>Status VIP akun</strong><small>Status akan aktif setelah pembayaran berhasil diverifikasi.</small></p></div>
+        <div><span>✓</span><p><strong>Menonton lebih nyaman</strong><small>Fokus pada cerita favoritmu tanpa gangguan iklan.</small></p></div>
+        <div><span>✓</span><p><strong>Status keanggotaan</strong><small>Masa aktif akan tercatat di akun setelah pembayaran terverifikasi.</small></p></div>
       </div>
-      <p class="vip-info-note">Paket dan harga VIP belum dibuka. Kami akan menampilkan rincian harga, masa aktif, dan metode pembayaran sebelum transaksi tersedia. Kamu belum dikenakan biaya apa pun.</p>
+      <div class="vip-section-title vip-plan-heading"><strong>Pilihan paket</strong><small>Harga dan pembayaran segera hadir</small></div>
+      <div class="vip-plan-list">
+        <article class="vip-plan-card"><div><strong>VIP 1 Bulan</strong><small>Akses keanggotaan selama 30 hari</small></div><span>Segera hadir</span></article>
+        <article class="vip-plan-card vip-plan-featured"><div><strong>VIP 3 Bulan</strong><small>Akses keanggotaan selama 90 hari</small></div><span>Segera hadir</span></article>
+        <article class="vip-plan-card"><div><strong>VIP 12 Bulan</strong><small>Akses keanggotaan selama 365 hari</small></div><span>Segera hadir</span></article>
+      </div>
+      <div class="vip-section-title vip-history-heading"><strong>Riwayat transaksi</strong><small>Catatan pembayaran VIP</small></div>
+      <div class="vip-empty-transactions"><span>▤</span><p><strong>Belum ada transaksi</strong><small>Riwayat pembayaran akan muncul di sini setelah fitur pembayaran tersedia.</small></p></div>
+      <p class="vip-info-note">Paket di atas masih berupa informasi awal. Harga, metode pembayaran, dan tombol berlangganan belum diaktifkan. Kamu tidak akan dikenakan biaya apa pun. Status VIP hanya boleh aktif setelah pembayaran benar-benar diverifikasi oleh sistem.</p>
       <button id="closeVipInfoBottom" class="profile-settings-done" type="button">Mengerti</button>
     </div>
   </dialog>
@@ -325,6 +335,6 @@
   </dialog>
 
   <script src="./supabase-config.js"></script>
-  <script src="app.js?v=88"></script>
+  <script src="app.js?v=89"></script>
 </body>
 </html>
