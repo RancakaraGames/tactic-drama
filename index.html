@@ -93,6 +93,7 @@
         <label>Nomor episode<input name="episode" type="number" min="1" value="1" required></label>
         <label>Judul episode<input name="episodeTitle" placeholder="Contoh: Pertemuan pertama"></label>
         <label>File video<input name="video" type="file" accept="video/mp4,video/webm,video/quicktime" required></label>
+        <div id="uploadPreview" class="upload-preview" hidden><img id="uploadPosterPreview" alt="Pratinjau poster"><div><strong id="uploadVideoName">Video belum dipilih</strong><span id="uploadVideoSize"></span></div></div>
         <button class="primary-btn full" type="submit">Unggah video ke TacTic Drama</button>
       </form>
       <p id="uploadStatus" class="status" role="status"></p>

@@ -242,6 +242,20 @@ $("#likeDrama").addEventListener("click",async()=>{
 
 $("#shareDrama").addEventListener("click",async()=>{if(!activeDrama)return;const shareData={title:activeDrama.title,text:"Tonton "+activeDrama.title+" di TacTic Drama",url:location.href};try{if(navigator.share)await navigator.share(shareData);else if(navigator.clipboard){await navigator.clipboard.writeText(shareData.text+" — "+shareData.url);setStatus("#shareStatus","Link berhasil disalin.")}else setStatus("#shareStatus","Bagikan: "+shareData.url)}catch(e){if(e.name!=="AbortError")setStatus("#shareStatus","Belum bisa membagikan link dari perangkat ini.")}});
 const targetSelect=$("#targetDrama");function syncTargetForm(){const existing=Boolean(targetSelect?.value);$("#posterField").hidden=existing;$("#uploadForm [name=title]").disabled=existing;$("#uploadForm [name=description]").disabled=existing}targetSelect?.addEventListener("change",syncTargetForm);syncTargetForm();
+ const uploadForm=$("#uploadForm");
+ let posterPreviewUrl=null;
+ function formatUploadSize(bytes){if(!Number.isFinite(bytes)||bytes<0)return "";const units=["B","KB","MB","GB"];let value=bytes,index=0;while(value>=1024&&index<units.length-1){value/=1024;index++}return value.toFixed(index===0?0:1)+" "+units[index]}
+ function updateUploadPreview(){
+  const poster=uploadForm?.elements.poster?.files?.[0],videoFile=uploadForm?.elements.video?.files?.[0],preview=$("#uploadPreview"),image=$("#uploadPosterPreview"),name=$("#uploadVideoName"),size=$("#uploadVideoSize");
+  if(posterPreviewUrl){URL.revokeObjectURL(posterPreviewUrl);posterPreviewUrl=null}
+  if(poster){posterPreviewUrl=URL.createObjectURL(poster);image.src=posterPreviewUrl;image.hidden=false}else{image.removeAttribute("src");image.hidden=true}
+  name.textContent=videoFile?videoFile.name:"Pilih file video dari galeri";
+  size.textContent=videoFile?formatUploadSize(videoFile.size)+" · "+(videoFile.type||"Format tidak diketahui"):"";
+  preview.hidden=!poster&&!videoFile;
+ }
+ uploadForm?.elements.poster?.addEventListener("change",updateUploadPreview);
+ uploadForm?.elements.video?.addEventListener("change",updateUploadPreview);
+ uploadForm?.addEventListener("reset",()=>{setTimeout(updateUploadPreview,0)});
  const searchBox=$("#dramaSearch");searchBox.addEventListener("input",()=>{searchQuery=searchBox.value.trim().toLocaleLowerCase("id");render()});
 $("#dramaSort")?.addEventListener("change",render);
 $("#reloadCatalog")?.addEventListener("click",()=>loadCatalog());
