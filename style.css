@@ -728,3 +728,31 @@ body.clips-mode .player-dialog[open]{z-index:20}
 .auth-terms{margin:15px 4px 0;color:#777984;font-size:9px;line-height:1.6;text-align:center}
 .admin-dialog .status{margin:10px 0 0;line-height:1.55}
 @media(max-width:420px){.admin-dialog{padding:25px 18px 19px;border-radius:22px}.auth-brand{padding-bottom:17px}}
+
+
+/* Authentication screen refresh v74: explicit cascade over legacy dialog rules */
+#adminDialog.admin-dialog{display:none;width:min(92vw,410px);max-width:410px;max-height:min(90dvh,760px);margin:auto;padding:27px 22px 22px;overflow-y:auto;border:1px solid #ffffff20;border-radius:24px;background:linear-gradient(160deg,#20212a 0%,#111218 72%);color:#fff;box-shadow:0 28px 90px #000c}
+#adminDialog.admin-dialog[open]{display:block}
+#adminDialog .auth-brand{display:grid;justify-items:center;gap:8px;padding:8px 0 21px;text-align:center}
+#adminDialog .auth-brand-mark{display:grid;place-items:center;width:62px;height:62px;border-radius:19px;background:linear-gradient(145deg,#ff3447,#b90018);color:#fff;font-size:31px;font-weight:950;box-shadow:0 9px 28px #e5091444}
+#adminDialog .auth-brand strong{color:#fff;font-size:23px;font-weight:900;letter-spacing:-.7px}
+#adminDialog .auth-brand p{margin:0;color:#b7b8c2;font-size:12px}
+#adminDialog .auth-tabs{display:grid;grid-template-columns:1fr 1fr;gap:5px;padding:4px;margin:0 0 15px;border:1px solid #ffffff15;border-radius:12px;background:#090a0f}
+#adminDialog .auth-tab{min-height:43px;border:0;border-radius:9px;background:transparent;color:#a0a1ab;font-size:13px;font-weight:800}
+#adminDialog .auth-tab.active{background:#e50914;color:#fff;box-shadow:0 3px 12px #e5091438}
+#adminDialog .auth-notice{margin:0 0 14px;color:#b7b8c2;font-size:11px;text-align:center}
+#adminDialog .auth-form{display:grid;gap:12px;margin:0}
+#adminDialog .auth-form[hidden],#adminDialog [hidden]{display:none!important}
+#adminDialog .auth-form label{display:grid;gap:7px;color:#e0e0e5;font-size:11px;font-weight:750}
+#adminDialog .auth-form input{width:100%;min-height:49px;padding:12px 13px;border:1px solid #393b46;border-radius:11px;background:#191b23;color:#fff;font-size:13px}
+#adminDialog .auth-form input:focus{outline:2px solid #e5091466;border-color:#e50914}
+#adminDialog .auth-submit{width:100%;min-height:49px;margin-top:3px;border:0;border-radius:11px;background:linear-gradient(135deg,#ff293d,#c9001b);color:#fff;font-size:13px;font-weight:900;box-shadow:0 7px 20px #e5091433}
+#adminDialog .auth-link{display:block;margin:10px 0 0 auto;padding:6px 0;border:0;background:transparent;color:#ff6975;font-size:11px;font-weight:750}
+#adminDialog .google-auth-group[hidden]{display:none!important}
+#adminDialog .auth-divider{display:flex;align-items:center;gap:12px;margin:17px 0;color:#858692;font-size:9px;font-weight:800;letter-spacing:1.4px}
+#adminDialog .auth-divider:before,#adminDialog .auth-divider:after{content:"";height:1px;flex:1;background:#ffffff20}
+#adminDialog .google-auth-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:48px;border:1px solid #d9d9df;border-radius:11px;background:#fff;color:#202127;font-size:12px;font-weight:850}
+#adminDialog .google-g{font-size:19px;font-weight:950;color:#4285f4}
+#adminDialog .auth-terms{margin:14px 4px 0;color:#858692;font-size:9px;line-height:1.6;text-align:center}
+#adminDialog .status{margin:10px 0 0;line-height:1.55}
+@media(max-width:420px){#adminDialog.admin-dialog{width:calc(100vw - 28px);padding:24px 18px 20px;border-radius:22px}}

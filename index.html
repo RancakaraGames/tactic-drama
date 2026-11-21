@@ -8,7 +8,7 @@
   <title>TacTic Drama</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=74">
 </head>
 <body>
   <header class="topbar">
@@ -97,21 +97,23 @@
       <label>Kata sandi<input name="password" type="password" autocomplete="current-password" minlength="6" required placeholder="Masukkan kata sandi"></label>
       <button class="primary-btn full auth-submit" type="submit">Masuk</button>
     </form>
+    <form id="signupForm" class="auth-form" hidden>
+      <label>Email<input name="email" type="email" autocomplete="email" required placeholder="Masukkan alamat email"></label>
+      <label>Buat kata sandi<input name="password" type="password" autocomplete="new-password" minlength="6" required placeholder="Minimal 6 karakter"></label>
+      <button class="primary-btn full auth-submit" type="submit">Buat akun baru</button>
+    </form>
     <button id="forgotPasswordBtn" class="text-btn auth-link" type="button">Lupa kata sandi?</button>
     <button id="resendConfirmationBtn" class="text-btn auth-link" type="button" hidden>Kirim ulang verifikasi email</button>
-    <div class="auth-divider"><span>ATAU</span></div>
-    <button id="googleAuthBtn" class="google-auth-btn" type="button"><span class="google-g">G</span>Lanjutkan dengan Google</button>
-    <p class="auth-terms">Dengan melanjutkan, kamu menyetujui Ketentuan Layanan dan Kebijakan Privasi.</p>
+    <div id="googleAuthGroup" class="google-auth-group">
+      <div class="auth-divider"><span>ATAU</span></div>
+      <button id="googleAuthBtn" class="google-auth-btn" type="button"><span class="google-g">G</span>Lanjutkan dengan Google</button>
+      <p class="auth-terms">Dengan melanjutkan, kamu menyetujui Ketentuan Layanan dan Kebijakan Privasi.</p>
+    </div>
     <form id="resetPasswordForm" class="auth-form" hidden>
       <p class="notice">Buat kata sandi baru untuk akun TacTic Drama kamu.</p>
       <label>Kata sandi baru<input name="password" type="password" autocomplete="new-password" minlength="6" required placeholder="Minimal 6 karakter"></label>
       <label>Ulangi kata sandi<input name="confirmPassword" type="password" autocomplete="new-password" minlength="6" required placeholder="Ulangi kata sandi baru"></label>
       <button class="primary-btn full auth-submit" type="submit">Simpan kata sandi baru</button>
-    </form>
-    <form id="signupForm" class="auth-form" hidden>
-      <label>Email<input name="email" type="email" autocomplete="email" required placeholder="Masukkan alamat email"></label>
-      <label>Buat kata sandi<input name="password" type="password" autocomplete="new-password" minlength="6" required placeholder="Minimal 6 karakter"></label>
-      <button class="primary-btn full auth-submit" type="submit">Buat akun baru</button>
     </form>
     <section id="viewerAccount" class="viewer-account" hidden><p class="eyebrow">AKUN PENONTON</p><strong id="viewerEmail">Akun aktif</strong><p>Akunmu siap digunakan. Program reward akan dibuka setelah sumber iklan, aturan kelayakan, dan pembayaran resmi siap.</p><button id="viewerLogoutBtn" class="secondary-btn full" type="button">Keluar dari akun</button></section>
     <p id="loginStatus" class="status" role="status"></p>
@@ -219,6 +221,6 @@
     </section>
   </dialog>
   <script src="./supabase-config.js"></script>
-  <script src="app.js?v=72"></script>
+  <script src="app.js?v=74"></script>
 </body>
 </html>

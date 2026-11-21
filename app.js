@@ -722,6 +722,7 @@ function setAuthMode(mode){
  $("#forgotPasswordBtn").hidden=!login;$("#resendConfirmationBtn").hidden=true;
  $("#authLoginTab").classList.toggle("active",login);$("#authSignupTab").classList.toggle("active",!login);
  $("#authLoginTab").setAttribute("aria-selected",String(login));$("#authSignupTab").setAttribute("aria-selected",String(!login));
+ $("#googleAuthGroup").hidden=!login;
  $("#loginStatus").textContent="";
 }
 $("#authLoginTab").addEventListener("click",()=>setAuthMode("login"));
