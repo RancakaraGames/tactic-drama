@@ -480,6 +480,52 @@ async function loadCreatorEarnings(userId){
  }
 }
 
+async function exportCreatorEarningsCsv(){
+ const status=$("#creatorEarningsStatus");
+ if(!supa||!status)return;
+ const button=$("#exportCreatorEarnings");
+ if(button){button.disabled=true;button.textContent="Menyiapkan CSV...";}
+ try{
+  const {data,error}=await supa.from("creator_earnings_ledger")
+   .select("entry_type,amount_minor,currency,description,period_start,period_end,created_at")
+   .order("created_at",{ascending:false}).limit(1000);
+  if(error)throw error;
+  if(!data?.length){status.textContent="Belum ada transaksi yang dapat diekspor.";return;}
+  const labels={earning:"Pendapatan",payout:"Pencairan",reversal:"Pembatalan",adjustment:"Penyesuaian"};
+  const safeCell=value=>{
+   let cell=String(value??"");
+   if(/^[\\s\\u0000-\\u001f]*[=+@-]/.test(cell))cell="'"+cell;
+   return '"'+cell.replace(/"/g,'""')+'"';
+  };
+  const rows=[
+   ["Tanggal","Jenis transaksi","Nominal dalam unit minor","Mata uang","Keterangan","Periode mulai","Periode selesai"],
+   ...data.map(entry=>[
+    entry.created_at?new Date(entry.created_at).toISOString():"",
+    labels[entry.entry_type]||"Transaksi",
+    entry.amount_minor,
+    entry.currency,
+    entry.description,
+    entry.period_start,
+    entry.period_end
+   ])
+  ];
+  const csv="\\uFEFF"+rows.map(row=>row.map(safeCell).join(",")).join("\\r\\n");
+  const url=URL.createObjectURL(new Blob([csv],{type:"text/csv;charset=utf-8"}));
+  const link=document.createElement("a");
+  link.href=url;
+  link.download="tactic-drama-riwayat-penghasilan-"+new Date().toISOString().slice(0,10)+".csv";
+  document.body.appendChild(link);link.click();link.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+  status.textContent="Berhasil menyiapkan "+data.length+" transaksi untuk diekspor. Maksimal 1.000 transaksi terbaru per file.";
+ }catch(err){
+  status.textContent="Riwayat transaksi gagal diekspor. Coba lagi setelah koneksi pulih.";
+  console.warn("Ekspor riwayat penghasilan gagal:",err?.message||err);
+ }finally{
+  if(button){button.disabled=false;button.textContent="Ekspor riwayat CSV";}
+ }
+}
+$("#exportCreatorEarnings")?.addEventListener("click",exportCreatorEarningsCsv);
+
 function exportCreatorStatsCsv(){
  if(!creatorPerformanceData.length)return;
  const safeCell=value=>{let text=String(value??"");if(/^[=+@-]/.test(text))text="'"+text;return '"'+text.replace(/"/g,'""')+'"'};
