@@ -505,3 +505,5 @@ dialog{overscroll-behavior:contain}
 .creator-appeal-admin-actions button{font-size:10px}
 
 .creator-appeal-history{margin-top:10px}.creator-appeal-admin-item b{color:#d9c49e;font-weight:600}
+
+.creator-transaction-section{margin-top:15px;padding-top:13px;border-top:1px solid #ffffff18}.creator-transaction-section h4{margin:0;font-size:12px;color:#f0d5a0}.creator-transaction-list{display:grid;gap:8px;margin-top:10px}.creator-transaction{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;padding:10px;border:1px solid #ffffff12;border-radius:11px;background:#100e16a8}.creator-transaction-copy{display:grid;gap:4px;min-width:0}.creator-transaction-copy strong{font-size:11px;color:#f2e8d9}.creator-transaction-copy span{font-size:10px;color:#c2b7c5;overflow-wrap:anywhere}.creator-transaction-copy small{font-size:9px;color:#93899a}.creator-transaction-amount{flex-shrink:0;font-size:11px;color:#f0d5a0;font-variant-numeric:tabular-nums}.creator-transaction-empty{margin:0;padding:12px;border:1px dashed #ffffff20;border-radius:10px;color:#a99eaa;font-size:10px;line-height:1.5;text-align:center}

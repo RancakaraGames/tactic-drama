@@ -439,20 +439,44 @@ async function loadCreatorEligibility(userId){
 }
 
 async function loadCreatorEarnings(userId){
- const status=$("#creatorEarningsStatus");if(!supa||!userId||!status)return;
+ const status=$("#creatorEarningsStatus"),history=$("#creatorEarningsHistory");
+ if(!supa||!userId||!status)return;
  status.textContent="Memeriksa buku transaksi...";
+ if(history)history.innerHTML='<p class="creator-transaction-empty">Memuat riwayat transaksi...</p>';
  try{
   const {data,error}=await supa.rpc("get_creator_earnings_summary");
   if(error)throw error;
   const row=Array.isArray(data)?data[0]:data;
-  const format=value=>Number(value||0).toLocaleString("id-ID",{style:"currency",currency:"IDR",maximumFractionDigits:0});
-  $("#creatorEarned").textContent=format(row?.total_earned_minor);
-  $("#creatorPaid").textContent=format(row?.total_paid_minor);
-  $("#creatorAvailable").textContent=format(row?.available_minor);
+  const format=(value,currency="IDR")=>{
+   const code=/^[A-Z]{3}$/.test(currency||"")?currency:"IDR";
+   const digits=new Intl.NumberFormat("id-ID",{style:"currency",currency:code}).resolvedOptions().maximumFractionDigits;
+   return Number(value||0)/(10**digits);
+  };
+  const money=(value,currency="IDR")=>new Intl.NumberFormat("id-ID",{style:"currency",currency:/^[A-Z]{3}$/.test(currency||"")?currency:"IDR",maximumFractionDigits:2}).format(format(value,currency));
+  $("#creatorEarned").textContent=money(row?.total_earned_minor);
+  $("#creatorPaid").textContent=money(row?.total_paid_minor);
+  $("#creatorAvailable").textContent=money(row?.available_minor);
   status.textContent="Buku transaksi terhubung. Monetisasi belum aktif sampai jaringan iklan dan sumber pembayaran resmi dihubungkan.";
+  const {data:entries,error:entryError}=await supa.from("creator_earnings_ledger")
+   .select("id,entry_type,amount_minor,currency,description,period_start,period_end,created_at")
+   .order("created_at",{ascending:false}).limit(20);
+  if(entryError)throw entryError;
+  if(history){
+   if(!entries?.length){history.innerHTML='<p class="creator-transaction-empty">Belum ada transaksi. Riwayat akan muncul setelah pendapatan atau pencairan terverifikasi.</p>';return;}
+   const labels={earning:"Pendapatan",payout:"Pencairan",reversal:"Pembatalan",adjustment:"Penyesuaian"};
+   history.innerHTML=entries.map(entry=>{
+    const date=new Date(entry.created_at);
+    const dateText=Number.isNaN(date.getTime())?"Tanggal tidak tersedia":date.toLocaleString("id-ID",{dateStyle:"medium",timeStyle:"short"});
+    const amount=money(Math.abs(Number(entry.amount_minor||0)),entry.currency);
+    const sign=Number(entry.amount_minor)<0?"−":"+";
+    const period=entry.period_start&&entry.period_end?'<small>Periode '+escapeHtml(entry.period_start)+' – '+escapeHtml(entry.period_end)+'</small>':"";
+    return '<article class="creator-transaction"><div class="creator-transaction-copy"><strong>'+escapeHtml(labels[entry.entry_type]||"Transaksi")+'</strong><span>'+escapeHtml(entry.description||"")+'</span><small>'+escapeHtml(dateText)+'</small>'+period+'</div><strong class="creator-transaction-amount">'+sign+escapeHtml(amount)+'</strong></article>';
+   }).join("");
+  }
  }catch(err){
   status.textContent="Data penghasilan belum dapat dimuat. Saldo tidak dapat diubah dari aplikasi.";
-  console.warn("Ringkasan penghasilan kreator belum dapat dimuat:",err?.message||err);
+  if(history)history.innerHTML='<p class="creator-transaction-empty">Riwayat transaksi belum dapat dimuat. Coba lagi nanti.</p>';
+  console.warn("Ringkasan atau riwayat penghasilan kreator belum dapat dimuat:",err?.message||err);
  }
 }
 
