@@ -86,25 +86,32 @@
   </dialog>
   <dialog id="adminDialog" class="admin-dialog">
     <button class="close-btn" data-close="adminDialog" aria-label="Tutup">×</button>
-    <p class="eyebrow">AKUN TAC TIC DRAMA</p><h2>Daftar / Masuk</h2>
-    <p class="notice" id="backendNotice">Tonton tanpa akun atau masuk untuk fitur penonton.</p>
-    <form id="loginForm">
-      <label>Email<input name="email" type="email" autocomplete="username" required placeholder="Email kamu"></label>
-      <label>Password<input name="password" type="password" autocomplete="current-password" minlength="6" required placeholder="Password"></label>
-      <button class="primary-btn full" type="submit">Masuk</button>
+    <div class="auth-brand"><span class="auth-brand-mark">T</span><strong>TacTic Drama</strong><p>Masuk dan nikmati cerita favoritmu</p></div>
+    <div class="auth-tabs" role="tablist" aria-label="Jenis akun">
+      <button id="authLoginTab" class="auth-tab active" type="button" role="tab" aria-selected="true">Masuk</button>
+      <button id="authSignupTab" class="auth-tab" type="button" role="tab" aria-selected="false">Daftar</button>
+    </div>
+    <p class="notice auth-notice" id="backendNotice">Tonton tanpa akun atau masuk untuk fitur penonton.</p>
+    <form id="loginForm" class="auth-form">
+      <label>Email<input name="email" type="email" autocomplete="username" required placeholder="Masukkan alamat email"></label>
+      <label>Kata sandi<input name="password" type="password" autocomplete="current-password" minlength="6" required placeholder="Masukkan kata sandi"></label>
+      <button class="primary-btn full auth-submit" type="submit">Masuk</button>
     </form>
-    <button id="forgotPasswordBtn" class="text-btn" type="button">Lupa password?</button>
-    <button id="resendConfirmationBtn" class="text-btn" type="button" hidden>Kirim ulang verifikasi email</button>
-    <form id="resetPasswordForm" hidden>
-      <p class="notice">Buat password baru untuk akun TacTic Drama kamu.</p>
-      <label>Password baru<input name="password" type="password" autocomplete="new-password" minlength="6" required placeholder="Minimal 6 karakter"></label>
-      <label>Ulangi password<input name="confirmPassword" type="password" autocomplete="new-password" minlength="6" required placeholder="Ulangi password baru"></label>
-      <button class="primary-btn full" type="submit">Simpan password baru</button>
+    <button id="forgotPasswordBtn" class="text-btn auth-link" type="button">Lupa kata sandi?</button>
+    <button id="resendConfirmationBtn" class="text-btn auth-link" type="button" hidden>Kirim ulang verifikasi email</button>
+    <div class="auth-divider"><span>ATAU</span></div>
+    <button id="googleAuthBtn" class="google-auth-btn" type="button"><span class="google-g">G</span>Lanjutkan dengan Google</button>
+    <p class="auth-terms">Dengan melanjutkan, kamu menyetujui Ketentuan Layanan dan Kebijakan Privasi.</p>
+    <form id="resetPasswordForm" class="auth-form" hidden>
+      <p class="notice">Buat kata sandi baru untuk akun TacTic Drama kamu.</p>
+      <label>Kata sandi baru<input name="password" type="password" autocomplete="new-password" minlength="6" required placeholder="Minimal 6 karakter"></label>
+      <label>Ulangi kata sandi<input name="confirmPassword" type="password" autocomplete="new-password" minlength="6" required placeholder="Ulangi kata sandi baru"></label>
+      <button class="primary-btn full auth-submit" type="submit">Simpan kata sandi baru</button>
     </form>
-    <form id="signupForm">
-      <label>Email untuk daftar<input name="email" type="email" autocomplete="email" required placeholder="Email kamu"></label>
-      <label>Buat password<input name="password" type="password" autocomplete="new-password" minlength="6" required placeholder="Minimal 6 karakter"></label>
-      <button class="secondary-btn full" type="submit">Buat akun baru</button>
+    <form id="signupForm" class="auth-form" hidden>
+      <label>Email<input name="email" type="email" autocomplete="email" required placeholder="Masukkan alamat email"></label>
+      <label>Buat kata sandi<input name="password" type="password" autocomplete="new-password" minlength="6" required placeholder="Minimal 6 karakter"></label>
+      <button class="primary-btn full auth-submit" type="submit">Buat akun baru</button>
     </form>
     <section id="viewerAccount" class="viewer-account" hidden><p class="eyebrow">AKUN PENONTON</p><strong id="viewerEmail">Akun aktif</strong><p>Akunmu siap digunakan. Program reward akan dibuka setelah sumber iklan, aturan kelayakan, dan pembayaran resmi siap.</p><button id="viewerLogoutBtn" class="secondary-btn full" type="button">Keluar dari akun</button></section>
     <p id="loginStatus" class="status" role="status"></p>

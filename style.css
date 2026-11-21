@@ -699,3 +699,32 @@ body.clips-mode .player-dialog[open]{z-index:20}
 .guest-prompt-dialog .primary-btn{min-height:46px;border-radius:10px;background:#e50914;color:#fff;font-size:13px;font-weight:850}
 .guest-continue-btn{display:block;width:100%;margin-top:12px;padding:11px 8px;border:0;background:transparent;color:#d0d1d7;font-size:12px;font-weight:700}
 .guest-continue-btn:active{color:#fff}
+
+/* TacTic Drama modern authentication panel */
+.admin-dialog{width:min(92vw,420px);max-height:min(90dvh,760px);padding:28px 22px 22px;border:1px solid #ffffff18;border-radius:24px;background:linear-gradient(155deg,#1b1c24,#0d0e13 72%);box-shadow:0 28px 90px #000b}
+.admin-dialog>.close-btn{position:sticky;float:right;top:0;z-index:3;width:34px;height:34px;padding:0;border:1px solid #ffffff14;border-radius:50%;background:#ffffff0d;color:#bfc0c8;font-size:23px;line-height:1}
+.auth-brand{display:grid;justify-items:center;gap:8px;padding:5px 0 21px;text-align:center}
+.auth-brand-mark{display:grid;place-items:center;width:58px;height:58px;border-radius:18px;background:#e50914;color:#fff;font-size:30px;font-weight:950;box-shadow:0 9px 28px #e5091438}
+.auth-brand strong{font-size:22px;font-weight:900;letter-spacing:-.6px}
+.auth-brand p{margin:0;color:#a5a6b0;font-size:12px}
+.auth-tabs{display:grid;grid-template-columns:1fr 1fr;gap:5px;padding:4px;margin:0 0 15px;border:1px solid #ffffff10;border-radius:12px;background:#090a0f}
+.auth-tab{min-height:40px;border:0;border-radius:9px;background:transparent;color:#92939e;font-size:13px;font-weight:800}
+.auth-tab.active{background:#282a33;color:#fff;box-shadow:0 2px 9px #0005}
+.auth-notice{margin:0 0 13px;font-size:11px;text-align:center}
+.admin-dialog .auth-form{gap:12px;margin:0}
+.admin-dialog .auth-form label{gap:7px;color:#d6d7df;font-size:11px;font-weight:700}
+.admin-dialog .auth-form input{min-height:47px;padding:12px 13px;border:1px solid #343641;border-radius:11px;background:#191b23;color:#fff;font-size:13px}
+.admin-dialog .auth-form input:focus{outline:2px solid #e5091466;border-color:#e50914}
+.admin-dialog .password-input-wrap{position:relative;display:flex;align-items:center}
+.admin-dialog .password-input-wrap input{padding-right:88px}
+.admin-dialog .password-toggle{right:8px;color:#b8bac4;font-size:10px}
+.admin-dialog .auth-submit{min-height:47px;margin-top:4px;border-radius:11px;background:#e50914;color:#fff;font-size:13px;font-weight:900}
+.auth-link{display:block;margin:12px 0 0 auto;padding:5px 0;background:transparent;color:#ff626b;font-size:11px;font-weight:700}
+.auth-divider{display:flex;align-items:center;gap:12px;margin:17px 0;color:#747681;font-size:9px;font-weight:800;letter-spacing:1.4px}
+.auth-divider:before,.auth-divider:after{content:"";height:1px;flex:1;background:#ffffff18}
+.google-auth-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:46px;border:1px solid #3b3d48;border-radius:11px;background:#f7f7f8;color:#202127;font-size:12px;font-weight:800}
+.google-auth-btn:disabled{opacity:.6}
+.google-g{font-size:18px;font-weight:950;color:#4285f4}
+.auth-terms{margin:15px 4px 0;color:#777984;font-size:9px;line-height:1.6;text-align:center}
+.admin-dialog .status{margin:10px 0 0;line-height:1.55}
+@media(max-width:420px){.admin-dialog{padding:25px 18px 19px;border-radius:22px}.auth-brand{padding-bottom:17px}}
