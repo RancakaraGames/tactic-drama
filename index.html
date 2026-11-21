@@ -8,7 +8,7 @@
   <title>TacTic Drama</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
-  <link rel="stylesheet" href="style.css?v=79">
+  <link rel="stylesheet" href="style.css?v=80">
 </head>
 <body>
   <header class="topbar">
@@ -248,7 +248,31 @@
       <button id="logoutBtn" class="primary-btn full" type="button">Keluar dari akun</button>
     </section>
   </dialog>
+
+  <dialog id="profileSettingsDialog" class="profile-settings-dialog" aria-labelledby="profileSettingsTitle">
+    <div class="profile-settings-shell">
+      <div class="profile-settings-heading">
+        <div><p class="eyebrow">TACTIC DRAMA</p><h2 id="profileSettingsTitle">Pengaturan</h2><p>Kelola akun dan preferensi menontonmu.</p></div>
+        <button id="closeProfileSettings" class="profile-settings-close" type="button" aria-label="Tutup pengaturan">×</button>
+      </div>
+      <div class="profile-settings-account">
+        <span class="settings-account-avatar" id="settingsAccountAvatar">T</span>
+        <div><strong id="settingsAccountName">Penonton TacTic</strong><small id="settingsAccountEmail">Mode tamu</small></div>
+      </div>
+      <div class="profile-settings-list">
+        <div class="profile-settings-row"><span class="settings-row-icon">♙</span><div><strong>Akun</strong><small id="settingsAccountStatus">Informasi akun penonton</small></div><span class="settings-row-value">›</span></div>
+        <div class="profile-settings-row"><span class="settings-row-icon">文</span><div><strong>Bahasa aplikasi</strong><small>Bahasa Indonesia</small></div><span class="settings-row-value">ID</span></div>
+        <div class="profile-settings-row"><span class="settings-row-icon">?</span><div><strong>Pusat bantuan</strong><small>Bantuan dan pertanyaan umum</small></div><span class="settings-row-value">›</span></div>
+        <div class="profile-settings-row"><span class="settings-row-icon">◇</span><div><strong>Privasi dan keamanan</strong><small>Informasi perlindungan akun</small></div><span class="settings-row-value">›</span></div>
+      </div>
+      <p id="profileSettingsNotice" class="profile-settings-notice" role="status">Beberapa pengaturan akan tersedia pada pembaruan berikutnya.</p>
+      <button id="settingsLoginButton" class="profile-settings-login" type="button">Masuk / Daftar</button>
+      <button id="settingsLogoutButton" class="profile-settings-logout" type="button" hidden>Keluar dari akun</button>
+      <button id="closeProfileSettingsBottom" class="profile-settings-done" type="button">Selesai</button>
+    </div>
+  </dialog>
+
   <script src="./supabase-config.js"></script>
-  <script src="app.js?v=79"></script>
+  <script src="app.js?v=80"></script>
 </body>
 </html>

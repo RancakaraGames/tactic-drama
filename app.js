@@ -739,7 +739,27 @@ $("#profileLoginBtn").addEventListener("click",()=>admin.showModal());
 document.querySelectorAll("[data-profile-tab]").forEach(button=>button.addEventListener("click",()=>{collectionView=button.dataset.profileTab;activeTab="collection";setActiveNav("collection");render();window.scrollTo({top:0,behavior:"smooth"})}));
 document.querySelectorAll("[data-profile-view]").forEach(button=>button.addEventListener("click",()=>{profileCollectionView=button.dataset.profileView;renderProfileCollections()}));
 document.querySelectorAll("[data-profile-filter]").forEach(button=>button.addEventListener("click",()=>{profileHistoryFilter=button.dataset.profileFilter;renderProfileCollections()}));
-$("#profileSettingsBtn")?.addEventListener("click",()=>{if(supa)admin.showModal();else admin.showModal()});
+
+const profileSettingsDialog=$("#profileSettingsDialog");
+function openProfileSettings(){
+ const email=$("#profileEmail")?.textContent||"";
+ const title=$("#profileTitle")?.textContent||"Penonton TacTic";
+ const signedIn=!!(supa&&email&&email!=="Kamu sedang menonton sebagai tamu.");
+ $("#settingsAccountName").textContent=title;
+ $("#settingsAccountEmail").textContent=email;
+ $("#settingsAccountAvatar").textContent=(title.trim().charAt(0)||"T").toUpperCase();
+ $("#settingsAccountStatus").textContent=signedIn?"Akun penonton aktif":"Kamu sedang menggunakan mode tamu";
+ $("#settingsLoginButton").hidden=signedIn;
+ $("#settingsLogoutButton").hidden=!signedIn;
+ $("#profileSettingsNotice").textContent="Bahasa Indonesia aktif. Menu bantuan dan privasi akan dilengkapi bertahap.";
+ if(profileSettingsDialog&&!profileSettingsDialog.open)profileSettingsDialog.showModal();
+}
+$("#profileSettingsBtn")?.addEventListener("click",openProfileSettings);
+$("#closeProfileSettings")?.addEventListener("click",()=>profileSettingsDialog?.close());
+$("#closeProfileSettingsBottom")?.addEventListener("click",()=>profileSettingsDialog?.close());
+$("#settingsLoginButton")?.addEventListener("click",()=>{profileSettingsDialog?.close();admin.showModal()});
+$("#settingsLogoutButton")?.addEventListener("click",async()=>{profileSettingsDialog?.close();await signOutViewer()});
+
 
 $("#profileLogoutBtn").addEventListener("click",signOutViewer);
 function storagePathFromPublicUrl(url,bucket){if(!url)return null;try{const u=new URL(url);const marker="/storage/v1/object/public/"+bucket+"/";const at=u.pathname.indexOf(marker);return at<0?null:decodeURIComponent(u.pathname.slice(at+marker.length))}catch{return null}}
