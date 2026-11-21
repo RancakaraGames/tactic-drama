@@ -400,3 +400,10 @@ dialog{overscroll-behavior:contain}
 
 
 .keyboard-hint{display:block;margin:8px 0 12px;color:#9b929f;font-size:10px;line-height:1.5}@media(max-width:700px){.keyboard-hint{display:none}}
+
+
+/* Accessible password visibility controls */
+.password-input-wrap{display:flex;align-items:stretch;gap:8px;width:100%}
+.password-input-wrap input{flex:1;min-width:0}
+.password-toggle{flex:0 0 auto;min-width:88px;padding:0 12px;border:1px solid #62513e;border-radius:10px;background:#2b241f;color:#f0d3a2;font:inherit;font-size:11px;font-weight:700}
+.password-toggle:focus-visible{outline:2px solid #e9c58a;outline-offset:3px}
