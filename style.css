@@ -296,3 +296,7 @@ input:focus,textarea:focus{outline:1px solid #e9c58a80;border-color:var(--gold)}
 /* Comment character counters */
 .comment-counter{display:block;margin-top:-2px;color:#9f96a3;font-size:10px;text-align:right;font-variant-numeric:tabular-nums}
 .comment-counter{letter-spacing:.02em}
+
+
+/* Search feedback and one-tap reset */
+.search-wrap{position:relative}.search-wrap input{padding-right:43px}.clear-search-btn{position:absolute;right:8px;top:50%;transform:translateY(-50%);width:30px;height:30px;border:1px solid #e9c58a45;border-radius:50%;background:#29222d;color:#e9c58a;font-size:20px;line-height:1;display:grid;place-items:center}.clear-search-btn[hidden]{display:none}.catalog-count{margin:-8px 18px 8px;color:#e9c58a;font-size:10px;letter-spacing:.03em;font-variant-numeric:tabular-nums}
