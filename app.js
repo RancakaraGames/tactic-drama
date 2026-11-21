@@ -88,6 +88,25 @@ function updateSeekTime(){
 }
 $("#seekBack").addEventListener("click",()=>seekVideoBy(-10));
 $("#seekForward").addEventListener("click",()=>seekVideoBy(10));
+document.addEventListener("keydown",event=>{
+ if(!player.open||event.altKey||event.ctrlKey||event.metaKey)return;
+ const target=event.target;
+ if(target instanceof HTMLElement&&(target.isContentEditable||["INPUT","TEXTAREA","SELECT","BUTTON"].includes(target.tagName)))return;
+ let handled=true;
+ switch(event.key){
+  case " ":case "k":case "K":
+   if(video.paused)video.play().catch(()=>setVideoStatus("Tekan tombol putar untuk melanjutkan.",true));else video.pause();
+   break;
+  case "ArrowLeft":seekVideoBy(-10);break;
+  case "ArrowRight":seekVideoBy(10);break;
+  case "ArrowUp":video.volume=Math.min(1,Math.round((video.volume+0.05)*100)/100);video.muted=false;break;
+  case "ArrowDown":video.volume=Math.max(0,Math.round((video.volume-0.05)*100)/100);break;
+  case "m":case "M":video.muted=!video.muted;break;
+  default:handled=false;
+ }
+ if(handled)event.preventDefault();
+});
+
 function updateFullscreenButton(){const btn=$("#fullscreenVideo");if(!btn)return;const active=Boolean(document.fullscreenElement||video.webkitDisplayingFullscreen);btn.textContent=active?"⤢ Keluar layar penuh":"⛶ Layar penuh";btn.setAttribute("aria-pressed",String(active));btn.setAttribute("aria-label",active?"Keluar dari layar penuh":"Tampilkan video layar penuh")}
 $("#fullscreenVideo").addEventListener("click",async()=>{try{if(document.fullscreenElement){await document.exitFullscreen()}else if(video.webkitDisplayingFullscreen&&video.webkitExitFullscreen){video.webkitExitFullscreen()}else if(video.requestFullscreen){await video.requestFullscreen()}else if(video.webkitEnterFullscreen){video.webkitEnterFullscreen()}else{setStatus("#shareStatus","Mode layar penuh tidak didukung browser ini.")}}catch(err){setStatus("#shareStatus","Tidak dapat membuka layar penuh: "+(err?.message||"coba lagi"))}updateFullscreenButton()});
 document.addEventListener("fullscreenchange",updateFullscreenButton);
