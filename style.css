@@ -610,3 +610,22 @@ body{background:#08090c;color:#f7f7f7;font-family:Inter,Roboto,system-ui,sans-se
  .catalog-tools #installBtn{width:36px!important;min-width:36px!important;height:40px!important}
  .catalog-tools .search-submit{min-width:40px;padding:0 7px}
 }
+
+/* Connection state is a dot only; no visible Online/Offline label */
+.catalog-tools #networkStatus{
+ display:block!important;position:relative!important;
+ width:12px!important;height:12px!important;min-width:12px!important;
+ overflow:hidden!important;text-indent:-9999px!important;
+ white-space:nowrap!important;font-size:0!important;line-height:0!important;
+ color:transparent!important;background:transparent!important;
+}
+.catalog-tools #networkStatus:before{
+ content:""!important;position:absolute;inset:1px!important;
+ display:block!important;width:9px!important;height:9px!important;
+ border-radius:50%!important;background:#22c55e!important;
+ box-shadow:0 0 0 3px #22c55e25,0 0 8px #22c55e88!important;
+}
+.catalog-tools #networkStatus.is-offline:before{
+ background:#ef4444!important;
+ box-shadow:0 0 0 3px #ef444425,0 0 8px #ef444488!important;
+}

@@ -771,7 +771,7 @@ const targetSelect=$("#targetDrama");function syncTargetForm(){const existing=Bo
  const searchBox=$("#dramaSearch");searchBox.addEventListener("input",()=>{searchQuery=searchBox.value.trim().toLocaleLowerCase("id");render()});$("#searchSubmit")?.addEventListener("click",()=>{searchBox.dispatchEvent(new Event("input",{bubbles:true}));searchBox.blur()});searchBox.addEventListener("keydown",event=>{if(event.key==="Enter")$("#searchSubmit")?.click()});$("#clearSearch")?.addEventListener("click",()=>{searchBox.value="";searchQuery="";render();searchBox.focus()});
 $("#dramaSort")?.addEventListener("change",render);
 $("#reloadCatalog")?.addEventListener("click",()=>loadCatalog());
-function updateNetworkStatus(){const el=$("#networkStatus");if(!el)return;const online=navigator.onLine;el.textContent=online?"Online":"Offline";el.classList.toggle("is-offline",!online);el.setAttribute("aria-label",online?"Koneksi online":"Koneksi offline");el.title=online?"Online":"Offline"}
+function updateNetworkStatus(){const el=$("#networkStatus");if(!el)return;const online=navigator.onLine;el.classList.toggle("is-offline",!online);el.setAttribute("aria-label",online?"Koneksi online":"Koneksi offline");el.title=online?"Koneksi online":"Koneksi offline"}
 window.addEventListener("online",()=>{updateNetworkStatus();loadCatalog()});window.addEventListener("offline",updateNetworkStatus);updateNetworkStatus();
 render();
 const cfg=window.TACTIC_SUPABASE_CONFIG||{};
