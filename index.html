@@ -12,9 +12,6 @@
 </head>
 <body>
   <header class="topbar">
-    
-    <span id="networkStatus" class="network-status" role="status">Memeriksa koneksi…</span>
-    <button class="icon-btn" id="installBtn" hidden aria-label="Pasang aplikasi">↓</button>
   </header>
   <main>
     <section id="savedSection" class="saved-section" hidden><div class="saved-orb">♥</div><div class="saved-copy"><p class="eyebrow">KOLEKSI PRIBADI</p><h1>Drama <span>favoritmu.</span></h1><p>Simpan cerita pilihan agar mudah ditemukan dan ditonton kembali kapan saja.</p></div><div class="saved-summary"><strong id="savedCount">0</strong><span>DRAMA TERSIMPAN</span></div></section>
@@ -30,7 +27,7 @@
       <div><p class="eyebrow">UNTUKMU</p><h2>Drama pilihan</h2></div>
       <button id="reloadCatalog" class="refresh-btn" type="button">↻ Muat ulang</button>
     </section>
-    <div class="catalog-tools"><span class="brand-mark search-logo" aria-label="Logo TacTic">T</span><div class="search-wrap"><input id="dramaSearch" type="search" placeholder="Cari judul atau cerita drama..." aria-label="Cari judul atau cerita drama"><button id="clearSearch" class="clear-search-btn" type="button" hidden aria-label="Hapus pencarian">×</button><button id="searchSubmit" class="search-submit" type="button">Cari</button></div><label class="sort-control">Urutkan<select id="dramaSort" aria-label="Urutkan drama"><option value="newest">Terbaru</option><option value="popular">Paling disukai</option><option value="az">Judul A–Z</option><option value="za">Judul Z–A</option></select></label></div>
+    <div class="catalog-tools"><span class="brand-mark search-logo" aria-label="Logo TacTic">T</span><div class="search-wrap"><input id="dramaSearch" type="search" placeholder="Cari judul atau cerita drama..." aria-label="Cari judul atau cerita drama"><button id="clearSearch" class="clear-search-btn" type="button" hidden aria-label="Hapus pencarian">×</button><button id="searchSubmit" class="search-submit" type="button">Cari</button></div><button class="install-action" id="installBtn" type="button" aria-label="Pasang TacTic Drama">↓ <span>Pasang</span></button><span id="networkStatus" class="network-status" role="status" aria-label="Status koneksi" title="Status koneksi">Online</span></div>
     <p id="catalogCount" class="catalog-count" aria-live="polite">Drama ditampilkan</p><p id="catalogStatus" class="catalog-status" role="status" aria-live="polite"></p>
     <section id="historyTools" class="history-tools" hidden><span>Episode yang terakhir kamu tonton tersimpan di perangkat ini.</span><button id="clearHistory" class="secondary-btn" type="button">Hapus riwayat</button></section>
     <section id="dramaGrid" class="drama-grid" aria-live="polite"></section>

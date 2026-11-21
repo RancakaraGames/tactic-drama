@@ -555,3 +555,13 @@ body{background:#08090c;color:#f7f7f7;font-family:Inter,Roboto,system-ui,sans-se
 .card-meta strong{font-size:13px;line-height:1.35}.card-meta span{font-size:11px}
 .viewer-promo{margin:20px 12px 24px}.bottom-nav{background:#050505f5;border-top:1px solid #222}
 @media(min-width:650px){.catalog-tools{padding:16px 22px}.drama-grid{column-count:4;column-gap:16px;padding:0 18px}.drama-card{margin-bottom:16px}.poster{min-height:250px}}
+
+/* Install action and compact live connection indicator */
+.catalog-tools{display:flex!important;flex-wrap:nowrap;gap:8px;align-items:center}
+.catalog-tools .search-wrap{flex:1 1 auto;width:100%;min-width:0}
+.catalog-tools .install-action{display:flex;flex:0 0 auto;align-items:center;justify-content:center;gap:5px;min-height:43px;padding:0 11px;border:1px solid #ff454d55;border-radius:10px;background:linear-gradient(145deg,#e50914,#a90012);color:#fff;font-size:12px;font-weight:800;white-space:nowrap;box-shadow:0 4px 12px #e5091425}
+.catalog-tools .install-action[hidden]{display:none!important}
+.catalog-tools .network-status{position:static;display:flex;flex:0 0 12px;align-items:center;justify-content:center;width:12px;height:12px;margin:0;padding:0;border:0;background:transparent;font-size:0;line-height:0;opacity:1}
+.network-status:before{content:"";display:block;width:9px;height:9px;border-radius:50%;background:#22c55e;box-shadow:0 0 0 3px #22c55e25,0 0 9px #22c55e88}
+.network-status.is-offline:before{background:#ef4444;box-shadow:0 0 0 3px #ef444425,0 0 9px #ef444488}
+@media(max-width:360px){.catalog-tools{gap:6px;padding-left:9px;padding-right:9px}.catalog-tools .install-action{padding:0 8px;font-size:11px}.search-submit{padding:0 10px}}

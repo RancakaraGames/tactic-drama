@@ -771,7 +771,7 @@ const targetSelect=$("#targetDrama");function syncTargetForm(){const existing=Bo
  const searchBox=$("#dramaSearch");searchBox.addEventListener("input",()=>{searchQuery=searchBox.value.trim().toLocaleLowerCase("id");render()});$("#searchSubmit")?.addEventListener("click",()=>{searchBox.dispatchEvent(new Event("input",{bubbles:true}));searchBox.blur()});searchBox.addEventListener("keydown",event=>{if(event.key==="Enter")$("#searchSubmit")?.click()});$("#clearSearch")?.addEventListener("click",()=>{searchBox.value="";searchQuery="";render();searchBox.focus()});
 $("#dramaSort")?.addEventListener("change",render);
 $("#reloadCatalog")?.addEventListener("click",()=>loadCatalog());
-function updateNetworkStatus(){const el=$("#networkStatus");if(!el)return;const online=navigator.onLine;el.textContent=online?"● Online":"● Offline";el.classList.toggle("is-offline",!online)}
+function updateNetworkStatus(){const el=$("#networkStatus");if(!el)return;const online=navigator.onLine;el.textContent=online?"Online":"Offline";el.classList.toggle("is-offline",!online);el.setAttribute("aria-label",online?"Koneksi online":"Koneksi offline");el.title=online?"Online":"Offline"}
 window.addEventListener("online",()=>{updateNetworkStatus();loadCatalog()});window.addEventListener("offline",updateNetworkStatus);updateNetworkStatus();
 render();
 const cfg=window.TACTIC_SUPABASE_CONFIG||{};
@@ -779,10 +779,10 @@ if(window.supabase?.createClient&&cfg.url?.startsWith("https://")&&!cfg.url.incl
 const installBtn=$("#installBtn");
 let installPrompt=null;
 const isInstalled=()=>window.matchMedia("(display-mode: standalone)").matches||navigator.standalone===true;
-if(isInstalled())installBtn.hidden=true;
+installBtn.hidden=isInstalled();installBtn.textContent="↓ Pasang";
 window.addEventListener("beforeinstallprompt",event=>{
  event.preventDefault();installPrompt=event;installBtn.hidden=false;
- installBtn.title="Pasang TacTic Drama";installBtn.setAttribute("aria-label","Pasang TacTic Drama");
+ installBtn.title="Pasang TacTic Drama";installBtn.setAttribute("aria-label","Pasang TacTic Drama");installBtn.textContent="↓ Pasang";
 });
 installBtn.addEventListener("click",async()=>{
  if(!installPrompt){setStatus("#catalogStatus","Untuk memasang aplikasi, buka menu Chrome ⋮ lalu pilih Tambahkan ke layar utama.");return}
