@@ -783,7 +783,7 @@ function resetViewerAvatarPreview(){
 function openEditViewerProfile(){
  if(!supa){$("#editViewerProfileStatus").textContent="Layanan akun belum siap. Coba lagi nanti.";return}
  supa.auth.getUser().then(({data,error})=>{
-  if(error||!data.user){$("#editViewerProfileStatus").textContent="Silakan masuk kembali untuk mengubah profil.";return}
+  if(error||!data.user){editViewerProfileDialog?.close();profileSettingsDialog?.close();admin.showModal();return}
   const user=data.user,meta=user.user_metadata||{};
   $("#editViewerDisplayName").value=String(meta.display_name||"").slice(0,40);
   $("#editViewerNameCount").textContent=$("#editViewerDisplayName").value.length+"/40 karakter";
