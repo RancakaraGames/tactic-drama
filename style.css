@@ -381,3 +381,15 @@ dialog{overscroll-behavior:contain}
  .admin-callout{margin-left:12px;margin-right:12px;padding:18px}
  .nav-item{font-size:9px}
 }
+
+
+/* Cinematic catalog loading skeletons */
+.drama-grid.is-loading{pointer-events:none}
+.skeleton-card{min-width:0;animation:skeleton-fade 1.4s ease-in-out infinite}
+.skeleton-poster{width:100%;aspect-ratio:3/4;border:1px solid #ffffff12;border-radius:17px;background:linear-gradient(105deg,#1b1721 25%,#302633 42%,#1b1721 62%);background-size:220% 100%;animation:skeleton-shimmer 1.5s linear infinite;box-shadow:0 12px 28px #0004}
+.skeleton-line{height:10px;width:76%;margin:12px 3px 0;border-radius:10px;background:linear-gradient(105deg,#211d27 25%,#39303a 42%,#211d27 62%);background-size:220% 100%;animation:skeleton-shimmer 1.5s linear infinite}
+.skeleton-line.short{width:48%;height:8px;margin-top:8px;opacity:.7}
+.refresh-btn:disabled{opacity:.65;cursor:wait}
+@keyframes skeleton-shimmer{to{background-position-x:-220%}}
+@keyframes skeleton-fade{50%{opacity:.72}}
+@media(prefers-reduced-motion:reduce){.skeleton-card,.skeleton-poster,.skeleton-line{animation:none}}
