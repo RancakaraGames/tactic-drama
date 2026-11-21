@@ -8,7 +8,7 @@
   <title>TacTic Drama</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
-  <link rel="stylesheet" href="style.css?v=85">
+  <link rel="stylesheet" href="style.css?v=86">
 </head>
 <body>
   <header class="topbar">
@@ -284,6 +284,12 @@
         <p id="editViewerProfileStatus" class="status" role="status" aria-live="polite"></p>
         <button id="saveViewerProfileButton" class="profile-settings-login" type="submit">Simpan perubahan</button>
       </form>
+
+      <section class="account-security-section" aria-labelledby="accountSecurityTitle">
+        <div class="account-security-heading"><span class="account-security-icon">♧</span><div><strong id="accountSecurityTitle">Keamanan akun</strong><small>Ubah kata sandi dengan tautan aman melalui email.</small></div></div>
+        <p id="accountSecurityStatus" class="account-security-status" role="status" aria-live="polite">Kami akan mengirim tautan pemulihan ke email akunmu.</p>
+        <button id="sendPasswordRecoveryButton" class="account-security-button" type="button">Kirim tautan ganti kata sandi</button>
+      </section>
     </div>
   </dialog>
   <dialog id="vipInfoDialog" class="profile-settings-dialog vip-info-dialog" aria-labelledby="vipInfoTitle">
@@ -308,6 +314,6 @@
   </dialog>
 
   <script src="./supabase-config.js"></script>
-  <script src="app.js?v=85"></script>
+  <script src="app.js?v=86"></script>
 </body>
 </html>

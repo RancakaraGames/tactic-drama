@@ -988,3 +988,13 @@ body.clips-mode .player-dialog[open]{z-index:20}
 .edit-viewer-account-email{display:grid;gap:4px;margin:0 0 14px;padding:11px 12px;border:1px solid #ffffff12;border-radius:12px;background:#ffffff06}
 .edit-viewer-account-email span{color:#96939e;font-size:10px}
 .edit-viewer-account-email strong{color:#f4eef0;font-size:12px;overflow-wrap:anywhere}
+
+
+/* Account security section */
+.account-security-section{display:grid;gap:10px;margin-top:18px;padding:14px;border:1px solid #e5091433;border-radius:15px;background:linear-gradient(145deg,#e509140d,#ffffff04)}
+.account-security-heading{display:flex;align-items:center;gap:10px}
+.account-security-icon{display:grid;place-items:center;width:34px;height:34px;border-radius:11px;background:#e5091420;color:#ff7580;font-size:18px}
+.account-security-heading div{display:grid;gap:3px}.account-security-heading strong{font-size:12px;color:#fff}.account-security-heading small{font-size:10px;line-height:1.45;color:#a7a3ad}
+.account-security-status{margin:0;color:#c7c1ca;font-size:10px;line-height:1.5;overflow-wrap:anywhere}
+.account-security-button{width:100%;min-height:40px;border:1px solid #e44a56a6;border-radius:11px;background:#e5091415;color:#ffb7bd;font-size:11px;font-weight:800}
+.account-security-button:disabled{opacity:.55;cursor:wait}

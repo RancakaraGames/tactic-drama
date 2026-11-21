@@ -793,6 +793,23 @@ function openEditViewerProfile(){
   if(editViewerProfileDialog&&!editViewerProfileDialog.open)editViewerProfileDialog.showModal();
  });
 }
+
+$("#sendPasswordRecoveryButton")?.addEventListener("click",async()=>{
+ const button=$("#sendPasswordRecoveryButton"),status=$("#accountSecurityStatus");
+ if(!supa){status.textContent="Layanan akun belum siap. Coba lagi nanti.";return}
+ button.disabled=true;status.textContent="Memeriksa email akun...";
+ try{
+  const {data,error:userError}=await supa.auth.getUser();
+  if(userError)throw userError;
+  const email=data.user?.email;
+  if(!email)throw new Error("Email akun tidak ditemukan. Silakan masuk kembali.");
+  const {error}=await supa.auth.resetPasswordForEmail(email,{redirectTo:location.origin+location.pathname});
+  if(error)throw error;
+  status.textContent="Tautan pemulihan sudah diminta untuk "+email+". Periksa kotak masuk dan folder Spam.";
+  button.textContent="Kirim ulang tautan";
+ }catch(err){status.textContent="Tidak dapat mengirim tautan: "+(err?.message||String(err))}
+ finally{button.disabled=false}
+});
 $("#closeEditViewerProfile")?.addEventListener("click",()=>{editViewerProfileDialog?.close();resetViewerAvatarPreview()});
 $("#editViewerDisplayName")?.addEventListener("input",e=>{$("#editViewerNameCount").textContent=e.currentTarget.value.length+"/40 karakter"});
 editViewerAvatarInput?.addEventListener("change",()=>{
@@ -1078,7 +1095,7 @@ if(backendConfigured){
   supa=window.supabase.createClient(cfg.url,cfg.anonKey);
   loadCatalog();
   supa.auth.getSession().then(({data})=>{clearTimeout(guestFallback);const session=data.session;verifySession(session);if(!session)showGuestPrompt()}).catch(()=>{clearTimeout(guestFallback);showGuestPrompt()});
-  supa.auth.onAuthStateChange((event,session)=>{if(event==="PASSWORD_RECOVERY"){$("#uploadSection").hidden=true;$("#loginForm").hidden=true;$("#signupForm").hidden=true;$("#forgotPasswordBtn").hidden=true;$("#resetPasswordForm").hidden=false;setStatus("#loginStatus","Tautan pemulihan valid. Silakan buat password baru.")}else{verifySession(session)}});
+  supa.auth.onAuthStateChange((event,session)=>{if(event==="PASSWORD_RECOVERY"){if(admin&&!admin.open)admin.showModal();$("#uploadSection").hidden=true;$("#loginForm").hidden=true;$("#signupForm").hidden=true;$("#forgotPasswordBtn").hidden=true;$("#resetPasswordForm").hidden=false;setStatus("#loginStatus","Tautan pemulihan valid. Silakan buat password baru.")}else{verifySession(session)}});
  }
  if(window.supabase?.createClient)startBackend();
  else{
