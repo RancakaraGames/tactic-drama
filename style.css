@@ -416,3 +416,12 @@ dialog{overscroll-behavior:contain}
 #resetPasswordForm input{width:100%;min-width:0}
 .text-btn{display:block;margin:9px 0 14px;padding:7px 0;border:0;background:transparent;color:#e9c58a;font:inherit;font-size:11px;text-align:left;text-decoration:underline;text-underline-offset:3px}
 .text-btn:disabled{opacity:.55}
+
+
+/* Creator profile live preview polish */
+.profile-field-meta{display:flex;justify-content:space-between;gap:10px;color:#9d929e;font-size:10px;margin-top:5px}
+.avatar-preview-wrap{display:flex;align-items:center;gap:12px;padding:10px 12px;border:1px solid #e9c58a45;border-radius:13px;background:#17141c;color:#e9c58a;font-size:11px}
+.avatar-preview-wrap[hidden]{display:none}
+.avatar-preview-wrap img{width:54px;height:54px;object-fit:cover;border-radius:50%;border:2px solid #e9c58a;box-shadow:0 4px 18px #0007}
+.creator-profile-form label{min-width:0}
+.creator-profile-form input[type=file]{max-width:100%;font-size:11px}

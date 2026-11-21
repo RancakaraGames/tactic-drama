@@ -204,9 +204,12 @@ async function loadCreatorStats(userId){
 function renderCreatorProfile(user){
  const meta=user?.user_metadata||{},name=String(meta.display_name||"").trim()||"Kreator TacTic";
  $("#creatorDisplayName").textContent=name;$("#creatorEmail").textContent=user?.email||"";
- $("#creatorProfileForm").elements.displayName.value=String(meta.display_name||"");
+ $("#creatorProfileForm").elements.displayName.value=String(meta.display_name||"");$("#displayNameCount").textContent=$("#creatorProfileForm").elements.displayName.value.length+"/40 karakter";
  const avatar=$("#creatorAvatar");avatar.src=meta.avatar_url||"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='50' fill='%23251e2b'/%3E%3Ctext x='50' y='63' text-anchor='middle' font-size='42' fill='%23e9c58a'%3E"+encodeURIComponent(name.charAt(0).toUpperCase())+"%3C/text%3E%3C/svg%3E";
 }
+const profileNameInput=$("#creatorProfileForm").elements.displayName,nameCount=$("#displayNameCount"),avatarInput=$("#creatorAvatarInput"),avatarPreviewWrap=$("#avatarPreviewWrap"),avatarPreview=$("#avatarPreview");
+profileNameInput.addEventListener("input",()=>{nameCount.textContent=profileNameInput.value.length+"/40 karakter"});
+avatarInput.addEventListener("change",()=>{const file=avatarInput.files?.[0];if(!file){avatarPreviewWrap.hidden=true;avatarPreview.removeAttribute("src");return}if(file.size>2*1024*1024||!["image/jpeg","image/png","image/webp"].includes(file.type)){avatarPreviewWrap.hidden=true;setStatus("#profileStatus",file.size>2*1024*1024?"Foto profil maksimal 2 MB.":"Foto harus JPG, PNG, atau WebP.");avatarInput.value="";return}avatarPreview.src=URL.createObjectURL(file);avatarPreviewWrap.hidden=false;setStatus("#profileStatus","Pratinjau foto siap. Tekan Simpan profil untuk menerapkan.")});
 $("#creatorProfileForm").addEventListener("submit",async e=>{
  e.preventDefault();if(!supa)return;const form=e.currentTarget,fd=new FormData(form),name=String(fd.get("displayName")||"").trim(),file=fd.get("avatar"),btn=form.querySelector("button[type=submit]");
  if(!name){setStatus("#profileStatus","Nama tampilan wajib diisi.");return}
@@ -223,7 +226,7 @@ $("#creatorProfileForm").addEventListener("submit",async e=>{
   }
   const updated=await supa.auth.updateUser({data:{display_name:name.slice(0,40),avatar_url:avatarUrl}});if(updated.error)throw updated.error;
   if(oldAvatar&&avatarUrl!==oldAvatar){const oldPath=storagePathFromPublicUrl(oldAvatar,"drama-posters");if(oldPath&&oldPath.startsWith(user.id+"/"))await removeOwnedStorageFiles("drama-posters",[oldPath])}
-  renderCreatorProfile(updated.data.user||user);setStatus("#profileStatus","Profil kreator berhasil disimpan.");
+  renderCreatorProfile(updated.data.user||user);avatarPreviewWrap.hidden=true;avatarPreview.removeAttribute("src");form.reset();nameCount.textContent="0/40 karakter";setStatus("#profileStatus","Profil kreator berhasil disimpan.");
  }catch(err){setStatus("#profileStatus","Gagal menyimpan profil: "+(err?.message||String(err)))}
  finally{btn.disabled=false}
 });

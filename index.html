@@ -76,8 +76,8 @@
       <section class="creator-profile-card" aria-label="Profil kreator">
         <div class="creator-profile-top"><img id="creatorAvatar" class="creator-avatar" alt="Foto profil kreator"><div><strong id="creatorDisplayName">Kreator TacTic</strong><small id="creatorEmail"></small></div></div>
         <form id="creatorProfileForm" class="creator-profile-form">
-          <label>Nama tampilan<input name="displayName" maxlength="40" required placeholder="Nama kreator"></label>
-          <label>Foto profil (opsional)<input name="avatar" type="file" accept="image/jpeg,image/png,image/webp"></label>
+          <label>Nama tampilan<input name="displayName" maxlength="40" required placeholder="Nama kreator"><small class="profile-field-meta"><span id="displayNameCount">0/40 karakter</span><span>Nama publik kreator</span></small></label>
+          <label>Foto profil (opsional)<input id="creatorAvatarInput" name="avatar" type="file" accept="image/jpeg,image/png,image/webp"><small class="profile-field-meta">JPG, PNG, atau WebP · Maksimal 2 MB</small></label><div id="avatarPreviewWrap" class="avatar-preview-wrap" hidden><img id="avatarPreview" alt="Pratinjau foto profil"><span>Pratinjau foto baru</span></div>
           <button class="secondary-btn full" type="submit">Simpan profil</button>
         </form>
         <p id="profileStatus" class="status" role="status"></p>
