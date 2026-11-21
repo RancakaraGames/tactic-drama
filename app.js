@@ -860,7 +860,52 @@ editViewerProfileForm?.addEventListener("submit",async e=>{
  }finally{button.disabled=false}
 });
 const vipInfoDialog=$("#vipInfoDialog");
-$("#openVipInfo")?.addEventListener("click",()=>{if(vipInfoDialog&&!vipInfoDialog.open)vipInfoDialog.showModal()});
+async function loadVipDashboard(){
+ const title=$("#vipMembershipStatusTitle"),detail=$("#vipMembershipStatusText"),pill=$("#vipMembershipStatusPill"),history=$("#vipTransactionList");
+ if(!title||!detail||!pill||!history)return;
+ const showEmpty=(heading,message)=>{history.className="vip-empty-transactions";history.innerHTML='<span>▤</span><p><strong>'+escapeHtml(heading)+'</strong><small>'+escapeHtml(message)+'</small></p>'};
+ if(!supa){title.textContent="Belum terhubung";detail.textContent="Koneksi akun belum tersedia.";pill.textContent="OFFLINE";showEmpty("Riwayat belum tersedia","Hubungkan akun untuk melihat transaksi VIP.");return}
+ title.textContent="Memeriksa status...";detail.textContent="Mengambil status keanggotaan akun.";pill.textContent="...";
+ try{
+  const {data:userData,error:userError}=await supa.auth.getUser();
+  if(userError)throw userError;
+  const currentUser=userData?.user;
+  if(!currentUser){title.textContent="Masuk diperlukan";detail.textContent="Masuk ke akun untuk melihat status VIP.";pill.textContent="TAMU";showEmpty("Masuk untuk melihat riwayat","Riwayat transaksi hanya tersedia untuk akun yang masuk.");return}
+  const [membershipResult,transactionsResult]=await Promise.all([
+   supa.from("vip_memberships").select("plan_code,status,current_period_start,current_period_end,updated_at").eq("user_id",currentUser.id).maybeSingle(),
+   supa.from("vip_transactions").select("plan_code,duration_days,amount_minor,currency,status,created_at,paid_at").eq("user_id",currentUser.id).order("created_at",{ascending:false}).limit(10)
+  ]);
+  if(membershipResult.error)throw membershipResult.error;
+  if(transactionsResult.error)throw transactionsResult.error;
+  const membership=membershipResult.data;
+  const active=membership?.status==="active"&&membership.current_period_end&&new Date(membership.current_period_end).getTime()>Date.now();
+  if(active){
+   title.textContent="VIP sedang aktif";
+   detail.textContent="Berlaku sampai "+new Date(membership.current_period_end).toLocaleDateString("id-ID",{day:"numeric",month:"long",year:"numeric"})+".";
+   pill.textContent="VIP AKTIF";
+  }else if(membership?.status==="suspended"){
+   title.textContent="Keanggotaan ditangguhkan";detail.textContent="Hubungi bantuan jika kamu merasa ini keliru.";pill.textContent="DITANGGUHKAN";
+  }else{
+   title.textContent=membership?.status==="refunded"?"Keanggotaan dikembalikan":"Belum berlangganan";
+   detail.textContent=membership?.current_period_end&&new Date(membership.current_period_end).getTime()<=Date.now()?"Masa aktif VIP telah berakhir.":"VIP aktif setelah pembayaran berhasil diverifikasi.";
+   pill.textContent="NON-VIP";
+  }
+  const rows=transactionsResult.data||[];
+  if(!rows.length){showEmpty("Belum ada transaksi","Riwayat pembayaran VIP akan muncul di sini setelah transaksi dibuat.");return}
+  const statusLabels={pending:"Menunggu pembayaran",paid:"Berhasil",expired:"Kedaluwarsa",failed:"Gagal",refunded:"Dikembalikan"};
+  const planLabels={vip_1m:"VIP 1 Bulan",vip_3m:"VIP 3 Bulan",vip_12m:"VIP 12 Bulan"};
+  history.className="vip-transaction-list";
+  history.innerHTML=rows.map(row=>{
+   const amount=new Intl.NumberFormat("id-ID",{style:"currency",currency:row.currency||"IDR",maximumFractionDigits:0}).format(Number(row.amount_minor||0));
+   const date=new Date(row.created_at).toLocaleDateString("id-ID",{day:"numeric",month:"short",year:"numeric"});
+   return '<article class="vip-transaction-item"><div><strong>'+escapeHtml(planLabels[row.plan_code]||"Paket VIP")+'</strong><small>'+escapeHtml(date)+' · '+escapeHtml(statusLabels[row.status]||"Status tidak diketahui")+'</small></div><b>'+escapeHtml(amount)+'</b></article>';
+  }).join("");
+ }catch(error){
+  title.textContent="Status belum dapat dimuat";detail.textContent="Coba buka kembali halaman ini beberapa saat lagi.";pill.textContent="PERIKSA";
+  showEmpty("Riwayat belum dapat dimuat",error?.message||"Terjadi kendala saat mengambil data.");
+ }
+}
+$("#openVipInfo")?.addEventListener("click",()=>{if(vipInfoDialog&&!vipInfoDialog.open)vipInfoDialog.showModal();loadVipDashboard()});
 $("#closeVipInfo")?.addEventListener("click",()=>vipInfoDialog?.close());
 $("#closeVipInfoBottom")?.addEventListener("click",()=>vipInfoDialog?.close());
 const settingsInfoDialog=$("#settingsInfoDialog");

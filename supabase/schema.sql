@@ -307,3 +307,70 @@ drop policy if exists "Admins can upload drama videos" on storage.objects;
 create policy "Admins can upload drama videos" on storage.objects for insert to authenticated with check (bucket_id='drama-videos' and public.is_admin());
 drop policy if exists "Admins can upload drama posters" on storage.objects;
 create policy "Admins can upload drama posters" on storage.objects for insert to authenticated with check (bucket_id='drama-posters' and public.is_admin());
+
+
+-- VIP membership and transaction foundation.
+-- Payment records are written only by trusted server-side payment handlers.
+create table if not exists public.vip_memberships (
+  user_id uuid primary key references auth.users(id) on delete cascade,
+  plan_code text check (plan_code in ('vip_1m','vip_3m','vip_12m')),
+  status text not null default 'inactive'
+    check (status in ('inactive','active','suspended','refunded')),
+  current_period_start timestamptz,
+  current_period_end timestamptz,
+  updated_at timestamptz not null default now(),
+  constraint vip_membership_period_check
+    check (
+      (current_period_start is null and current_period_end is null)
+      or (current_period_start is not null and current_period_end is not null
+          and current_period_end > current_period_start)
+    )
+);
+
+create table if not exists public.vip_transactions (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references auth.users(id) on delete cascade,
+  plan_code text not null check (plan_code in ('vip_1m','vip_3m','vip_12m')),
+  duration_days integer not null check (duration_days in (30,90,365)),
+  amount_minor bigint not null check (amount_minor > 0),
+  currency text not null default 'IDR' check (currency = 'IDR'),
+  provider_code text,
+  provider_reference text,
+  status text not null default 'pending'
+    check (status in ('pending','paid','expired','failed','refunded')),
+  checkout_url text,
+  created_at timestamptz not null default now(),
+  paid_at timestamptz,
+  expires_at timestamptz,
+  constraint vip_transactions_provider_reference_unique
+    unique (provider_code, provider_reference)
+);
+
+create index if not exists vip_transactions_user_created_idx
+  on public.vip_transactions(user_id, created_at desc);
+create index if not exists vip_transactions_status_expiry_idx
+  on public.vip_transactions(status, expires_at)
+  where status = 'pending';
+
+alter table public.vip_memberships enable row level security;
+alter table public.vip_transactions enable row level security;
+
+drop policy if exists "View own VIP membership" on public.vip_memberships;
+create policy "View own VIP membership"
+  on public.vip_memberships for select to authenticated
+  using ((select auth.uid()) = user_id);
+
+drop policy if exists "View own VIP transactions" on public.vip_transactions;
+create policy "View own VIP transactions"
+  on public.vip_transactions for select to authenticated
+  using ((select auth.uid()) = user_id);
+
+revoke all on public.vip_memberships from anon, authenticated;
+revoke all on public.vip_transactions from anon, authenticated;
+grant select on public.vip_memberships to authenticated;
+grant select on public.vip_transactions to authenticated;
+
+comment on table public.vip_memberships is
+  'VIP subscription state. Only trusted server-side payment verification may write membership status.';
+comment on table public.vip_transactions is
+  'VIP payment ledger. Client users can read only their own transactions; only trusted server-side payment handlers may write.';
