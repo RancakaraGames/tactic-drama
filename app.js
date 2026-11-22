@@ -366,9 +366,13 @@ video.addEventListener("error",()=>{
 });
 $("#retryVideo").addEventListener("click",()=>{
  if(!video.src)return;
+ const resumeAt=Number.isFinite(video.currentTime)?Math.max(0,video.currentTime):0;
  setVideoStatus("Mencoba memuat ulang video…");
+ video.addEventListener("loadedmetadata",()=>{
+  if(resumeAt>0&&Number.isFinite(video.duration)&&resumeAt<video.duration-2)video.currentTime=resumeAt;
+  video.play().catch(()=>setVideoStatus("Tekan tombol putar pada video untuk melanjutkan.",true));
+ },{once:true});
  video.load();
- video.play().catch(()=>setVideoStatus("Tekan tombol putar pada video untuk melanjutkan.",true));
 });
 video.addEventListener("ended",()=>{saveEpisodeProgress(true);if(activeDrama&&activeEpisodeIndex<(activeDrama.episodes||[]).length-1){if(autoNextEnabled)playEpisode(activeEpisodeIndex+1);else setStatus("#playerDescription","Episode selesai. Putar otomatis nonaktif — pilih episode berikutnya jika ingin lanjut.")}else setStatus("#playerDescription","Kamu sudah menyelesaikan episode terbaru. Pilih drama lain atau tonton ulang episode ini.");});
 
