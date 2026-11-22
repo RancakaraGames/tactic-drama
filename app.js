@@ -15,6 +15,7 @@ let autoNextEnabled=true;try{autoNextEnabled=localStorage.getItem("tactic-auto-n
 let searchQuery="";
 let favoriteIds=new Set();try{favoriteIds=new Set(JSON.parse(localStorage.getItem("tactic-favorites")||"[]"))}catch{}
 let favoriteCounts=new Map(),favoritesLoadedFor=null;
+let demoLikedIds=new Set();try{demoLikedIds=new Set(JSON.parse(localStorage.getItem("tactic-demo-likes")||"[]"))}catch{}
 let watchHistory={};try{watchHistory=JSON.parse(localStorage.getItem("tactic-watch-history")||"{}")||{}}catch{}
 let lastHistoryPersist=0;
 let episodeProgress={};try{episodeProgress=JSON.parse(localStorage.getItem("tactic-episode-progress")||"{}")||{}}catch{}
@@ -95,10 +96,10 @@ async function renderProfileCollections(){
    const result=await supa.from("drama_likes").select("drama_id").eq("user_id",user.id);
    profileLikedIds=new Set((result.data||[]).map(row=>String(row.drama_id)));profileLikesLoadedFor=user.id;
   }else if(!user){profileLikedIds=new Set();profileLikesLoadedFor=null}
-  entries=[...profileLikedIds].map(id=>({drama:dramas.find(d=>String(d.id)===String(id)),entry:null})).filter(x=>x.drama);
+  entries=[...new Set([...profileLikedIds,...demoLikedIds])].map(id=>({drama:dramas.find(d=>String(d.id)===String(id)),entry:null})).filter(x=>x.drama);
  }
  list.innerHTML="";
- if(!entries.length){const p=document.createElement("p");p.className="empty-state";p.textContent=view==="history"?"Belum ada riwayat tontonan. Putar drama untuk menyimpannya di sini.":view==="saved"?"Belum ada drama favorit. Simpan drama dengan menekan ikon ♡.":"Belum ada drama yang kamu sukai.";list.append(p);return}
+ if(!entries.length){const p=document.createElement("p");p.className="empty-state";p.textContent=view==="history"?"Belum ada riwayat tontonan. Putar drama untuk menyimpannya di sini.":view==="saved"?"Belum ada drama favorit. Simpan drama dengan menekan ikon bookmark.":"Belum ada drama yang kamu sukai.";list.append(p);return}
  let lastGroup="";
  entries.forEach(({drama,entry})=>{
   const group=view==="history"?profileDateLabel(entry.watched_at):view==="saved"?"Drama favorit":"Drama disukai";
@@ -186,7 +187,7 @@ function render(){
   const historyEntry=historyPage?watchHistory[d.id]:null;
   const historyLabel=historyEntry?"Lanjutkan · Episode "+historyEntry.episode_number+(Number(historyEntry.position_seconds)>0?" · "+formatPlaybackTime(historyEntry.position_seconds):""):"";
   const tag=String(d.id).startsWith("demo-")?"DEMO • VIDEO UJI":clipsPage?"CUPLIKAN":historyLabel?historyLabel:"DRAMA PENDEK";
-  card.innerHTML=`<div class="poster" role="button" tabindex="0" style="background:linear-gradient(145deg,${d.colors?.[0]||"#61365f"},${d.colors?.[1]||"#20243a"})"><span class="tag">${escapeHtml(tag)}</span><span class="poster-title">${escapeHtml(d.title)}</span><button class="favorite-btn ${favoriteIds.has(d.id)?"is-favorite":""}" type="button" aria-label="${favoriteIds.has(d.id)?"Hapus dari":"Tambah ke"} favorit">${favoriteIds.has(d.id)?"♥":"♡"}</button></div><div class="card-meta"><strong>${escapeHtml(d.title)}</strong><span>${escapeHtml(d.genre||((d.episodes||[]).length+" episode"))}</span><div class="card-social-counts" aria-label="Statistik drama"><span class="card-social-stat card-like-stat"><span class="card-social-icon" aria-hidden="true">♥</span><strong>${Number(d.like_count||0).toLocaleString("id-ID")}</strong><small>Suka</small></span><span class="card-social-stat card-favorite-stat"><span class="card-social-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M6 3.75h12v16.5l-6-4-6 4z"/></svg></span><strong>${Number(favoriteCounts.get(String(d.id))??d.favorite_count??0).toLocaleString("id-ID")}</strong><small>Favorit</small></span></div></div>`;
+  card.innerHTML=`<div class="poster" role="button" tabindex="0" style="background:linear-gradient(145deg,${d.colors?.[0]||"#61365f"},${d.colors?.[1]||"#20243a"})"><span class="tag">${escapeHtml(tag)}</span><span class="poster-title">${escapeHtml(d.title)}</span><button class="favorite-btn ${favoriteIds.has(d.id)?"is-favorite":""}" type="button" aria-label="${favoriteIds.has(d.id)?"Hapus dari":"Tambah ke"} favorit">${favoriteIds.has(d.id)?"♥":"♡"}</button></div><div class="card-meta"><strong>${escapeHtml(d.title)}</strong><span>${escapeHtml(d.genre||((d.episodes||[]).length+" episode"))}</span></div>`;
   const poster=card.querySelector(".poster");
   const openCardDrama=()=>{const saved=watchHistory[d.id];const resumeNumber=saved?.episode_number??null,resumeSeconds=Number(saved?.position_seconds||0);openDrama(d);if(resumeNumber!=null){const resumeIndex=(d.episodes||[]).findIndex(ep=>Number(ep.episode_number)===Number(resumeNumber));if(resumeIndex>=0)playEpisode(resumeIndex,false,resumeSeconds)}};
   if(historyPage&&historyEntry){
@@ -243,7 +244,7 @@ function syncPlayerActionRail(){
  const id=String(activeDrama.id),fav=favoriteIds.has(id),btn=$("#playerFavoriteAction");
  btn.setAttribute("aria-pressed",String(fav));btn.setAttribute("aria-label",fav?"Hapus dari favorit":"Tambah ke favorit");btn.classList.toggle("is-active",fav);
  const favoriteCount=$("#playerFavoriteRailCount");if(favoriteCount)favoriteCount.textContent=String(favoriteCounts.get(id)??Number(activeDrama.favorite_count||0)).toLocaleString("id-ID");
- const like=$("#likeDrama"),likeBtn=$("#playerLikeAction"),likeAvailable=Boolean(like&&!like.hidden&&!id.startsWith("demo-"));
+ const like=$("#likeDrama"),likeBtn=$("#playerLikeAction"),likeAvailable=Boolean(like&&!like.hidden);
  likeBtn.hidden=!likeAvailable;likeBtn.setAttribute("aria-pressed",likeAvailable&&like.dataset.liked==="true"?"true":"false");likeBtn.classList.toggle("is-active",likeAvailable&&like.dataset.liked==="true");
 }
 $("#playerFavoriteAction").addEventListener("click",async()=>{if(!activeDrama)return;await toggleDramaFavorite(activeDrama);showPlayerControls()});
@@ -534,22 +535,28 @@ async function toggleDramaFavorite(drama){
 }
 async function loadDramaLikeState(dramaId){
  const btn=$("#likeDrama");if(!btn)return;
- if(!supa||String(dramaId).startsWith("demo-")){btn.hidden=true;return}
- btn.hidden=false;btn.disabled=true;
+ if(String(dramaId).startsWith("demo-")){
+  const liked=demoLikedIds.has(String(dramaId)),count=liked?1:0;
+  btn.hidden=false;btn.disabled=false;btn.dataset.liked=String(liked);btn.setAttribute("aria-pressed",String(liked));
+  btn.textContent=(liked?"♥ Disukai · ":"♡ Suka · ")+count;
+  const railLikeCount=$("#playerLikeRailCount");if(railLikeCount)railLikeCount.textContent=String(count);
+  syncPlayerActionRail();return;
+ }
+ if(!supa){btn.hidden=false;btn.disabled=true;btn.dataset.liked="false";btn.textContent="♡ Suka · —";const railLikeCount=$("#playerLikeRailCount");if(railLikeCount)railLikeCount.textContent="—";syncPlayerActionRail();return}
+ btn.hidden=false;btn.disabled=true;syncPlayerActionRail();
  try{
   const countResult=await supa.from("drama_like_counts").select("like_count").eq("drama_id",dramaId).maybeSingle();
   if(countResult.error)throw countResult.error;
-  const {data:sessionData}=await supa.auth.getSession(),user=sessionData.session?.user;
+  const {data:sessionData}=await supa.auth.getSession(),user=sessionData?.session?.user;
   let liked=false;
   if(user){const own=await supa.from("drama_likes").select("drama_id").eq("drama_id",dramaId).eq("user_id",user.id).maybeSingle();if(own.error)throw own.error;liked=Boolean(own.data)}
   const likeCount=Number(countResult.data?.like_count||0);
   const railLikeCount=$("#playerLikeRailCount");if(railLikeCount)railLikeCount.textContent=likeCount.toLocaleString("id-ID");
-  btn.dataset.liked=liked?"true":"false";btn.setAttribute("aria-pressed",String(liked));
+  btn.dataset.liked=String(liked);btn.setAttribute("aria-pressed",String(liked));
   btn.textContent=(liked?"♥ Disukai · ":"♡ Suka · ")+likeCount;
-  const catalogDrama=dramas.find(item=>String(item.id)===String(dramaId));
-  if(catalogDrama&&Number(catalogDrama.like_count||0)!==likeCount){catalogDrama.like_count=likeCount;render()}
+  const catalogDrama=dramas.find(item=>String(item.id)===String(dramaId));if(catalogDrama)catalogDrama.like_count=likeCount;
  }catch(err){btn.textContent="♡ Suka";const railLikeCount=$("#playerLikeRailCount");if(railLikeCount)railLikeCount.textContent="—";console.warn("Jumlah suka belum dapat dimuat:",err?.message||err)}
- finally{btn.disabled=false}
+ finally{btn.disabled=false;syncPlayerActionRail()}
 }
 async function loadCreatorViewAppeal(){
  const panel=$("#creatorAppealPanel"),status=$("#creatorAppealStatus"),form=$("#creatorAppealForm");
@@ -1249,16 +1256,21 @@ document.querySelectorAll("[data-collection-history-filter]").forEach(button=>bu
 $("#clearHistory").addEventListener("click",()=>{if(!Object.keys(watchHistory).length)return;if(!window.confirm("Hapus seluruh riwayat tontonan di perangkat ini?"))return;watchHistory={};try{localStorage.removeItem("tactic-watch-history")}catch{}render()});
 
 $("#likeDrama").addEventListener("click",async()=>{
- if(!activeDrama||String(activeDrama.id).startsWith("demo-"))return;
- const {data:sessionData}=await supa.auth.getSession(),user=sessionData.session?.user;
+ if(!activeDrama)return;
+ const btn=$("#likeDrama"),id=String(activeDrama.id);
+ if(id.startsWith("demo-")){
+  if(demoLikedIds.has(id))demoLikedIds.delete(id);else demoLikedIds.add(id);
+  try{localStorage.setItem("tactic-demo-likes",JSON.stringify([...demoLikedIds]))}catch{}
+  await loadDramaLikeState(id);renderProfileCollections();showPlayerControls();return;
+ }
+ if(!supa)return;
+ const {data:sessionData}=await supa.auth.getSession(),user=sessionData?.session?.user;
  if(!user){setStatus("#reportStatus","Masuk ke akun untuk memberi suka.");admin.showModal();return}
- const btn=$("#likeDrama"),liked=btn.dataset.liked==="true";btn.disabled=true;
+ const liked=btn.dataset.liked==="true";btn.disabled=true;
  try{
-  const result=liked
-   ?await supa.from("drama_likes").delete().eq("drama_id",activeDrama.id).eq("user_id",user.id)
-   :await supa.from("drama_likes").insert({drama_id:activeDrama.id});
+  const result=liked?await supa.from("drama_likes").delete().eq("drama_id",id).eq("user_id",user.id):await supa.from("drama_likes").insert({drama_id:id});
   if(result.error)throw result.error;
-  await loadDramaLikeState(activeDrama.id);
+  await loadDramaLikeState(id);renderProfileCollections();
  }catch(err){setStatus("#reportStatus","Gagal memperbarui suka: "+(err?.message||String(err)));btn.disabled=false}
 });
 

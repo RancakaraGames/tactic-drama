@@ -8,7 +8,7 @@
   <title>TacTic Drama</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
-  <link rel="stylesheet" href="style.css?v=126">
+  <link rel="stylesheet" href="style.css?v=127">
 </head>
 <body>
   <main>
@@ -42,9 +42,9 @@
     <article class="melolo-benefit-card download-card"><span class="benefit-icon">↓</span><strong>Unduh</strong><small>0 drama</small></article>
   </div>
   <div class="melolo-profile-tabs" role="tablist" aria-label="Aktivitas akun">
-    <button type="button" class="melolo-profile-tab active" data-profile-view="history" aria-pressed="true"><span>◷</span><small>Riwayat</small></button>
-    <button type="button" class="melolo-profile-tab" data-profile-view="saved" aria-pressed="false"><span>♧</span><small>Favorit</small></button>
-    <button type="button" class="melolo-profile-tab" data-profile-view="liked" aria-pressed="false"><span>♡</span><small>Disukai</small></button>
+    <button type="button" class="melolo-profile-tab active" data-profile-view="history" aria-pressed="true"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><small>Riwayat</small></button>
+    <button type="button" class="melolo-profile-tab" data-profile-view="saved" aria-pressed="false"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4.5A1.5 1.5 0 0 1 7.5 3h9A1.5 1.5 0 0 1 18 4.5V21l-6-4-6 4z"/></svg><small>Favorit</small></button>
+    <button type="button" class="melolo-profile-tab" data-profile-view="liked" aria-pressed="false"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 8.8c0 5.1-8.8 10.2-8.8 10.2S3.2 13.9 3.2 8.8A4.6 4.6 0 0 1 12 6.5a4.6 4.6 0 0 1 8.8 2.3Z"/></svg><small>Disukai</small></button>
   </div>
   <div class="melolo-profile-filter" id="profileHistoryFilters">
     <button type="button" class="active" data-profile-filter="all">Semua</button>
@@ -59,7 +59,7 @@
   </section>
   <p id="profilePageStatus" class="profile-page-status" role="status" aria-live="polite"></p>
 </section>
-    <section id="collectionTabs" class="collection-tabs" hidden aria-label="Isi koleksi"><button type="button" class="collection-tab active" data-collection-view="saved" aria-pressed="true"><span>♡ Favorit</span><span class="collection-tab-count" id="collectionFavoriteCount">0</span></button><button type="button" class="collection-tab" data-collection-view="history" aria-pressed="false"><span>◷ Riwayat</span><span class="collection-tab-count" id="collectionHistoryCount">0</span></button></section>
+    <section id="collectionTabs" class="collection-tabs" hidden aria-label="Isi koleksi"><button type="button" class="collection-tab active" data-collection-view="saved" aria-pressed="true"><span class="collection-tab-label"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4.5A1.5 1.5 0 0 1 7.5 3h9A1.5 1.5 0 0 1 18 4.5V21l-6-4-6 4z"/></svg>Favorit</span><span class="collection-tab-count" id="collectionFavoriteCount">0</span></button><button type="button" class="collection-tab" data-collection-view="history" aria-pressed="false"><span class="collection-tab-label"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Riwayat</span><span class="collection-tab-count" id="collectionHistoryCount">0</span></button></section>
     <section id="historyTools" class="history-tools" hidden><span>Episode yang terakhir kamu tonton tersimpan di perangkat ini.</span><button id="clearHistory" class="secondary-btn" type="button">Hapus riwayat</button></section>
     <div id="collectionHistoryFilters" class="melolo-profile-filter collection-history-filters" hidden aria-label="Filter riwayat tontonan"><button type="button" class="active" data-collection-history-filter="all" aria-pressed="true">Semua</button><button type="button" data-collection-history-filter="watching" aria-pressed="false">Sedang ditonton</button><button type="button" data-collection-history-filter="finished" aria-pressed="false">Selesai</button></div>
     <section id="dramaGrid" class="drama-grid" aria-live="polite"></section>
@@ -67,8 +67,8 @@
   <nav class="bottom-nav" aria-label="Navigasi utama">
     <button class="nav-item active" data-tab="clips" aria-current="page"><span>▶</span>Cuplikan</button>
     <button class="nav-item" data-tab="home"><span>⌂</span>Beranda</button>
-    <button class="nav-item" data-tab="collection"><span>▤</span>Koleksi</button>
-    <button class="nav-item" data-tab="profile"><span>♙</span>Profil</button>
+    <button class="nav-item" data-tab="collection"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="13" height="16" rx="2"/><path d="M8 2h10a2 2 0 0 1 2 2v14M8 8h5M8 12h5"/></svg>Koleksi</button>
+    <button class="nav-item" data-tab="profile"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M4.5 21a7.5 7.5 0 0 1 15 0"/></svg>Profil</button>
   </nav>
   <dialog id="guestPromptDialog" class="guest-prompt-dialog" aria-labelledby="guestPromptTitle">
     <div class="guest-prompt-mark" aria-hidden="true">▶</div>
@@ -346,6 +346,6 @@
   </dialog>
 
   <script src="./supabase-config.js"></script>
-  <script src="app.js?v=126"></script>
+  <script src="app.js?v=127"></script>
 </body>
 </html>
