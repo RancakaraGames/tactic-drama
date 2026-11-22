@@ -1291,3 +1291,11 @@ body:has(.melolo-watch-player[open]){overflow:hidden}
 .player-rail-action .rail-bookmark-icon:before{content:"";display:block;width:15px;height:21px;background:currentColor;clip-path:polygon(0 0,100% 0,100% 100%,50% 73%,0 100%);filter:drop-shadow(0 1px 1px #0008)}
 .player-rail-action[aria-pressed="true"] .rail-bookmark-icon{color:#f2c27d;border-color:#f2c27d;background:#3b2930d9}
 #playerLikeAction .rail-icon{font-size:23px}
+
+
+/* Consistent outline icons for player comments and sharing v116 */
+.player-rail-action .rail-icon svg{display:block;width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.player-rail-action .rail-comment-icon svg path:first-child{fill:none}
+.player-rail-action .rail-comment-icon svg path:last-child{stroke-width:2.4}
+.player-rail-action .rail-share-icon svg circle{fill:currentColor;stroke:currentColor}
+.player-rail-action .rail-share-icon svg path{stroke-width:2}
