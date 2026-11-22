@@ -1809,3 +1809,41 @@ body:has(.melolo-watch-player[open]){overflow:hidden}
  #profilePanel .upload-form-section{padding:13px 11px}
  #profilePanel .upload-welcome{padding:14px 12px}
 }
+
+
+/* Series-first admin library and episode workflow v146 */
+#profilePanel .series-library{
+ margin:18px 0;padding:15px 13px;border:1px solid #d8b87535;border-radius:17px;
+ background:linear-gradient(145deg,#1b1a20,#121116);box-shadow:0 8px 22px #0002;
+}
+#profilePanel .series-library-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:13px}
+#profilePanel .series-library-heading h3{margin:2px 0 4px;color:#f5f0f7;font-size:14px}
+#profilePanel .series-library-heading p{margin:0;color:#a9a1ad;font-size:9px;line-height:1.45}
+#profilePanel .series-library-heading>strong{flex:0 0 auto;padding:6px 9px;border:1px solid #d8b87542;border-radius:9px;background:#d8b87512;color:#e9cb91;font-size:9px}
+#profilePanel .admin-series-list{display:grid;gap:10px}
+#profilePanel .admin-series-card{min-width:0;padding:11px;border:1px solid #ffffff14;border-radius:13px;background:#ffffff06}
+#profilePanel .admin-series-top{display:flex;align-items:center;gap:10px;min-width:0}
+#profilePanel .admin-series-cover{display:grid;place-items:center;flex:0 0 47px;width:47px;height:62px;overflow:hidden;border:1px solid #ffffff18;border-radius:8px;background:linear-gradient(145deg,#352637,#17151c);color:#e9c98e;font-size:19px;font-weight:900}
+#profilePanel .admin-series-cover img{width:100%;height:100%;object-fit:cover}
+#profilePanel .admin-series-info{display:grid;gap:4px;min-width:0}
+#profilePanel .admin-series-info strong{overflow-wrap:anywhere;color:#f4eff6;font-size:12px;line-height:1.35}
+#profilePanel .admin-series-info span{color:#e3c58d;font-size:9px}
+#profilePanel .admin-series-info small{color:#928b98;font-size:8px}
+#profilePanel .admin-series-actions{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+#profilePanel .admin-series-actions button{min-height:34px;padding:7px 9px;border-radius:9px;font-size:9px}
+#profilePanel .admin-series-actions .primary-btn{background:linear-gradient(110deg,#b98b4e,#e4c58c);color:#21170e;font-weight:850}
+#profilePanel .admin-series-actions button:disabled{opacity:.45}
+#profilePanel .admin-series-empty{margin:10px 0 0;padding:9px;border-radius:9px;background:#ffffff07;color:#aaa1ad;font-size:9px}
+#profilePanel .admin-episodes{margin-top:10px;padding-top:9px;border-top:1px solid #ffffff12}
+#profilePanel .admin-episodes summary{color:#d7c39f;font-size:10px;font-weight:750;cursor:pointer}
+#profilePanel .admin-episode-row{display:grid;grid-template-columns:minmax(0,1fr) auto auto auto;align-items:center;gap:6px;padding:8px 0;border-bottom:1px solid #ffffff0b}
+#profilePanel .admin-episode-row span{min-width:0;overflow-wrap:anywhere;color:#e8e2eb;font-size:9px}
+#profilePanel .admin-episode-row small{color:#a69daa;font-size:8px}
+#profilePanel .admin-episode-row button{min-height:29px;padding:5px 7px;border-radius:7px;font-size:8px}
+#profilePanel .upload-series-mode{display:block;margin:-3px 0 1px;color:#e2c58e;font-size:9px;line-height:1.4}
+@media(max-width:370px){
+ #profilePanel .series-library{padding:12px 10px}
+ #profilePanel .admin-series-card{padding:9px}
+ #profilePanel .admin-episode-row{grid-template-columns:minmax(0,1fr) auto auto;gap:5px}
+ #profilePanel .admin-episode-row small{display:none}
+}
