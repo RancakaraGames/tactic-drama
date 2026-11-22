@@ -1649,3 +1649,71 @@ body:has(.melolo-watch-player[open]){overflow:hidden}
   .vip-card .benefit-icon{width:22px;height:22px}
   .vip-card .vip-card-hint{font-size:6px}
 }
+
+
+/* Align VIP crown with Reward and Download icon position v134 */
+.vip-card{
+  display:block;
+  padding:9px 10px 9px 11px;
+  text-align:left;
+}
+.vip-card .vip-card-copy{
+  position:absolute;
+  left:11px;
+  right:52px;
+  top:50%;
+  transform:translateY(-50%);
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  justify-content:center;
+  gap:6px;
+  min-width:0;
+  padding:0;
+}
+.vip-card .vip-title-line{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  min-width:0;
+}
+.vip-card .benefit-icon{
+  position:absolute;
+  top:9px;
+  right:9px;
+  left:auto;
+  bottom:auto;
+  display:grid;
+  place-items:center;
+  width:25px;
+  height:25px;
+  margin:0;
+}
+.vip-card .vip-card-hint{
+  position:absolute;
+  right:8px;
+  bottom:10px;
+  display:block;
+  width:auto;
+  margin:0;
+  padding:0;
+  line-height:1;
+  white-space:nowrap;
+  text-align:right;
+}
+.vip-card .vip-card-copy small{
+  display:block;
+  width:100%;
+  max-width:100%;
+  overflow:visible;
+  white-space:nowrap;
+  font-size:8px;
+  line-height:1.2;
+}
+@media(max-width:370px){
+  .vip-card{padding:8px 8px 8px 9px}
+  .vip-card .vip-card-copy{left:9px;right:47px;gap:5px}
+  .vip-card .benefit-icon{top:8px;right:7px;width:22px;height:22px}
+  .vip-card .vip-card-hint{right:7px;bottom:9px;font-size:6px}
+  .vip-card .vip-card-copy small{font-size:7px}
+}
