@@ -8,7 +8,7 @@
   <title>TacTic Drama</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
-  <link rel="stylesheet" href="style.css?v=118">
+  <link rel="stylesheet" href="style.css?v=119">
 </head>
 <body>
   <main>
@@ -85,17 +85,10 @@
       <video id="videoPlayer" playsinline preload="metadata"></video>
       <div class="player-screen-shade" aria-hidden="true"></div>
       <div class="player-right-rail" aria-label="Aksi drama">
-        <button id="playerFavoriteAction" class="player-rail-action" type="button" aria-label="Tambah ke favorit" aria-pressed="false"><span class="rail-icon rail-bookmark-icon" aria-hidden="true"></span><small>Favorit</small></button>
         <button id="playerLikeAction" class="player-rail-action" type="button" aria-label="Suka drama" aria-pressed="false"><span class="rail-icon">♥</span><small>Suka</small></button>
         <button id="playerCommentAction" class="player-rail-action" type="button" aria-label="Buka komentar" aria-expanded="false"><span class="rail-icon rail-comment-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M20 11.5a7.5 7.5 0 0 1-7.5 7.5H6l-3 2v-5.5A7.5 7.5 0 1 1 20 11.5Z"/><path d="M8 11.5h.01M12 11.5h.01M16 11.5h.01"/></svg></span><small>Komentar</small></button>
+        <button id="playerFavoriteAction" class="player-rail-action" type="button" aria-label="Tambah ke favorit" aria-pressed="false"><span class="rail-icon rail-bookmark-icon" aria-hidden="true"></span><small>Favorit</small></button>
         <button id="playerShareAction" class="player-rail-action" type="button" aria-label="Bagikan drama"><span class="rail-icon rail-share-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.7 10.6 6.6-4.2M8.7 13.4l6.6 4.2"/></svg></span><small>Bagikan</small></button>
-</div>
-      <button id="playerCenterPlay" class="player-center-play" type="button" aria-label="Putar video">▶</button>
-      <div class="player-top-actions"><span class="player-live-mark">TACTIC <b>DRAMA</b></span><button id="playerEpisodeToggle" type="button" aria-expanded="false" aria-controls="playerEpisodeDrawer">☷ Episode</button></div>
-      <div class="player-bottom-overlay">
-        <p class="eyebrow" id="playerSeries">TAC TIC DRAMA</p><h2 id="playerTitle">Judul drama</h2><p id="playerDescription"></p>
-        <div class="player-progress-row"><span id="playerCurrentTime">00:00</span><input id="playerSeek" type="range" min="0" max="1000" value="0" aria-label="Posisi video"><span id="playerDuration">00:00</span></div>
-        <div class="player-main-controls"><button id="playerPrevious" type="button" aria-label="Episode sebelumnya">⏮</button><button id="playerPlayPause" type="button" aria-label="Jeda video">Ⅱ</button><button id="playerNext" type="button" aria-label="Episode berikutnya">⏭</button><button id="playerSpeed" type="button" aria-label="Kecepatan video">1×</button><button id="playerFullscreen" type="button" aria-label="Layar penuh">⛶</button></div>
       </div>
       <aside id="playerEpisodeDrawer" class="player-episode-drawer" aria-label="Daftar episode" hidden><div class="player-drawer-heading"><div><small>DAFTAR TAYANGAN</small><strong id="playerDrawerTitle">Episode</strong></div><button id="playerEpisodeClose" type="button" aria-label="Tutup daftar episode">×</button></div><div id="playerEpisodeList" class="player-episode-list"></div></aside>
       <aside id="playerCommentsDrawer" class="player-comments-drawer" aria-label="Komentar penonton" hidden>
@@ -354,6 +347,6 @@
   </dialog>
 
   <script src="./supabase-config.js"></script>
-  <script src="app.js?v=118"></script>
+  <script src="app.js?v=119"></script>
 </body>
 </html>
