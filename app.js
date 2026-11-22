@@ -161,7 +161,21 @@ function render(){
  const countLabel=$("#catalogCount");if(countLabel)countLabel.textContent=searchQuery?visible.length+" hasil pencarian":visible.length+" drama ditampilkan";
  const clearSearch=$("#clearSearch");if(clearSearch)clearSearch.hidden=!searchQuery;
  renderContinueWatching();if(activeTab==="home")renderFeaturedHero();
- if(!visible.length){grid.innerHTML=`<p class="empty-state">${searchQuery?"Drama tidak ditemukan. Coba kata kunci lain atau hapus pencarian.":clipsPage?"Belum ada drama dengan episode lengkap untuk ditampilkan di Cuplikan.":savedPage?"Belum ada drama favorit. Tekan ikon ♡ pada poster drama untuk menyimpannya.":historyPage?"Riwayat tontonanmu masih kosong. Putar drama untuk menyimpannya di sini.":"Belum ada drama. Drama yang diunggah admin akan muncul di sini."}</p>`;return}
+ if(!visible.length){
+  if(!searchQuery&&(savedPage||historyPage)){
+   const empty=document.createElement("section");empty.className="collection-empty-state";
+   const icon=document.createElement("span");icon.className="collection-empty-icon";icon.setAttribute("aria-hidden","true");icon.textContent=savedPage?"♡":"◷";
+   const eyebrow=document.createElement("small");eyebrow.textContent="KOLEKSI PRIBADI";
+   const title=document.createElement("h3");title.textContent=savedPage?"Belum ada drama favorit":"Belum ada riwayat tontonan";
+   const copy=document.createElement("p");copy.textContent=savedPage?"Simpan drama yang kamu suka dengan menekan ikon hati pada poster. Semua pilihanmu akan terkumpul di sini.":"Mulai tonton drama pilihanmu. Riwayat episode dan progres menonton akan tersimpan otomatis di perangkat ini.";
+   const action=document.createElement("button");action.type="button";action.className="collection-empty-action";action.textContent="Jelajahi drama";
+   action.addEventListener("click",()=>{activeTab="home";setActiveNav(activeTab);render();window.scrollTo({top:0,behavior:"smooth"})});
+   empty.append(icon,eyebrow,title,copy,action);grid.replaceChildren(empty);
+  }else{
+   grid.innerHTML=`<p class="empty-state">${searchQuery?"Drama tidak ditemukan. Coba kata kunci lain atau hapus pencarian.":clipsPage?"Belum ada drama dengan episode lengkap untuk ditampilkan di Cuplikan.":"Belum ada drama. Drama yang diunggah admin akan muncul di sini."}</p>`;
+  }
+  return;
+}
  if(clipsPage){renderClips(visible);return}
  visible.forEach(d=>{
   const card=document.createElement("article");card.className="drama-card";

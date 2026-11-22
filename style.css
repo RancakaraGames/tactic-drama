@@ -1248,3 +1248,16 @@ body:has(.melolo-watch-player[open]){overflow:hidden}
 .collection-tab.active .collection-tab-count{border-color:#ffffff35;background:#ffffff20;color:#fff}
 .collection-tab:focus-visible{outline:2px solid #ff6670;outline-offset:3px}
 @media(prefers-reduced-motion:reduce){.collection-tab{transition:none}}
+
+
+/* Collection empty states v110 */
+.collection-empty-state{grid-column:1/-1;display:flex;flex-direction:column;align-items:center;justify-content:center;max-width:440px;min-height:290px;margin:8px auto 24px;padding:28px 22px;text-align:center;border:1px solid #ffffff12;border-radius:22px;background:radial-gradient(ellipse at 50% 0%,#8f26331c,transparent 68%),linear-gradient(155deg,#17131b,#0d0c11);box-shadow:0 16px 40px #0003}
+.collection-empty-icon{display:grid;place-items:center;width:66px;height:66px;margin-bottom:18px;border:1px solid #e9c58a55;border-radius:22px;background:#e9c58a12;color:#f1c987;font-size:31px;line-height:1}
+.collection-empty-state>small{color:#c6a779;font-size:9px;font-weight:900;letter-spacing:1.7px}
+.collection-empty-state h3{margin:9px 0 7px;color:#fff;font-size:19px;line-height:1.25}
+.collection-empty-state p{max-width:340px;margin:0;color:#aaa4b0;font-size:11px;line-height:1.7}
+.collection-empty-action{min-height:42px;margin-top:20px;padding:0 22px;border:1px solid #e9c58a66;border-radius:24px;background:linear-gradient(110deg,#a52b3d,#741d30);color:#fff;font-size:11px;font-weight:850;box-shadow:0 7px 20px #8e1e3033;transition:transform .18s ease,filter .18s ease}
+.collection-empty-action:active{transform:scale(.97)}
+.collection-empty-action:focus-visible{outline:2px solid #f2c27d;outline-offset:4px}
+@media(max-width:380px){.collection-empty-state{min-height:260px;margin:4px 0 18px;padding:23px 16px}.collection-empty-state h3{font-size:17px}}
+@media(prefers-reduced-motion:reduce){.collection-empty-action{transition:none}}
