@@ -1733,3 +1733,24 @@ body:has(.melolo-watch-player[open]){overflow:hidden}
   .vip-card .vip-title-line{gap:2px}
   .vip-card .vip-premium-label{transform:translateY(2px);padding:2px 3px}
 }
+
+
+/* Cuplikan navigation icon refinement v136 */
+.bottom-nav .nav-item .clips-nav-icon{
+  width:21px;
+  height:21px;
+  margin-bottom:3px;
+  fill:none;
+  stroke:currentColor;
+  stroke-width:1.9;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+.bottom-nav .nav-item .clips-nav-icon path:last-child{
+  fill:currentColor;
+  stroke:none;
+}
+.bottom-nav .nav-item.active .clips-nav-icon{
+  color:#ff4652;
+  filter:drop-shadow(0 2px 5px #ff465233);
+}
