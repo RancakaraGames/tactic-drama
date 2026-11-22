@@ -9,7 +9,7 @@
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" type="image/png" href="icons/file_00000000659882079a7823332294da4f.png?v=162">
   <link rel="apple-touch-icon" type="image/png" href="icons/file_00000000659882079a7823332294da4f.png?v=162">
-  <link rel="stylesheet" href="style.css?v=164">
+  <link rel="stylesheet" href="style.css?v=171">
 </head>
 <body>
   <main>
@@ -172,6 +172,7 @@
         <label class="upload-field upload-file-field">Subtitle Bahasa Indonesia <span class="upload-optional">Opsional · VTT</span><input name="subtitle" type="file" accept=".vtt,text/vtt"><small class="upload-file-help">Maksimal 1 MB. Gunakan file WebVTT yang diawali WEBVTT.</small></label></div>
         <div id="uploadPreview" class="upload-preview" hidden><img id="uploadPosterPreview" alt="Pratinjau poster"><div><strong id="uploadVideoName">Video belum dipilih</strong><span id="uploadVideoSize"></span></div></div>
         <div id="uploadProgressWrap" class="upload-progress" hidden><div><span>Progres unggahan video</span><strong id="uploadProgressLabel">0%</strong></div><progress id="uploadProgressBar" max="100" value="0" aria-label="Progres unggahan video"></progress><small>Jangan tutup halaman sampai unggahan selesai.</small></div>
+      <div class="upload-rights-consent"><label><input name="rightsConfirmed" type="checkbox" required><span>Saya memiliki hak cipta atau izin resmi untuk menayangkan video, poster, dan subtitle ini secara publik di TacTic Drama.</span></label></div>
         <button class="primary-btn full upload-submit-btn" type="submit"><span aria-hidden="true">↑</span> Terbitkan episode</button>
       </form>
       <p id="uploadStatus" class="status" role="status"></p>
@@ -264,6 +265,6 @@
   </dialog>
 
   <script src="./supabase-config.js"></script>
-  <script src="app.js?v=170"></script>
+  <script src="app.js?v=171"></script>
 </body>
 </html>
