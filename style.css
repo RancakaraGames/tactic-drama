@@ -968,3 +968,10 @@ body:has(.melolo-watch-player[open]){overflow:hidden}.melolo-watch-player{positi
   #profilePanel.admin-upload-view .admin-episode-row{gap:5px;padding:8px}
   #profilePanel.admin-upload-view .admin-episode-row button{min-width:38px;padding:5px}
 }
+
+
+/* TacTic Drama v155 — avatar photo fully replaces the fallback circle */
+.melolo-avatar{position:relative;display:grid;place-items:center;overflow:hidden;padding:0;isolation:isolate;background:#17151b}
+.melolo-avatar img{position:absolute;inset:0;z-index:2;display:block;width:100%;height:100%;max-width:none;max-height:none;object-fit:cover;object-position:center;border:0;border-radius:50%;background:#17151b}
+.settings-account-avatar{position:relative;overflow:hidden;padding:0;background:#17151b}
+.settings-account-avatar img{position:absolute;inset:0;display:block;width:100%;height:100%;max-width:none;max-height:none;object-fit:cover;object-position:center;border-radius:50%;background:#17151b}
