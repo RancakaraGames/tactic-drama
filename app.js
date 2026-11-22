@@ -80,7 +80,7 @@ async function renderProfileCollections(){
  const list=$("#profileDramaList");if(!list)return;
  const view=profileCollectionView,filter=profileHistoryFilter;
  document.querySelectorAll("[data-profile-view]").forEach(btn=>{const active=btn.dataset.profileView===view;btn.classList.toggle("active",active);btn.setAttribute("aria-pressed",String(active))});
- const filters=$("#profileHistoryFilters");const uploadPanel=$("#uploadSection");
+ const filters=$("#profileHistoryFilters");const uploadPanel=$("#uploadSection");$("#profilePanel")?.classList.toggle("admin-upload-view",view==="upload");
  filters?.querySelectorAll("[data-profile-filter]").forEach(btn=>btn.classList.toggle("active",btn.dataset.profileFilter===filter));
  if(view==="upload"){if(filters)filters.hidden=true;list.hidden=true;if(uploadPanel)uploadPanel.hidden=uploadPanel.dataset.admin!=="true";if(uploadPanel?.dataset.admin!=="true"){profileCollectionView="history";return renderProfileCollections()}return}
  if(uploadPanel)uploadPanel.hidden=true;list.hidden=false;if(filters)filters.hidden=view!=="history";

@@ -1847,3 +1847,16 @@ body:has(.melolo-watch-player[open]){overflow:hidden}
  #profilePanel .admin-episode-row{grid-template-columns:minmax(0,1fr) auto auto;gap:5px}
  #profilePanel .admin-episode-row small{display:none}
 }
+
+
+/* Keep viewer history and account footer out of the admin upload workspace. */
+#profilePanel.admin-upload-view #profileHistoryFilters,
+#profilePanel.admin-upload-view #profileDramaList,
+#profilePanel.admin-upload-view .profile-account-footer{display:none!important}
+#profilePanel.admin-upload-view #uploadSection[data-admin="true"]:not([hidden]){display:block!important}
+#profilePanel:not(.admin-upload-view) #uploadSection{display:none!important}
+#profilePanel .series-library,
+#profilePanel .premium-upload-form{width:100%;min-width:0}
+#profilePanel.admin-upload-view .series-library{margin-top:4px}
+#profilePanel.admin-upload-view .upload-welcome{margin-bottom:14px}
+#profilePanel.admin-upload-view .premium-upload-form{margin-top:14px}
