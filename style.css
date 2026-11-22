@@ -1276,3 +1276,11 @@ body:has(.melolo-watch-player[open]){overflow:hidden}
 .drama-grid>.drama-card{display:block!important;width:auto!important;min-width:0;margin:0!important;break-inside:auto}
 @media(min-width:650px){.drama-grid{grid-template-columns:repeat(4,minmax(0,1fr))!important;column-gap:20px!important;row-gap:26px!important}}
 @media(max-width:360px){.drama-grid{column-gap:10px!important;row-gap:18px!important}}
+
+
+/* Catalog sorting control v114 */
+.catalog-sort-row{display:flex;align-items:center;justify-content:flex-end;gap:9px;padding:0 14px 10px;color:#aaa;font-size:11px}
+.catalog-sort-row[hidden],body.clips-mode .catalog-sort-row{display:none!important}
+.catalog-sort-select{min-width:142px;max-width:58%;padding:9px 30px 9px 11px;border:1px solid #34343b;border-radius:10px;background:#17171c;color:#f4f4f5;font-size:11px;font-weight:650;outline:none}
+.catalog-sort-select:focus-visible{border-color:#e50914;box-shadow:0 0 0 3px #e509142b}
+@media(max-width:360px){.catalog-sort-row{padding-right:12px}.catalog-sort-select{min-width:130px}}

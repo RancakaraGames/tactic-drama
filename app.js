@@ -130,7 +130,7 @@ function render(){
  document.body.classList.toggle("clips-mode",clipsPage);
  if(!clipsPage)pauseClipsFeed();
  const profilePanel=$("#profilePanel");if(profilePanel)profilePanel.hidden=!profilePage;
- [...document.querySelectorAll(".hero,.section-heading,.catalog-tools,.catalog-count,.catalog-status,.viewer-promo")].forEach(el=>{el.hidden=profilePage});
+ [...document.querySelectorAll(".hero,.section-heading,.catalog-tools,.catalog-sort-row,.catalog-count,.catalog-status,.viewer-promo")].forEach(el=>{el.hidden=profilePage});
  const continueSection=$("#continueSection");if(continueSection&&activeTab!=="home")continueSection.hidden=true;
  const historyTools=$("#historyTools");if(historyTools)historyTools.hidden=!(collectionPage&&collectionView==="history");
  const collectionFilters=$("#collectionHistoryFilters");if(collectionFilters)collectionFilters.hidden=!(collectionPage&&collectionView==="history");
