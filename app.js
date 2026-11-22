@@ -1104,7 +1104,7 @@ const targetSelect=$("#targetDrama");function syncTargetForm(){const existing=Bo
 $("#dramaSort")?.addEventListener("change",render);
 $("#reloadCatalog")?.addEventListener("click",()=>loadCatalog());
 function updateNetworkStatus(){const el=$("#networkStatus");if(!el)return;const online=navigator.onLine;el.classList.toggle("is-offline",!online);el.setAttribute("aria-label",online?"Koneksi online":"Koneksi offline");el.title=online?"Koneksi online":"Koneksi offline"}
-window.addEventListener("online",()=>{updateNetworkStatus();loadCatalog()});window.addEventListener("offline",updateNetworkStatus);updateNetworkStatus();
+window.addEventListener("online",()=>{updateNetworkStatus();loadCatalog();if(activePlaybackUserId)loadCloudPlayback(activePlaybackUserId)});window.addEventListener("offline",updateNetworkStatus);updateNetworkStatus();
 render();
 const cfg=window.TACTIC_SUPABASE_CONFIG||{};
 const backendConfigured=cfg.url?.startsWith("https://")&&!cfg.url.includes("YOUR-PROJECT")&&cfg.anonKey&&!cfg.anonKey.includes("YOUR-SUPABASE");
