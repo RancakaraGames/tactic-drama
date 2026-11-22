@@ -479,7 +479,7 @@ function persistCurrentPlayback(){if(!activeDrama||!video.currentTime||!Number.i
 video.addEventListener("timeupdate",()=>{if(Date.now()-lastHistoryPersist<5000)return;persistCurrentPlayback()});
 video.addEventListener("pause",persistCurrentPlayback);
 window.addEventListener("pagehide",persistCurrentPlayback);
-document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden")persistCurrentPlayback()});
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden"){persistCurrentPlayback();saveEpisodeProgress(true)}});
 
 let pendingViewListener=null;
 function recordEpisodeView(ep){
