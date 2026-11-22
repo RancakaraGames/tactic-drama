@@ -746,3 +746,110 @@ body:has(.melolo-watch-player[open]){overflow:hidden}.melolo-watch-player{positi
 @media(max-width:380px){body:not(.clips-mode) #dramaGrid.drama-grid{gap:10px;padding-right:11px;padding-left:11px}.profile-drama-poster{flex-basis:72px;width:72px;height:102px;min-width:72px}.profile-drama-row{gap:10px;padding:9px}.collection-empty-state{width:calc(100% - 24px);padding:22px 16px}
 }
 @media(min-width:700px){body:not(.clips-mode) #dramaGrid.drama-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:20px;padding:0 20px}}
+
+
+/* Admin Studio upload polish v151 — visual-only, scoped to admin workspace. */
+#profilePanel.admin-upload-view #uploadSection{
+  max-width:760px;margin:18px auto 28px;padding:0 2px;
+}
+#profilePanel.admin-upload-view .upload-welcome{
+  position:relative;isolation:isolate;overflow:hidden;
+  display:grid;grid-template-columns:42px minmax(0,1fr);align-items:start;gap:13px;
+  padding:19px 17px;border:1px solid #d8b87555;border-radius:20px;
+  background:radial-gradient(ellipse at 100% 0%,#d8b87520,transparent 48%),linear-gradient(135deg,#24202a 0%,#15131a 65%,#111015 100%);
+  box-shadow:0 14px 34px #0005,inset 0 1px #ffffff0b;
+}
+#profilePanel.admin-upload-view .upload-welcome:after{
+  content:"";position:absolute;z-index:-1;right:-34px;top:-48px;width:150px;height:150px;
+  border:1px solid #d8b87520;border-radius:50%;box-shadow:0 0 0 18px #d8b87508,0 0 0 38px #d8b87505;
+}
+#profilePanel.admin-upload-view .admin-upload-guide-icon{
+  width:42px;height:42px;border:1px solid #e2c58b66;border-radius:14px;
+  background:linear-gradient(145deg,#e4c58c2b,#d8b8750b);
+  box-shadow:inset 0 1px #fff2,0 7px 18px #0004;font-size:19px;
+}
+#profilePanel.admin-upload-view .upload-welcome .upload-eyebrow{font-size:9px;letter-spacing:1.8px}
+#profilePanel.admin-upload-view .upload-welcome strong{display:block;font-size:16px;line-height:1.3}
+#profilePanel.admin-upload-view .upload-welcome p{max-width:58ch;font-size:11px;line-height:1.7}
+#profilePanel.admin-upload-view .upload-welcome .admin-upload-note{
+  display:inline-block;margin-top:12px;padding:7px 10px;border:1px solid #d8b8752b;
+  border-radius:9px;background:#d8b8750c;font-size:9px;
+}
+#profilePanel.admin-upload-view .series-library{
+  margin:16px 0;padding:16px;border-color:#d8b87535;border-radius:18px;
+  background:linear-gradient(150deg,#1c1a21,#121116);
+}
+#profilePanel.admin-upload-view .series-library-heading{align-items:flex-start}
+#profilePanel.admin-upload-view .series-library-heading h3{font-size:15px;letter-spacing:-.2px}
+#profilePanel.admin-upload-view .series-library-heading p{font-size:10px}
+#profilePanel.admin-upload-view .admin-series-card{
+  padding:13px;border-color:#ffffff18;border-radius:15px;
+  background:linear-gradient(120deg,#ffffff09,#ffffff03);
+  transition:border-color .2s ease,transform .2s ease;
+}
+#profilePanel.admin-upload-view .admin-series-card:active{transform:scale(.99)}
+#profilePanel.admin-upload-view .premium-upload-form{gap:14px;margin-top:16px}
+#profilePanel.admin-upload-view .upload-form-section{
+  gap:13px;padding:17px;border-color:#ffffff19;border-radius:18px;
+  background:radial-gradient(ellipse at 100% 0%,#d8b8750b,transparent 52%),linear-gradient(145deg,#1c1a21,#121116);
+  box-shadow:0 10px 26px #0003,inset 0 1px #ffffff08;
+}
+#profilePanel.admin-upload-view .upload-section-heading{gap:11px;margin-bottom:3px}
+#profilePanel.admin-upload-view .upload-section-heading>span{
+  flex-basis:32px;width:32px;height:32px;border-radius:10px;font-size:10px;
+}
+#profilePanel.admin-upload-view .upload-section-heading strong{font-size:13px}
+#profilePanel.admin-upload-view .upload-section-heading small{font-size:10px;line-height:1.55}
+#profilePanel.admin-upload-view .premium-upload-form .upload-field{gap:8px;font-size:11px}
+#profilePanel.admin-upload-view .premium-upload-form input:not([type=file]),
+#profilePanel.admin-upload-view .premium-upload-form select,
+#profilePanel.admin-upload-view .premium-upload-form textarea{
+  min-height:46px;padding:12px 13px;border-color:#ffffff20;border-radius:12px;
+  background:linear-gradient(180deg,#111015,#0c0b0f);font-size:13px;
+}
+#profilePanel.admin-upload-view .premium-upload-form textarea{min-height:88px}
+#profilePanel.admin-upload-view .premium-upload-form input:focus,
+#profilePanel.admin-upload-view .premium-upload-form select:focus,
+#profilePanel.admin-upload-view .premium-upload-form textarea:focus{
+  border-color:#dfbd7d;box-shadow:0 0 0 3px #d8b87520,0 0 18px #d8b8750b;
+}
+#profilePanel.admin-upload-view .premium-upload-form .upload-file-field input[type=file]{
+  min-height:54px;padding:11px;border:1px dashed #d8b87580;border-radius:13px;
+  background:linear-gradient(120deg,#d8b87510,#ffffff04);font-size:11px;
+}
+#profilePanel.admin-upload-view .premium-upload-form input[type=file]::file-selector-button{
+  min-height:34px;padding:8px 12px;border-radius:9px;background:linear-gradient(110deg,#3b3023,#282019);
+  color:#f3d9a7;font-size:10px;
+}
+#profilePanel.admin-upload-view .upload-preview{
+  gap:13px;padding:13px;border-color:#d8b87535;border-radius:15px;
+  background:linear-gradient(120deg,#d8b8750c,#ffffff05);
+}
+#profilePanel.admin-upload-view .upload-preview img{width:58px;height:76px;flex-basis:58px;border:1px solid #ffffff20;border-radius:9px}
+#profilePanel.admin-upload-view .upload-preview strong{font-size:11px;line-height:1.45}
+#profilePanel.admin-upload-view .upload-preview span{font-size:10px}
+#profilePanel.admin-upload-view .upload-progress{padding:14px;border-radius:14px}
+#profilePanel.admin-upload-view .upload-progress progress{height:8px;border-radius:99px}
+#profilePanel.admin-upload-view .upload-submit-btn{
+  min-height:54px;border-radius:15px;font-size:13px;letter-spacing:.25px;
+  box-shadow:0 10px 26px #0006,0 4px 18px #d8b87520,inset 0 1px #fff8;
+}
+#profilePanel.admin-upload-view .upload-submit-btn:focus-visible,
+#profilePanel.admin-upload-view .admin-series-actions button:focus-visible{
+  outline:2px solid #f1d49c;outline-offset:3px;
+}
+#profilePanel.admin-upload-view #uploadStatus{padding:10px 12px;border-radius:11px;background:#ffffff08}
+@media(min-width:650px){
+  #profilePanel.admin-upload-view #uploadSection{padding:0 12px}
+  #profilePanel.admin-upload-view .upload-welcome{padding:22px}
+  #profilePanel.admin-upload-view .premium-upload-form{gap:16px}
+  #profilePanel.admin-upload-view .upload-form-section{padding:19px}
+}
+@media(max-width:420px){
+  #profilePanel.admin-upload-view #uploadSection{margin-top:12px}
+  #profilePanel.admin-upload-view .upload-welcome{grid-template-columns:36px minmax(0,1fr);gap:10px;padding:15px 13px}
+  #profilePanel.admin-upload-view .admin-upload-guide-icon{width:36px;height:36px;border-radius:12px}
+  #profilePanel.admin-upload-view .upload-welcome strong{font-size:14px}
+  #profilePanel.admin-upload-view .upload-form-section{padding:14px 12px}
+  #profilePanel.admin-upload-view .series-library{padding:13px 11px}
+}
