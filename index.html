@@ -8,7 +8,7 @@
   <title>TacTic Drama</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
-  <link rel="stylesheet" href="style.css?v=137">
+  <link rel="stylesheet" href="style.css?v=138">
 </head>
 <body>
   <main>
@@ -157,6 +157,10 @@
     <p id="loginStatus" class="status" role="status"></p>
     <section id="uploadSection" hidden>
       <p class="notice" id="adminIdentity"></p>
+      <div class="admin-upload-guide">
+        <div class="admin-upload-guide-icon" aria-hidden="true">↑</div>
+        <div><strong>Cara mengunggah drama</strong><ol><li>Pilih <b>Buat drama baru</b> atau pilih drama milik akun admin untuk menambah episode.</li><li>Isi judul, nomor episode, lalu pilih video dari galeri perangkat.</li><li>Tambahkan poster dan subtitle jika tersedia, kemudian tekan <b>Unggah video</b>.</li></ol><p>Video: MP4, WebM, atau MOV · Maks. 500 MB. Poster: JPG/PNG/WebP · Maks. 10 MB. Subtitle: VTT · Maks. 1 MB.</p><p class="admin-upload-note">Panel ini khusus admin. Unggah hanya video dan materi yang kamu miliki atau sudah mendapat izin distribusi. Video akan masuk katalog setelah data berhasil disimpan.</p></div>
+      </div>
       <section class="creator-profile-card" aria-label="Profil kreator">
         <div class="creator-profile-cover"><div><p class="eyebrow">TACTIC DRAMA · CREATOR STUDIO</p><strong>Ruang kreator pribadi</strong><span>Bangun identitas dan kelola kehadiran dramamu.</span></div><span class="creator-cover-mark">✦</span></div>
         <div class="creator-profile-top"><img id="creatorAvatar" class="creator-avatar" alt="Foto profil kreator"><div><strong id="creatorDisplayName">Kreator TacTic</strong><small id="creatorEmail"></small></div></div>
@@ -248,7 +252,7 @@
         <label id="posterField">Poster drama (opsional)<input name="poster" type="file" accept="image/jpeg,image/png,image/webp"></label>
         <label>Nomor episode<input name="episode" type="number" min="1" value="1" required></label>
         <label>Judul episode<input name="episodeTitle" placeholder="Contoh: Pertemuan pertama"></label>
-        <label>File video<input name="video" type="file" accept="video/mp4,video/webm,video/quicktime" required></label>
+        <label>File video<input name="video" type="file" accept="video/mp4,video/webm,video/quicktime" capture="environment" required></label>
         <label>Subtitle Bahasa Indonesia (opsional, .VTT)<input name="subtitle" type="file" accept=".vtt,text/vtt"></label><small class="subtitle-help">Pilih file subtitle WebVTT maksimal 1 MB. Subtitle muncul melalui tombol CC pada pemutar video.</small>
         <div id="uploadPreview" class="upload-preview" hidden><img id="uploadPosterPreview" alt="Pratinjau poster"><div><strong id="uploadVideoName">Video belum dipilih</strong><span id="uploadVideoSize"></span></div></div>
         <div id="uploadProgressWrap" class="upload-progress" hidden><div><span>Progres unggahan video</span><strong id="uploadProgressLabel">0%</strong></div><progress id="uploadProgressBar" max="100" value="0" aria-label="Progres unggahan video"></progress><small>Jangan tutup halaman sampai unggahan selesai.</small></div>
@@ -345,6 +349,6 @@
   </dialog>
 
   <script src="./supabase-config.js"></script>
-  <script src="app.js?v=137"></script>
+  <script src="app.js?v=138"></script>
 </body>
 </html>
