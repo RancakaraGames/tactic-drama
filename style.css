@@ -1344,3 +1344,12 @@ body:has(.melolo-watch-player[open]){overflow:hidden}
 @media(hover:hover){.player-episode-item:hover{border-color:#ffffff38;background:#ffffff12}}
 .player-episode-item:active{transform:scale(.99)}
 @media(prefers-reduced-motion:reduce){.player-episode-item{transition:none}}
+
+
+/* Distinct active feedback for player action rail v120 */
+#playerLikeAction[aria-pressed="true"] .rail-icon{color:#ff5368;border-color:#ff5368;background:#4a1725e8;box-shadow:0 0 0 3px #ff53681c,0 5px 18px #0007}
+#playerLikeAction[aria-pressed="true"] .rail-icon{ text-shadow:0 0 12px #ff536866 }
+#playerFavoriteAction[aria-pressed="true"] .rail-icon{color:#f2c27d;border-color:#f2c27d;background:#3b2930e8;box-shadow:0 0 0 3px #f2c27d1a,0 5px 18px #0007}
+#playerCommentAction[aria-expanded="true"] .rail-icon{color:#f2c27d;border-color:#f2c27d;background:#3b2930e8;box-shadow:0 0 0 3px #f2c27d1a,0 5px 18px #0007}
+#playerLikeAction[aria-pressed="true"] small{color:#ff9aa8}
+#playerFavoriteAction[aria-pressed="true"] small,#playerCommentAction[aria-expanded="true"] small{color:#f2c27d}
