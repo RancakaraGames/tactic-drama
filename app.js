@@ -266,7 +266,7 @@ function playEpisode(index,autoplay=true,resumeSeconds=0){const eps=activeDrama?
 function syncPlayerActionRail(){
  if(!activeDrama)return;
  const fav=favoriteIds.has(activeDrama.id),btn=$("#playerFavoriteAction");
- btn.setAttribute("aria-pressed",String(fav));btn.setAttribute("aria-label",fav?"Hapus dari favorit":"Tambah ke favorit");btn.classList.toggle("is-active",fav);
+ btn.setAttribute("aria-pressed",String(fav));btn.setAttribute("aria-label",fav?"Hapus dari favorit":"Tambah ke favorit");btn.classList.toggle("is-active",fav);const favoriteCount=$("#playerFavoriteRailCount");if(favoriteCount)favoriteCount.textContent=fav?"1":"0";
  const like=$("#likeDrama"),likeBtn=$("#playerLikeAction"),likeAvailable=Boolean(like&&!like.hidden&&!String(activeDrama.id).startsWith("demo-"));
  likeBtn.hidden=!likeAvailable;
  likeBtn.setAttribute("aria-pressed",likeAvailable&&like.dataset.liked==="true"?"true":"false");
