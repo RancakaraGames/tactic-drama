@@ -186,7 +186,7 @@ function render(){
   const historyEntry=historyPage?watchHistory[d.id]:null;
   const historyLabel=historyEntry?"Lanjutkan · Episode "+historyEntry.episode_number+(Number(historyEntry.position_seconds)>0?" · "+formatPlaybackTime(historyEntry.position_seconds):""):"";
   const tag=String(d.id).startsWith("demo-")?"DEMO • VIDEO UJI":clipsPage?"CUPLIKAN":historyLabel?historyLabel:"DRAMA PENDEK";
-  card.innerHTML=`<div class="poster" role="button" tabindex="0" style="background:linear-gradient(145deg,${d.colors?.[0]||"#61365f"},${d.colors?.[1]||"#20243a"})"><span class="tag">${escapeHtml(tag)}</span><span class="poster-title">${escapeHtml(d.title)}</span><button class="favorite-btn ${favoriteIds.has(d.id)?"is-favorite":""}" type="button" aria-label="${favoriteIds.has(d.id)?"Hapus dari":"Tambah ke"} favorit">${favoriteIds.has(d.id)?"♥":"♡"}</button></div><div class="card-meta"><strong>${escapeHtml(d.title)}</strong><span>${escapeHtml(d.genre||((d.episodes||[]).length+" episode"))}</span><span class="card-likes">♥ ${Number(d.like_count||0).toLocaleString("id-ID")} suka</span></div>`;
+  card.innerHTML=`<div class="poster" role="button" tabindex="0" style="background:linear-gradient(145deg,${d.colors?.[0]||"#61365f"},${d.colors?.[1]||"#20243a"})"><span class="tag">${escapeHtml(tag)}</span><span class="poster-title">${escapeHtml(d.title)}</span><button class="favorite-btn ${favoriteIds.has(d.id)?"is-favorite":""}" type="button" aria-label="${favoriteIds.has(d.id)?"Hapus dari":"Tambah ke"} favorit">${favoriteIds.has(d.id)?"♥":"♡"}</button></div><div class="card-meta"><strong>${escapeHtml(d.title)}</strong><span>${escapeHtml(d.genre||((d.episodes||[]).length+" episode"))}</span><div class="card-social-counts" aria-label="Statistik drama"><span class="card-social-stat card-like-stat"><span class="card-social-icon" aria-hidden="true">♥</span><strong>${Number(d.like_count||0).toLocaleString("id-ID")}</strong><small>Suka</small></span><span class="card-social-stat card-favorite-stat"><span class="card-social-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M6 3.75h12v16.5l-6-4-6 4z"/></svg></span><strong>${Number(favoriteCounts.get(String(d.id))??d.favorite_count??0).toLocaleString("id-ID")}</strong><small>Favorit</small></span></div></div>`;
   const poster=card.querySelector(".poster");
   const openCardDrama=()=>{const saved=watchHistory[d.id];const resumeNumber=saved?.episode_number??null,resumeSeconds=Number(saved?.position_seconds||0);openDrama(d);if(resumeNumber!=null){const resumeIndex=(d.episodes||[]).findIndex(ep=>Number(ep.episode_number)===Number(resumeNumber));if(resumeIndex>=0)playEpisode(resumeIndex,false,resumeSeconds)}};
   if(historyPage&&historyEntry){
@@ -204,7 +204,7 @@ function render(){
   }
   poster.addEventListener("click",openCardDrama);poster.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();openCardDrama()}});
   if(d.poster_url){const art=document.createElement("img");art.className="poster-art";art.src=d.poster_url;art.alt="Poster "+d.title;art.loading="lazy";poster.prepend(art)}
-  card.querySelector(".favorite-btn").addEventListener("click",e=>{e.stopPropagation();if(favoriteIds.has(d.id))favoriteIds.delete(d.id);else favoriteIds.add(d.id);try{localStorage.setItem("tactic-favorites",JSON.stringify([...favoriteIds]))}catch{}render()});
+  card.querySelector(".favorite-btn").addEventListener("click",e=>{e.stopPropagation();toggleDramaFavorite(d)});
   grid.append(card)
  })
 }
