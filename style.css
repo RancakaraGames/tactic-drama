@@ -878,3 +878,93 @@ body:has(.melolo-watch-player[open]){overflow:hidden}.melolo-watch-player{positi
 #profilePanel.admin-upload-view .upload-submit-btn:disabled{
  cursor:wait;opacity:.7;filter:saturate(.7);
 }
+
+
+/* Admin Studio series library refinement v153 — visual-only and safely scoped. */
+#profilePanel.admin-upload-view .series-library-heading{
+  gap:12px;align-items:center;padding-bottom:12px;border-bottom:1px solid #ffffff12;
+}
+#profilePanel.admin-upload-view .series-library-heading>div{min-width:0}
+#profilePanel.admin-upload-view #adminDramaCount{
+  flex:0 0 auto;padding:7px 10px;border:1px solid #d8b87545;border-radius:999px;
+  background:#d8b87512;color:#f0d39b;font-size:10px;font-weight:800;white-space:nowrap;
+}
+#profilePanel.admin-upload-view .admin-series-list{gap:11px}
+#profilePanel.admin-upload-view .admin-series-card{
+  position:relative;overflow:hidden;padding:13px;
+  border-color:#ffffff1c;background:linear-gradient(135deg,#24212a 0%,#19171e 58%,#151319 100%);
+  box-shadow:0 8px 22px #0002,inset 0 1px #ffffff08;
+}
+#profilePanel.admin-upload-view .admin-series-top{align-items:center;gap:12px}
+#profilePanel.admin-upload-view .admin-series-cover{
+  flex-basis:54px;width:54px;height:72px;border-radius:10px;
+  box-shadow:0 5px 14px #0005;
+}
+#profilePanel.admin-upload-view .admin-series-info{gap:5px}
+#profilePanel.admin-upload-view .admin-series-info strong{
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+  font-size:13px;line-height:1.35;letter-spacing:.05px;
+}
+#profilePanel.admin-upload-view .admin-series-info span{
+  display:inline-flex;align-items:center;gap:5px;flex-wrap:wrap;font-size:9px;line-height:1.4;
+}
+#profilePanel.admin-upload-view .admin-series-info small{font-size:9px}
+#profilePanel.admin-upload-view .admin-series-actions{
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:12px;
+}
+#profilePanel.admin-upload-view .admin-series-actions button{
+  min-width:0;min-height:37px;padding:8px 7px;font-size:9px;font-weight:750;
+}
+#profilePanel.admin-upload-view .admin-series-actions .primary-btn{grid-column:1/-1;min-height:40px}
+#profilePanel.admin-upload-view .admin-series-actions .danger-btn{
+  border:1px solid #e4777738;background:#8e34341a;color:#f0a1a1;
+}
+#profilePanel.admin-upload-view .admin-episodes{
+  margin-top:12px;padding:0;border:1px solid #ffffff12;border-radius:11px;
+  background:#09090d35;overflow:hidden;
+}
+#profilePanel.admin-upload-view .admin-episodes summary{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  min-height:42px;padding:10px 12px;color:#e8d2a8;font-size:10px;list-style:none;
+}
+#profilePanel.admin-upload-view .admin-episodes summary::-webkit-details-marker{display:none}
+#profilePanel.admin-upload-view .admin-episodes summary:after{
+  content:"＋";display:grid;place-items:center;flex:0 0 21px;width:21px;height:21px;
+  border:1px solid #d8b87535;border-radius:50%;color:#e8d2a8;font-size:12px;
+}
+#profilePanel.admin-upload-view .admin-episodes[open] summary{
+  border-bottom:1px solid #ffffff12;background:#ffffff05;
+}
+#profilePanel.admin-upload-view .admin-episodes[open] summary:after{content:"−"}
+#profilePanel.admin-upload-view .admin-episode-row{
+  grid-template-columns:minmax(0,1fr) auto auto;gap:7px;padding:9px 10px;
+  border-bottom:1px solid #ffffff0c;
+}
+#profilePanel.admin-upload-view .admin-episode-row:last-child{border-bottom:0}
+#profilePanel.admin-upload-view .admin-episode-row span{
+  grid-column:1;grid-row:1;font-size:10px;font-weight:650;line-height:1.4;
+}
+#profilePanel.admin-upload-view .admin-episode-row small{
+  display:block;grid-column:1;grid-row:2;margin-top:2px;color:#9fca9d;font-size:8px;
+}
+#profilePanel.admin-upload-view .admin-episode-row button{
+  min-width:43px;min-height:32px;padding:6px 8px;font-size:9px;
+}
+#profilePanel.admin-upload-view .admin-episode-row button:nth-of-type(1){grid-column:2;grid-row:1/3}
+#profilePanel.admin-upload-view .admin-episode-row button:nth-of-type(2){grid-column:3;grid-row:1/3}
+#profilePanel.admin-upload-view .admin-series-empty{
+  margin:10px 0 0;padding:12px;border:1px dashed #d8b87535;border-radius:11px;
+  background:#d8b87508;font-size:10px;line-height:1.6;
+}
+@media(min-width:560px){
+  #profilePanel.admin-upload-view .admin-series-card{padding:15px}
+  #profilePanel.admin-upload-view .admin-series-actions{display:flex;flex-wrap:wrap}
+  #profilePanel.admin-upload-view .admin-series-actions .primary-btn{flex:1 1 145px}
+  #profilePanel.admin-upload-view .admin-series-actions button{flex:0 1 auto}
+}
+@media(max-width:360px){
+  #profilePanel.admin-upload-view .admin-series-cover{flex-basis:47px;width:47px;height:64px}
+  #profilePanel.admin-upload-view .admin-series-actions button{font-size:8px}
+  #profilePanel.admin-upload-view .admin-episode-row{gap:5px;padding:8px}
+  #profilePanel.admin-upload-view .admin-episode-row button{min-width:38px;padding:5px}
+}
