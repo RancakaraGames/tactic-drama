@@ -8,7 +8,7 @@
   <title>TacTic Drama</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
-  <link rel="stylesheet" href="style.css?v=151">
+  <link rel="stylesheet" href="style.css?v=152">
 </head>
 <body>
   <main>
@@ -164,13 +164,13 @@
         <div class="upload-form-section"><div class="upload-section-heading"><span>01</span><div><strong>Pilih atau buat series</strong><small>Series baru dibuat sekali. Episode berikutnya masuk ke series yang sama.</small></div></div><label class="upload-field">Series tujuan<select name="targetDrama" id="targetDrama"><option value="">＋ Buat series baru</option></select></label><small id="uploadSeriesMode" class="upload-series-mode">Membuat series baru + episode pertama</small>
         <label id="seriesTitleField" class="upload-field">Nama series<input name="title" required placeholder="Contoh: Cinta di Ujung Senja"></label>
         <label id="seriesDescriptionField" class="upload-field">Deskripsi series<textarea name="description" rows="3" placeholder="Ceritakan singkat series-nya"></textarea></label>
-        <label id="posterField" class="upload-field">Poster drama <span class="upload-optional">Opsional</span><input name="poster" type="file" accept="image/jpeg,image/png,image/webp"></label></div>
+        <label id="posterField" class="upload-field upload-file-field">Poster drama <span class="upload-optional">Opsional · JPG, PNG, WebP</span><input name="poster" type="file" accept="image/jpeg,image/png,image/webp"><small class="upload-file-help">Maksimal 10 MB. Poster hanya diperlukan saat membuat series baru.</small></label></div>
         <div class="upload-form-section"><div class="upload-section-heading"><span>02</span><div><strong>Susunan episode</strong><small>Nomor episode wajib dan tidak boleh duplikat dalam satu series.</small></div></div>
         <label class="upload-field">Nomor episode<input name="episode" type="number" min="1" value="1" required></label>
         <label class="upload-field">Judul episode <span class="upload-optional">Opsional</span><input name="episodeTitle" placeholder="Contoh: Pertemuan pertama"></label>
         </div><div class="upload-form-section upload-media-section"><div class="upload-section-heading"><span>03</span><div><strong>File video</strong><small>Pilih video langsung dari galeri atau file perangkat.</small></div></div>
-        <label class="upload-field upload-file-field">Video episode<input name="video" type="file" accept="video/mp4,video/webm,video/quicktime" required></label>
-        <label class="upload-field upload-file-field">Subtitle Bahasa Indonesia <span class="upload-optional">Opsional · VTT</span><input name="subtitle" type="file" accept=".vtt,text/vtt"></label><small class="subtitle-help">Maksimal 1 MB. Subtitle akan tersedia melalui tombol CC pada pemutar video.</small></div>
+        <label class="upload-field upload-file-field">Video episode <span class="upload-optional">Wajib · MP4, WebM, MOV</span><input name="video" type="file" accept="video/mp4,video/webm,video/quicktime" required><small class="upload-file-help">Maksimal 500 MB. Pilih video dari galeri atau penyimpanan perangkat.</small></label>
+        <label class="upload-field upload-file-field">Subtitle Bahasa Indonesia <span class="upload-optional">Opsional · VTT</span><input name="subtitle" type="file" accept=".vtt,text/vtt"><small class="upload-file-help">Maksimal 1 MB. Gunakan file WebVTT yang diawali WEBVTT.</small></label></div>
         <div id="uploadPreview" class="upload-preview" hidden><img id="uploadPosterPreview" alt="Pratinjau poster"><div><strong id="uploadVideoName">Video belum dipilih</strong><span id="uploadVideoSize"></span></div></div>
         <div id="uploadProgressWrap" class="upload-progress" hidden><div><span>Progres unggahan video</span><strong id="uploadProgressLabel">0%</strong></div><progress id="uploadProgressBar" max="100" value="0" aria-label="Progres unggahan video"></progress><small>Jangan tutup halaman sampai unggahan selesai.</small></div>
         <button class="primary-btn full upload-submit-btn" type="submit"><span aria-hidden="true">↑</span> Terbitkan episode</button>
@@ -265,6 +265,6 @@
   </dialog>
 
   <script src="./supabase-config.js"></script>
-  <script src="app.js?v=151"></script>
+  <script src="app.js?v=152"></script>
 </body>
 </html>
