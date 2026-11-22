@@ -166,13 +166,15 @@ function render(){
  renderContinueWatching();if(activeTab==="home")renderFeaturedHero();
  if(!visible.length){
   if(!searchQuery&&(savedPage||historyPage)){
+   const filteredHistory=historyPage&&collectionHistoryFilter!=="all";
+   const filterLabel=collectionHistoryFilter==="finished"?"selesai":"sedang ditonton";
    const empty=document.createElement("section");empty.className="collection-empty-state";
    const icon=document.createElement("span");icon.className="collection-empty-icon";icon.setAttribute("aria-hidden","true");icon.textContent=savedPage?"♡":"◷";
    const eyebrow=document.createElement("small");eyebrow.textContent="KOLEKSI PRIBADI";
-   const title=document.createElement("h3");title.textContent=savedPage?"Belum ada drama favorit":"Belum ada riwayat tontonan";
-   const copy=document.createElement("p");copy.textContent=savedPage?"Simpan drama yang kamu suka dengan menekan ikon hati pada poster. Semua pilihanmu akan terkumpul di sini.":"Mulai tonton drama pilihanmu. Riwayat episode dan progres menonton akan tersimpan otomatis di perangkat ini.";
-   const action=document.createElement("button");action.type="button";action.className="collection-empty-action";action.textContent="Jelajahi drama";
-   action.addEventListener("click",()=>{activeTab="home";setActiveNav(activeTab);render();window.scrollTo({top:0,behavior:"smooth"})});
+   const title=document.createElement("h3");title.textContent=savedPage?"Belum ada drama favorit":filteredHistory?"Belum ada drama "+filterLabel:"Belum ada riwayat tontonan";
+   const copy=document.createElement("p");copy.textContent=savedPage?"Simpan drama yang kamu suka dengan menekan ikon hati pada poster. Semua pilihanmu akan terkumpul di sini.":filteredHistory?"Belum ada riwayat dengan status "+filterLabel+". Coba lihat semua riwayat tontonanmu.":"Mulai tonton drama pilihanmu. Riwayat episode dan progres menonton akan tersimpan otomatis di perangkat ini.";
+   const action=document.createElement("button");action.type="button";action.className="collection-empty-action";action.textContent=filteredHistory?"Lihat semua riwayat":"Jelajahi drama";
+   action.addEventListener("click",()=>{if(filteredHistory){collectionHistoryFilter="all";render();return}activeTab="home";setActiveNav(activeTab);render();window.scrollTo({top:0,behavior:"smooth"})});
    empty.append(icon,eyebrow,title,copy,action);grid.replaceChildren(empty);
   }else{
    grid.innerHTML=`<p class="empty-state">${searchQuery?"Drama tidak ditemukan. Coba kata kunci lain atau hapus pencarian.":clipsPage?"Belum ada drama dengan episode lengkap untuk ditampilkan di Cuplikan.":"Belum ada drama. Drama yang diunggah admin akan muncul di sini."}</p>`;
