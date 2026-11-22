@@ -1587,3 +1587,65 @@ body:has(.melolo-watch-player[open]){overflow:hidden}
   .vip-card .vip-card-copy small{font-size:7px}
   .vip-card .vip-card-hint{font-size:6px}
 }
+
+
+/* VIP card final spacing and single PREMIUM label v133 */
+.vip-card:after{
+  content:none!important;
+  display:none!important;
+}
+.vip-card{
+  overflow:hidden;
+  grid-template-columns:minmax(0,1fr) 34px;
+  column-gap:5px;
+  padding:9px 9px 9px 11px;
+}
+.vip-card .vip-card-copy{
+  width:100%;
+  min-width:0;
+  gap:6px;
+}
+.vip-card .vip-title-line{
+  gap:6px;
+}
+.vip-card .vip-premium-label{
+  flex:0 0 auto;
+}
+.vip-card .vip-card-copy small{
+  display:block;
+  width:100%;
+  max-width:100%;
+  overflow:visible;
+  text-overflow:clip;
+  white-space:nowrap;
+  font-size:8px;
+  letter-spacing:-.1px;
+}
+.vip-card .benefit-icon{
+  width:25px;
+  height:25px;
+  border-radius:8px;
+  background:#f2c87518;
+  border-color:#f2d08a50;
+  color:#ffe2a0;
+  opacity:1;
+}
+.vip-card .vip-card-hint{
+  justify-self:center;
+  align-self:end;
+  margin-top:4px;
+  padding:0;
+  font-size:7px;
+  line-height:1.15;
+  letter-spacing:0;
+}
+@media(max-width:370px){
+  .vip-card{
+    grid-template-columns:minmax(0,1fr) 30px;
+    padding:8px 7px 8px 9px;
+  }
+  .vip-card .vip-card-copy{gap:5px}
+  .vip-card .vip-card-copy small{font-size:7px}
+  .vip-card .benefit-icon{width:22px;height:22px}
+  .vip-card .vip-card-hint{font-size:6px}
+}
