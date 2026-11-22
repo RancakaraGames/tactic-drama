@@ -1754,3 +1754,25 @@ body:has(.melolo-watch-player[open]){overflow:hidden}
   color:#ff4652;
   filter:drop-shadow(0 2px 5px #ff465233);
 }
+
+
+/* Consistent SVG navigation and player action icons v137 */
+.bottom-nav .nav-item .home-nav-icon{
+  width:21px;height:21px;margin-bottom:3px;
+  fill:none;stroke:currentColor;stroke-width:1.9;
+  stroke-linecap:round;stroke-linejoin:round;
+}
+.bottom-nav .nav-item.active .home-nav-icon{
+  color:#ff4652;
+  filter:drop-shadow(0 2px 5px #ff465233);
+}
+.player-rail-action .rail-like-icon svg{
+  display:block;width:23px;height:23px;
+  fill:none;stroke:currentColor;stroke-width:1.8;
+  stroke-linecap:round;stroke-linejoin:round;
+  transition:fill .18s ease,transform .18s ease;
+}
+#playerLikeAction[aria-pressed="true"] .rail-like-icon svg{
+  fill:currentColor;
+  stroke:currentColor;
+}

@@ -8,7 +8,7 @@
   <title>TacTic Drama</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
-  <link rel="stylesheet" href="style.css?v=136">
+  <link rel="stylesheet" href="style.css?v=137">
 </head>
 <body>
   <main>
@@ -65,7 +65,7 @@
   </main>
   <nav class="bottom-nav" aria-label="Navigasi utama">
     <button class="nav-item active" data-tab="clips" aria-current="page"><svg class="ui-icon clips-nav-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="3"/><path d="m10 8.5 5 3.5-5 3.5z"/></svg>Cuplikan</button>
-    <button class="nav-item" data-tab="home"><span>⌂</span>Beranda</button>
+    <button class="nav-item" data-tab="home"><svg class="ui-icon home-nav-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>Beranda</button>
     <button class="nav-item" data-tab="collection"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="13" height="16" rx="2"/><path d="M8 2h10a2 2 0 0 1 2 2v14M8 8h5M8 12h5"/></svg>Koleksi</button>
     <button class="nav-item" data-tab="profile"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M4.5 21a7.5 7.5 0 0 1 15 0"/></svg>Profil</button>
   </nav>
@@ -83,7 +83,7 @@
       <video id="videoPlayer" playsinline preload="metadata"></video>
       <div class="player-screen-shade" aria-hidden="true"></div>
       <div class="player-right-rail" aria-label="Aksi drama">
-        <button id="playerLikeAction" class="player-rail-action" type="button" aria-label="Suka drama" aria-pressed="false"><span class="rail-icon">♥</span><small>Suka</small><span class="rail-count" id="playerLikeRailCount">—</span></button>
+        <button id="playerLikeAction" class="player-rail-action" type="button" aria-label="Suka drama" aria-pressed="false"><span class="rail-icon rail-like-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M20.8 8.7c0 5.1-8.8 11-8.8 11s-8.8-5.9-8.8-11A4.7 4.7 0 0 1 12 6.1a4.7 4.7 0 0 1 8.8 2.6Z"/></svg></span><small>Suka</small><span class="rail-count" id="playerLikeRailCount">—</span></button>
         <button id="playerCommentAction" class="player-rail-action" type="button" aria-label="Buka komentar" aria-expanded="false"><span class="rail-icon rail-comment-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M20 11.5a7.5 7.5 0 0 1-7.5 7.5H6l-3 2v-5.5A7.5 7.5 0 1 1 20 11.5Z"/><path d="M8 11.5h.01M12 11.5h.01M16 11.5h.01"/></svg></span><small>Komentar</small><span class="rail-count" id="playerCommentRailCount">0</span></button>
         <button id="playerFavoriteAction" class="player-rail-action" type="button" aria-label="Tambah ke favorit" aria-pressed="false"><span class="rail-icon rail-bookmark-icon" aria-hidden="true"></span><small>Favorit</small><span class="rail-count" id="playerFavoriteRailCount">0</span></button>
         <button id="playerShareAction" class="player-rail-action" type="button" aria-label="Bagikan drama"><span class="rail-icon rail-share-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.7 10.6 6.6-4.2M8.7 13.4l6.6 4.2"/></svg></span><small>Bagikan</small></button>
@@ -345,6 +345,6 @@
   </dialog>
 
   <script src="./supabase-config.js"></script>
-  <script src="app.js?v=136"></script>
+  <script src="app.js?v=137"></script>
 </body>
 </html>
