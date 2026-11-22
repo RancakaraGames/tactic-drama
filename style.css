@@ -1498,3 +1498,92 @@ body:has(.melolo-watch-player[open]){overflow:hidden}
   .benefit-icon svg{width:15px;height:15px}
   .vip-card:after{top:8px;left:8px}
 }
+
+
+/* VIP premium label and balanced compact card layout v132 */
+.vip-card{
+  display:grid;
+  grid-template-columns:minmax(0,1fr)  auto;
+  grid-template-rows:1fr auto;
+  align-items:center;
+  column-gap:7px;
+  row-gap:0;
+  padding:9px 9px 9px 11px;
+  text-align:left;
+}
+.vip-card .vip-card-copy{
+  grid-column:1;
+  grid-row:1 / 3;
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  justify-content:center;
+  gap:5px;
+  padding-top:1px;
+}
+.vip-title-line{
+  display:flex;
+  align-items:center;
+  gap:5px;
+  min-width:0;
+}
+.vip-card .vip-title-line strong{
+  font-size:13px;
+  line-height:1;
+  letter-spacing:.2px;
+}
+.vip-premium-label{
+  display:inline-flex;
+  align-items:center;
+  padding:3px 5px;
+  border:1px solid #e8c87955;
+  border-radius:5px;
+  background:#e8c87917;
+  color:#f3d99b;
+  font-size:6px;
+  font-weight:800;
+  line-height:1;
+  letter-spacing:.65px;
+}
+.vip-card .benefit-icon{
+  position:relative;
+  top:auto;
+  right:auto;
+  grid-column:2;
+  grid-row:1;
+  justify-self:center;
+  align-self:center;
+  width:24px;
+  height:24px;
+}
+.vip-card .vip-card-hint{
+  grid-column:2;
+  grid-row:2;
+  justify-self:center;
+  align-self:end;
+  display:block;
+  width:auto;
+  max-width:none;
+  margin:3px 0 0;
+  color:#f2d69b;
+  font-size:7px;
+  font-weight:600;
+  line-height:1;
+  white-space:nowrap;
+  letter-spacing:0;
+}
+.vip-card .vip-card-copy small{
+  font-size:8px;
+  line-height:1.2;
+  white-space:nowrap;
+}
+@media(max-width:370px){
+  .vip-card{padding:8px 7px 8px 8px;column-gap:5px}
+  .vip-card .vip-card-copy{gap:4px}
+  .vip-card .vip-title-line strong{font-size:12px}
+  .vip-premium-label{font-size:5px;padding:3px 4px}
+  .vip-card .benefit-icon{width:22px;height:22px}
+  .vip-card .vip-card-copy small{font-size:7px}
+  .vip-card .vip-card-hint{font-size:6px}
+}
