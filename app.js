@@ -20,7 +20,7 @@ let lastHistoryPersist=0;
 let episodeProgress={};try{episodeProgress=JSON.parse(localStorage.getItem("tactic-episode-progress")||"{}")||{}}catch{}
 let lastEpisodeProgressPersist=0;
 let activePlaybackUserId=null;
-let commentLoadToken=0;
+let commentLoadToken=0,favoritesLoadToken=0,playerFavoriteLoadToken=0,playerLikeLoadToken=0;
 const isCloudUuid=value=>/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(String(value||""));
 function readPlaybackStore(key){try{return JSON.parse(localStorage.getItem(key)||"{}")||{}}catch{return {}}}
 function mergePlaybackStore(base,incoming,dateField){
@@ -561,14 +561,16 @@ function recordEpisodeView(ep){
 }
 async function loadUserFavorites(){
  if(!supa)return;
+ const requestToken=++favoritesLoadToken;
  try{
   const {data:sessionData}=await supa.auth.getSession(),user=sessionData?.session?.user;
+  if(requestToken!==favoritesLoadToken||activePlaybackUserId!==(user?.id||null))return;
   if(!user){favoriteIds=new Set([...favoriteIds].filter(id=>String(id).startsWith("demo-")));favoritesLoadedFor=null;syncPlayerActionRail();return}
   const demoIds=[...favoriteIds].filter(id=>String(id).startsWith("demo-"));
   const legacyIds=[...favoriteIds].filter(id=>!String(id).startsWith("demo-")&&dramas.some(d=>String(d.id)===String(id)));
   if(legacyIds.length){const imported=await supa.from("drama_favorites").upsert(legacyIds.map(drama_id=>({drama_id})),{onConflict:"drama_id,user_id",ignoreDuplicates:true});if(imported.error)console.warn("Favorit lokal lama belum dapat disinkronkan:",imported.error.message)}
   const [ownResult,countResult]=await Promise.all([supa.from("drama_favorites").select("drama_id").eq("user_id",user.id),supa.from("drama_favorite_counts").select("drama_id,favorite_count")]);
-  if(ownResult.error)throw ownResult.error;if(countResult.error)throw countResult.error;
+  if(ownResult.error)throw ownResult.error;if(countResult.error)throw countResult.error;if(requestToken!==favoritesLoadToken||activePlaybackUserId!==user.id)return;
   favoriteIds=new Set([...demoIds,...(ownResult.data||[]).map(row=>String(row.drama_id))]);favoriteCounts=new Map((countResult.data||[]).map(row=>[String(row.drama_id),Number(row.favorite_count||0)]));favoritesLoadedFor=user.id;
   try{localStorage.setItem("tactic-favorites",JSON.stringify(demoIds))}catch{}
   dramas.forEach(d=>{d.favorite_count=favoriteCounts.get(String(d.id))||0});syncPlayerActionRail();render();
@@ -576,11 +578,12 @@ async function loadUserFavorites(){
  }catch(error){console.warn("Favorit akun belum dapat dimuat:",error?.message||error)}
 }
 async function loadDramaFavoriteState(dramaId){
- const id=String(dramaId);if(!supa||id.startsWith("demo-")){syncPlayerActionRail();return}
+ const id=String(dramaId),requestToken=++playerFavoriteLoadToken;if(!supa||id.startsWith("demo-")){syncPlayerActionRail();return}
  try{
   const [{data:count,error:countError},{data:sessionData}]=await Promise.all([supa.from("drama_favorite_counts").select("favorite_count").eq("drama_id",id).maybeSingle(),supa.auth.getSession()]);
   if(countError)throw countError;const user=sessionData?.session?.user;let saved=false;
   if(user){const own=await supa.from("drama_favorites").select("drama_id").eq("drama_id",id).eq("user_id",user.id).maybeSingle();if(own.error)throw own.error;saved=Boolean(own.data)}
+  if(requestToken!==playerFavoriteLoadToken||String(activeDrama?.id)!==id)return;
   if(saved)favoriteIds.add(id);else favoriteIds.delete(id);
   const total=Number(count?.favorite_count||0);favoriteCounts.set(id,total);const drama=dramas.find(item=>String(item.id)===id);if(drama)drama.favorite_count=total;syncPlayerActionRail();
  }catch(error){const count=$("#playerFavoriteRailCount");if(count)count.textContent="—";console.warn("Jumlah favorit belum dapat dimuat:",error?.message||error)}
@@ -597,7 +600,7 @@ async function toggleDramaFavorite(drama){
  finally{if(button)button.disabled=false}
 }
 async function loadDramaLikeState(dramaId){
- const btn=$("#likeDrama");if(!btn)return;
+ const requestToken=++playerLikeLoadToken,btn=$("#likeDrama");if(!btn)return;
  if(String(dramaId).startsWith("demo-")){
   const liked=demoLikedIds.has(String(dramaId)),count=liked?1:0;
   btn.hidden=false;btn.disabled=false;btn.dataset.liked=String(liked);btn.setAttribute("aria-pressed",String(liked));
@@ -613,6 +616,7 @@ async function loadDramaLikeState(dramaId){
   const {data:sessionData}=await supa.auth.getSession(),user=sessionData?.session?.user;
   let liked=false;
   if(user){const own=await supa.from("drama_likes").select("drama_id").eq("drama_id",dramaId).eq("user_id",user.id).maybeSingle();if(own.error)throw own.error;liked=Boolean(own.data)}
+  if(requestToken!==playerLikeLoadToken||String(activeDrama?.id)!==String(dramaId))return;
   const likeCount=Number(countResult.data?.like_count||0);
   const railLikeCount=$("#playerLikeRailCount");if(railLikeCount)railLikeCount.textContent=likeCount.toLocaleString("id-ID");
   btn.dataset.liked=String(liked);btn.setAttribute("aria-pressed",String(liked));
