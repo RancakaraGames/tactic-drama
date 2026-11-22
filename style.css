@@ -1261,3 +1261,11 @@ body:has(.melolo-watch-player[open]){overflow:hidden}
 .collection-empty-action:focus-visible{outline:2px solid #f2c27d;outline-offset:4px}
 @media(max-width:380px){.collection-empty-state{min-height:260px;margin:4px 0 18px;padding:23px 16px}.collection-empty-state h3{font-size:17px}}
 @media(prefers-reduced-motion:reduce){.collection-empty-action{transition:none}}
+
+
+/* Collection history filters v111 */
+.collection-history-filters{display:flex;gap:7px;align-items:center;overflow-x:auto;padding:5px 16px 13px;scrollbar-width:none}
+.collection-history-filters::-webkit-scrollbar{display:none}
+.collection-history-filters button{flex:0 0 auto;min-height:35px;padding:0 13px;border-radius:18px;background:#ffffff08;color:#b9b7c0;font-size:10px}
+.collection-history-filters button.active{border-color:#e9c58a55;background:linear-gradient(135deg,#49391b,#292113);color:#ffe3a1}
+.collection-history-filters button:focus-visible{outline:2px solid #f2c76c;outline-offset:3px}

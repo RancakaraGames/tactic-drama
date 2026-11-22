@@ -8,7 +8,7 @@
   <title>TacTic Drama</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
-  <link rel="stylesheet" href="style.css?v=110">
+  <link rel="stylesheet" href="style.css?v=111">
 </head>
 <body>
   <main>
@@ -61,6 +61,7 @@
 </section>
     <section id="collectionTabs" class="collection-tabs" hidden aria-label="Isi koleksi"><button type="button" class="collection-tab active" data-collection-view="saved" aria-pressed="true"><span>♡ Favorit</span><span class="collection-tab-count" id="collectionFavoriteCount">0</span></button><button type="button" class="collection-tab" data-collection-view="history" aria-pressed="false"><span>◷ Riwayat</span><span class="collection-tab-count" id="collectionHistoryCount">0</span></button></section>
     <section id="historyTools" class="history-tools" hidden><span>Episode yang terakhir kamu tonton tersimpan di perangkat ini.</span><button id="clearHistory" class="secondary-btn" type="button">Hapus riwayat</button></section>
+    <div id="collectionHistoryFilters" class="melolo-profile-filter collection-history-filters" hidden aria-label="Filter riwayat tontonan"><button type="button" class="active" data-collection-history-filter="all" aria-pressed="true">Semua</button><button type="button" data-collection-history-filter="watching" aria-pressed="false">Sedang ditonton</button><button type="button" data-collection-history-filter="finished" aria-pressed="false">Selesai</button></div>
     <section id="dramaGrid" class="drama-grid" aria-live="polite"></section>
   </main>
   <nav class="bottom-nav" aria-label="Navigasi utama">
@@ -352,6 +353,6 @@
   </dialog>
 
   <script src="./supabase-config.js"></script>
-  <script src="app.js?v=110"></script>
+  <script src="app.js?v=111"></script>
 </body>
 </html>

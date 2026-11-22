@@ -8,7 +8,7 @@ const demoDramas=[
  makeDemoDrama("demo-cn","Demo Drama China","CHINA",["#79324d","#242b50"]),
  makeDemoDrama("demo-kr","Demo Drama Korea","KOREA",["#81522c","#342448"])
 ];
-let dramas=[...demoDramas],activeDrama=null,activeEpisodeIndex=0,supa=null,activeTab="clips",collectionView="saved",sharedDramaOpened=false,profileCollectionView="history",profileHistoryFilter="all",profileLikesLoadedFor=null,profileLikedIds=new Set();
+let dramas=[...demoDramas],activeDrama=null,activeEpisodeIndex=0,supa=null,activeTab="clips",collectionView="saved",collectionHistoryFilter="all",sharedDramaOpened=false,profileCollectionView="history",profileHistoryFilter="all",profileLikesLoadedFor=null,profileLikedIds=new Set();
 let clipsObserver=null;
 let creatorPerformanceData=[];
 let autoNextEnabled=true;try{autoNextEnabled=localStorage.getItem("tactic-auto-next")!=="false"}catch{}
@@ -133,6 +133,8 @@ function render(){
  [...document.querySelectorAll(".hero,.section-heading,.catalog-tools,.catalog-count,.catalog-status,.viewer-promo")].forEach(el=>{el.hidden=profilePage});
  const continueSection=$("#continueSection");if(continueSection&&activeTab!=="home")continueSection.hidden=true;
  const historyTools=$("#historyTools");if(historyTools)historyTools.hidden=!(collectionPage&&collectionView==="history");
+ const collectionFilters=$("#collectionHistoryFilters");if(collectionFilters)collectionFilters.hidden=!(collectionPage&&collectionView==="history");
+ document.querySelectorAll("[data-collection-history-filter]").forEach(button=>{const active=button.dataset.collectionHistoryFilter===collectionHistoryFilter;button.classList.toggle("active",active);button.setAttribute("aria-pressed",String(active))});
  const collectionTabs=$("#collectionTabs");if(collectionTabs)collectionTabs.hidden=!collectionPage;
  const savedPage=collectionPage&&collectionView==="saved",historyPage=collectionPage&&collectionView==="history";
  grid.hidden=profilePage;
@@ -156,6 +158,7 @@ function render(){
  if(favoriteCount)favoriteCount.textContent=favoriteIds.size>99?"99+":String(favoriteIds.size);
  if(historyCount)historyCount.textContent=Object.keys(watchHistory).length>99?"99+":String(Object.keys(watchHistory).length);
  let visible=clipsPage?dramas.filter(d=>(d.episodes||[]).length>0):savedPage?dramas.filter(d=>favoriteIds.has(d.id)):historyPage?dramas.filter(d=>watchHistory[d.id]).sort((a,b)=>new Date(watchHistory[b.id]?.watched_at||0)-new Date(watchHistory[a.id]?.watched_at||0)):dramas;
+ if(historyPage&&collectionHistoryFilter!=="all")visible=visible.filter(d=>{const entry=watchHistory[d.id],ep=(d.episodes||[]).find(item=>Number(item.episode_number)===Number(entry?.episode_number)),progress=episodeProgress[String(d.id)+":"+String(ep?.id||"")],percent=Number(progress?.percent)||0;return collectionHistoryFilter==="finished"?percent>=95:percent<95});
  if(searchQuery)visible=visible.filter(d=>(String(d.title||"")+" "+String(d.description||"")+" "+String(d.genre||"")).toLocaleLowerCase("id").includes(searchQuery));
  if(!historyPage){const mode=$("#dramaSort")?.value||"newest";if(mode==="popular")visible.sort((a,b)=>Number(b.like_count||0)-Number(a.like_count||0)||String(a.title||"").localeCompare(String(b.title||""),"id"));else if(mode==="az")visible.sort((a,b)=>String(a.title||"").localeCompare(String(b.title||""),"id"));else if(mode==="za")visible.sort((a,b)=>String(b.title||"").localeCompare(String(a.title||""),"id"))}
  const countLabel=$("#catalogCount");if(countLabel)countLabel.textContent=searchQuery?visible.length+" hasil pencarian":visible.length+" drama ditampilkan";
@@ -1233,6 +1236,7 @@ $("#uploadForm").addEventListener("submit",async e=>{
 function setActiveNav(tab){document.querySelectorAll(".nav-item").forEach(item=>{const active=item.dataset.tab===tab;item.classList.toggle("active",active);if(active)item.setAttribute("aria-current","page");else item.removeAttribute("aria-current")})}
 document.querySelectorAll(".nav-item").forEach(button=>button.addEventListener("click",()=>{activeTab=button.dataset.tab;setActiveNav(activeTab);render();window.scrollTo({top:0,behavior:"smooth"})}));
 document.querySelectorAll("[data-collection-view]").forEach(button=>button.addEventListener("click",()=>{collectionView=button.dataset.collectionView;render()}));
+document.querySelectorAll("[data-collection-history-filter]").forEach(button=>button.addEventListener("click",()=>{collectionHistoryFilter=button.dataset.collectionHistoryFilter;render()}));
 $("#clearHistory").addEventListener("click",()=>{if(!Object.keys(watchHistory).length)return;if(!window.confirm("Hapus seluruh riwayat tontonan di perangkat ini?"))return;watchHistory={};try{localStorage.removeItem("tactic-watch-history")}catch{}render()});
 
 $("#likeDrama").addEventListener("click",async()=>{
