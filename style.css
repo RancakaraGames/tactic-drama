@@ -1425,3 +1425,76 @@ body:has(.melolo-watch-player[open]){overflow:hidden}
 @media(min-width:600px){
   .melolo-benefit-card{min-height:84px;height:84px;padding:11px 13px}
 }
+
+
+/* Professional profile benefit SVG icons v131 */
+.melolo-benefit-card{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  justify-content:center;
+  gap:3px;
+  padding-right:34px;
+}
+.benefit-icon{
+  position:absolute;
+  top:9px;
+  right:9px;
+  bottom:auto;
+  display:grid;
+  place-items:center;
+  width:25px;
+  height:25px;
+  border:1px solid #ffffff20;
+  border-radius:8px;
+  background:#ffffff0b;
+  color:#e6e6eb;
+  opacity:1;
+  filter:none;
+}
+.benefit-icon svg{
+  display:block;
+  width:17px;
+  height:17px;
+  fill:none;
+  stroke:currentColor;
+  stroke-width:1.7;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+.vip-card .benefit-icon{
+  color:#ffe2a0;
+  border-color:#f2d08a40;
+  background:#f2c87513;
+}
+.reward-card .benefit-icon{
+  color:#f3d86f;
+  border-color:#e4ca6540;
+  background:#e4ca6512;
+}
+.download-card .benefit-icon{
+  color:#ff8790;
+  border-color:#e95a6740;
+  background:#e95a6712;
+}
+.vip-card:after{
+  top:9px;
+  left:10px;
+  right:auto;
+  font-size:6px;
+  letter-spacing:.8px;
+}
+.melolo-benefit-card strong,
+.melolo-benefit-card small,
+.melolo-benefit-card .vip-card-hint{
+  position:relative;
+  z-index:1;
+  max-width:100%;
+}
+.melolo-benefit-card small{white-space:normal}
+@media(max-width:370px){
+  .melolo-benefit-card{padding-right:29px}
+  .benefit-icon{top:8px;right:7px;width:22px;height:22px;border-radius:7px}
+  .benefit-icon svg{width:15px;height:15px}
+  .vip-card:after{top:8px;left:8px}
+}
