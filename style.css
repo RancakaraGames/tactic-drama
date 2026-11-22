@@ -1036,3 +1036,21 @@ body:has(.melolo-watch-player[open]){overflow:hidden}.melolo-watch-player{positi
  .brand-mark.search-logo,.catalog-tools .search-logo{width:56px!important;height:56px!important;min-width:56px!important}
  .catalog-tools{grid-template-columns:56px minmax(0,1fr) 36px 10px!important}
 }
+
+
+/* v161: make the uploaded catalog logo actually render above legacy logo styles */
+.catalog-tools{display:flex!important;align-items:center!important;gap:12px!important}
+.catalog-tools img.brand-mark.search-logo{
+ display:block!important;visibility:visible!important;opacity:1!important;
+ flex:0 0 72px!important;width:72px!important;height:72px!important;
+ min-width:72px!important;max-width:72px!important;
+ object-fit:contain!important;object-position:center!important;
+ background:transparent!important;border:0!important;padding:0!important;
+ border-radius:0!important;box-shadow:none!important;filter:none!important;
+}
+@media(max-width:380px){
+ .catalog-tools img.brand-mark.search-logo{
+  flex:0 0 64px!important;width:64px!important;height:64px!important;
+  min-width:64px!important;max-width:64px!important;
+ }
+}
