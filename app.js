@@ -586,7 +586,7 @@ async function loadDramaFavoriteState(dramaId){
   if(requestToken!==playerFavoriteLoadToken||String(activeDrama?.id)!==id)return;
   if(saved)favoriteIds.add(id);else favoriteIds.delete(id);
   const total=Number(count?.favorite_count||0);favoriteCounts.set(id,total);const drama=dramas.find(item=>String(item.id)===id);if(drama)drama.favorite_count=total;syncPlayerActionRail();
- }catch(error){const count=$("#playerFavoriteRailCount");if(count)count.textContent="—";console.warn("Jumlah favorit belum dapat dimuat:",error?.message||error)}
+ }catch(error){if(requestToken!==playerFavoriteLoadToken||String(activeDrama?.id)!==id)return;const count=$("#playerFavoriteRailCount");if(count)count.textContent="—";console.warn("Jumlah favorit belum dapat dimuat:",error?.message||error)}
 }
 async function toggleDramaFavorite(drama){
  if(!drama)return;const id=String(drama.id);
@@ -622,8 +622,8 @@ async function loadDramaLikeState(dramaId){
   btn.dataset.liked=String(liked);btn.setAttribute("aria-pressed",String(liked));
   btn.textContent=(liked?"♥ Disukai · ":"♡ Suka · ")+likeCount;
   const catalogDrama=dramas.find(item=>String(item.id)===String(dramaId));if(catalogDrama)catalogDrama.like_count=likeCount;
- }catch(err){btn.textContent="♡ Suka";const railLikeCount=$("#playerLikeRailCount");if(railLikeCount)railLikeCount.textContent="—";console.warn("Jumlah suka belum dapat dimuat:",err?.message||err)}
- finally{btn.disabled=false;syncPlayerActionRail()}
+ }catch(err){if(requestToken!==playerLikeLoadToken||String(activeDrama?.id)!==String(dramaId))return;btn.textContent="♡ Suka";const railLikeCount=$("#playerLikeRailCount");if(railLikeCount)railLikeCount.textContent="—";console.warn("Jumlah suka belum dapat dimuat:",err?.message||err)}
+ finally{if(requestToken===playerLikeLoadToken&&String(activeDrama?.id)===String(dramaId)){btn.disabled=false;syncPlayerActionRail()}}
 }
 let authCheckSequence=0;
 async function verifySession(session){
