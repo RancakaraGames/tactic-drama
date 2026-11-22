@@ -19,7 +19,43 @@ let watchHistory={};try{watchHistory=JSON.parse(localStorage.getItem("tactic-wat
 let lastHistoryPersist=0;
 let episodeProgress={};try{episodeProgress=JSON.parse(localStorage.getItem("tactic-episode-progress")||"{}")||{}}catch{}
 let lastEpisodeProgressPersist=0;
+let activePlaybackUserId=null;
 let commentLoadToken=0;
+const isCloudUuid=value=>/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(String(value||""));
+function syncWatchHistoryRow(dramaId){
+ const entry=watchHistory[dramaId];if(!supa||!activePlaybackUserId||!entry||!isCloudUuid(dramaId))return;
+ const drama=dramas.find(item=>String(item.id)===String(dramaId)),episode=drama?.episodes?.find(item=>Number(item.episode_number)===Number(entry.episode_number));
+ const row={user_id:activePlaybackUserId,drama_id:dramaId,episode_id:isCloudUuid(episode?.id)?episode.id:null,episode_number:Number(entry.episode_number)||1,episode_title:String(entry.episode_title||""),position_seconds:Math.max(0,Math.floor(Number(entry.position_seconds)||0)),watched_at:entry.watched_at||new Date().toISOString(),updated_at:entry.updated_at||entry.watched_at||new Date().toISOString()};
+ supa.from("watch_history").upsert(row,{onConflict:"user_id,drama_id"}).then(({error})=>{if(error)console.warn("Riwayat cloud belum tersimpan:",error.message)});
+}
+function syncEpisodeProgressRow(key,entry){
+ if(!supa||!activePlaybackUserId)return;
+ const [dramaId,episodeId]=String(key).split(":");if(!isCloudUuid(dramaId)||!isCloudUuid(episodeId))return;
+ const row={user_id:activePlaybackUserId,drama_id:dramaId,episode_id:episodeId,seconds:Math.max(0,Math.floor(Number(entry.seconds)||0)),duration:Math.max(0,Math.floor(Number(entry.duration)||0)),percent:Math.max(0,Math.min(100,Math.floor(Number(entry.percent)||0))),updated_at:entry.updated_at||new Date().toISOString()};
+ supa.from("episode_progress").upsert(row,{onConflict:"user_id,episode_id"}).then(({error})=>{if(error)console.warn("Progres cloud belum tersimpan:",error.message)});
+}
+async function loadCloudPlayback(userId){
+ if(!supa||!userId)return;
+ try{
+  const [historyResult,progressResult]=await Promise.all([
+   supa.from("watch_history").select("drama_id,episode_id,episode_number,episode_title,position_seconds,watched_at,updated_at").eq("user_id",userId),
+   supa.from("episode_progress").select("drama_id,episode_id,seconds,duration,percent,updated_at").eq("user_id",userId)
+  ]);
+  if(historyResult.error)throw historyResult.error;if(progressResult.error)throw progressResult.error;
+  (historyResult.data||[]).forEach(row=>{
+   const current=watchHistory[row.drama_id],remoteTime=Date.parse(row.updated_at||row.watched_at||0),localTime=Date.parse(current?.updated_at||current?.watched_at||0);
+   if(!current||remoteTime>localTime)watchHistory[row.drama_id]={episode_number:row.episode_number,episode_title:row.episode_title||"",position_seconds:row.position_seconds||0,watched_at:row.watched_at,updated_at:row.updated_at};
+  });
+  (progressResult.data||[]).forEach(row=>{
+   const key=String(row.drama_id)+":"+String(row.episode_id),current=episodeProgress[key],remoteTime=Date.parse(row.updated_at||0),localTime=Date.parse(current?.updated_at||0);
+   if(!current||remoteTime>localTime)episodeProgress[key]={seconds:row.seconds,duration:row.duration,percent:row.percent,updated_at:row.updated_at};
+  });
+  try{localStorage.setItem("tactic-watch-history",JSON.stringify(watchHistory));localStorage.setItem("tactic-episode-progress",JSON.stringify(episodeProgress))}catch{}
+  Object.keys(watchHistory).forEach(id=>syncWatchHistoryRow(id));
+  Object.entries(episodeProgress).forEach(([key,value])=>syncEpisodeProgressRow(key,value));
+  render();
+ }catch(error){console.warn("Sinkronisasi riwayat cloud gagal:",error?.message||error)}
+}
 const grid=document.querySelector("#dramaGrid"),player=document.querySelector("#playerDialog"),admin=document.querySelector("#adminDialog"),video=document.querySelector("#videoPlayer");
 const $=s=>document.querySelector(s);
 const guestPrompt=$("#guestPromptDialog");
@@ -173,7 +209,7 @@ function render(){
    const icon=document.createElement("span");icon.className="collection-empty-icon";icon.setAttribute("aria-hidden","true");icon.textContent=savedPage?"♡":"◷";
    const eyebrow=document.createElement("small");eyebrow.textContent="KOLEKSI PRIBADI";
    const title=document.createElement("h3");title.textContent=savedPage?"Belum ada drama favorit":filteredHistory?"Belum ada drama "+filterLabel:"Belum ada riwayat tontonan";
-   const copy=document.createElement("p");copy.textContent=savedPage?"Simpan drama yang kamu suka dengan menekan ikon hati pada poster. Semua pilihanmu akan terkumpul di sini.":filteredHistory?"Belum ada riwayat dengan status "+filterLabel+". Coba lihat semua riwayat tontonanmu.":"Mulai tonton drama pilihanmu. Riwayat episode dan progres menonton akan tersimpan otomatis di perangkat ini.";
+   const copy=document.createElement("p");copy.textContent=savedPage?"Simpan drama yang kamu suka dengan menekan ikon hati pada poster. Semua pilihanmu akan terkumpul di sini.":filteredHistory?"Belum ada riwayat dengan status "+filterLabel+". Coba lihat semua riwayat tontonanmu.":"Mulai tonton drama pilihanmu. Riwayat episode dan progres menonton akan tersimpan otomatis di akun saat masuk, serta di perangkat ini sebagai cadangan.";
    const action=document.createElement("button");action.type="button";action.className="collection-empty-action";action.textContent=filteredHistory?"Lihat semua riwayat":"Jelajahi drama";
    action.addEventListener("click",()=>{if(filteredHistory){collectionHistoryFilter="all";render();return}activeTab="home";setActiveNav(activeTab);render();window.scrollTo({top:0,behavior:"smooth"})});
    empty.append(icon,eyebrow,title,copy,action);grid.replaceChildren(empty);
@@ -211,7 +247,7 @@ function render(){
  })
 }
 function getVideoUrl(path){const value=String(path||"");if(/^https:\/\//i.test(value))return value;return supa?.storage?.from("drama-videos").getPublicUrl(value).data.publicUrl||""}
-function saveWatchHistory(ep,positionSeconds=0){if(!activeDrama||!ep?.id)return;watchHistory[activeDrama.id]={episode_number:ep.episode_number,episode_title:ep.title||"",position_seconds:Math.max(0,Math.floor(Number(positionSeconds)||0)),watched_at:new Date().toISOString()};try{localStorage.setItem("tactic-watch-history",JSON.stringify(watchHistory))}catch{}}
+function saveWatchHistory(ep,positionSeconds=0){if(!activeDrama||!ep?.id)return;const stamp=new Date().toISOString();watchHistory[activeDrama.id]={episode_number:ep.episode_number,episode_title:ep.title||"",position_seconds:Math.max(0,Math.floor(Number(positionSeconds)||0)),watched_at:stamp,updated_at:stamp};try{localStorage.setItem("tactic-watch-history",JSON.stringify(watchHistory))}catch{}syncWatchHistoryRow(activeDrama.id)}
 function episodeProgressKey(ep){return String(activeDrama?.id||"")+":"+String(ep?.id||"")}
 function saveEpisodeProgress(force=false,completed=false){
  if(!activeDrama||!Number.isFinite(video.duration)||video.duration<=0)return;
@@ -219,6 +255,7 @@ function saveEpisodeProgress(force=false,completed=false){
  const ep=activeDrama.episodes?.[activeEpisodeIndex];if(!ep?.id)return;
  const key=episodeProgressKey(ep),seconds=Math.max(0,Math.floor(video.currentTime||0)),duration=Math.floor(video.duration);
  episodeProgress[key]={seconds:completed?duration:seconds,duration,percent:completed?100:Math.min(100,Math.floor(seconds/duration*100)),updated_at:new Date().toISOString()};
+ syncEpisodeProgressRow(key,episodeProgress[key]);
  try{localStorage.setItem("tactic-episode-progress",JSON.stringify(episodeProgress))}catch{}
  renderEpisodeProgress(ep);
 }
@@ -565,7 +602,7 @@ async function loadDramaLikeState(dramaId){
 }
 let authCheckSequence=0;
 async function verifySession(session){
- const check=++authCheckSequence;document.body.classList.remove("admin-mode");
+ const check=++authCheckSequence;activePlaybackUserId=session?.user?.id||null;document.body.classList.remove("admin-mode");
  if(session)hideGuestPrompt();
  const profileTitle=$("#profileAccountTitle"),profileDescription=$("#profileAccountDescription"),profileEmail=$("#profileEmail"),profileLogin=$("#profileLoginBtn"),profileLogout=$("#profileLogoutBtn"),profileAvatar=$("#profileAvatar"),profileSince=$("#profileSince");
  if(profileAvatar){const email=session?.user?.email||"";profileAvatar.textContent=(email.split("@")[0].trim().charAt(0)||"T").toUpperCase()}
@@ -573,6 +610,7 @@ async function verifySession(session){
  if(profileTitle){profileTitle.textContent=session?"Memeriksa akun…":"Mode tamu";profileDescription.textContent=session?"Memeriksa status akunmu.":"Masuk untuk mengelola akun penontonmu.";profileEmail.textContent=session?.user?.email||"Kamu sedang menonton sebagai tamu.";profileLogin.hidden=!!session;if(profileLogout)profileLogout.hidden=true}
  const panel=$("#uploadSection"),adminTab=$("#adminUploadTab");panel.hidden=true;panel.removeAttribute("data-admin");if(adminTab)adminTab.hidden=true;$("#viewerAccount").hidden=true;$("#moderationSection").hidden=true;setAuthMode("login");$("#resetPasswordForm").hidden=true;
  if(!session||!supa)return;
+ loadCloudPlayback(session.user.id);
  let isAdmin=false,checkError=null;
  const rpc=await supa.rpc("is_admin");
  if(check!==authCheckSequence)return;
@@ -1021,7 +1059,7 @@ function setActiveNav(tab){document.querySelectorAll(".nav-item").forEach(item=>
 document.querySelectorAll(".nav-item").forEach(button=>button.addEventListener("click",()=>{activeTab=button.dataset.tab;setActiveNav(activeTab);render();window.scrollTo({top:0,behavior:"smooth"})}));
 document.querySelectorAll("[data-collection-view]").forEach(button=>button.addEventListener("click",()=>{collectionView=button.dataset.collectionView;render()}));
 document.querySelectorAll("[data-collection-history-filter]").forEach(button=>button.addEventListener("click",()=>{collectionHistoryFilter=button.dataset.collectionHistoryFilter;render()}));
-$("#clearHistory").addEventListener("click",()=>{if(!Object.keys(watchHistory).length)return;if(!window.confirm("Hapus seluruh riwayat tontonan di perangkat ini?"))return;watchHistory={};try{localStorage.removeItem("tactic-watch-history")}catch{}render()});
+$("#clearHistory").addEventListener("click",async()=>{if(!Object.keys(watchHistory).length)return;if(!window.confirm("Hapus seluruh riwayat dan progres tontonan dari akun serta perangkat ini?"))return;watchHistory={};episodeProgress={};try{localStorage.removeItem("tactic-watch-history");localStorage.removeItem("tactic-episode-progress")}catch{}if(supa&&activePlaybackUserId){const [historyDelete,progressDelete]=await Promise.all([supa.from("watch_history").delete().eq("user_id",activePlaybackUserId),supa.from("episode_progress").delete().eq("user_id",activePlaybackUserId)]);if(historyDelete.error||progressDelete.error)console.warn("Sebagian riwayat cloud belum terhapus:",historyDelete.error?.message||progressDelete.error?.message)}render()});
 
 $("#likeDrama").addEventListener("click",async()=>{
  if(!activeDrama)return;
