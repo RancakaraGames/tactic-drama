@@ -1044,12 +1044,16 @@ $("#uploadForm").addEventListener("submit",async e=>{
    if(epResult.error)throw new Error("Gagal memeriksa daftar episode: "+epResult.error.message);
    existingEpisodes=epResult.data||[];
   }
-  const used=new Set(existingEpisodes.map(ep=>Number(ep.episode_number)));
+  const existingNumbers=new Set(existingEpisodes.map(ep=>Number(ep.episode_number)));
+  const used=new Set(existingNumbers);
   const sortedFiles=[...files].sort((a,b)=>a.name.localeCompare(b.name,undefined,{numeric:true,sensitivity:"base"}));
-  const plans=sortedFiles.map(file=>{const match=file.name.match(/(?:episode|eps?|e)[\s._-]*0*(\d+)/i);return {file,number:match?Number(match[1]):null}});
-  for(const plan of plans){if(plan.number!==null){if(!Number.isInteger(plan.number)||plan.number<1||used.has(plan.number))throw new Error("Nomor episode dari nama file "+plan.file.name+" sudah dipakai atau tidak valid.");used.add(plan.number)}}
-  let nextNumber=1;for(const plan of plans){if(plan.number===null){while(used.has(nextNumber))nextNumber++;plan.number=nextNumber;used.add(nextNumber++)}}
-  plans.sort((a,b)=>a.number-b.number);
+  const plans=sortedFiles.map(file=>{const match=file.name.match(/(?:episode|eps?|e)[\s._-]*0*(\d+)/i);return {file,number:match?Number(match[1]):null,skip:false}});
+  const selectedNumbers=new Set();
+  for(const plan of plans){if(plan.number!==null){if(!Number.isInteger(plan.number)||plan.number<1)throw new Error("Nomor episode dari nama file "+plan.file.name+" tidak valid.");if(existingNumbers.has(plan.number)){plan.skip=true;continue}if(selectedNumbers.has(plan.number))throw new Error("Ada dua file dengan nomor episode "+plan.number+". Periksa nama file.");selectedNumbers.add(plan.number);used.add(plan.number)}}
+  let nextNumber=Math.max(0,...existingNumbers)+1;for(const plan of plans){if(plan.number===null){while(used.has(nextNumber))nextNumber++;plan.number=nextNumber;used.add(nextNumber);selectedNumbers.add(nextNumber++)}}
+  const pendingPlans=plans.filter(plan=>!plan.skip).sort((a,b)=>a.number-b.number);
+  if(!pendingPlans.length)throw new Error("Semua episode dari file yang dipilih sudah ada di series ini.");
+  plans.splice(0,plans.length,...pendingPlans);
   setStatus("#uploadStatus","Menyiapkan "+plans.length+" episode...");
   if(posterFile&&posterFile.size){posterPath=user.id+"/"+crypto.randomUUID()+"-"+posterFile.name.replace(/[^a-zA-Z0-9._-]/g,"_");const posterUpload=await supa.storage.from("drama-posters").upload(posterPath,posterFile,{contentType:getUploadMimeType(posterFile,"image"),upsert:false});if(posterUpload.error)throw posterUpload.error}
   if(!dramaId){const created=await supa.from("dramas").insert({title,description:String(data.get("description")||""),poster_url:posterPath?supa.storage.from("drama-posters").getPublicUrl(posterPath).data.publicUrl:null,uploader_id:user.id,status:"approved"}).select("id").single();if(created.error)throw created.error;dramaId=created.data.id;createdDrama=true}
@@ -1072,7 +1076,8 @@ $("#uploadForm").addEventListener("submit",async e=>{
   const cleanup=[];
   if(activeVideoPath)cleanup.push(supa.storage.from("drama-videos").remove([activeVideoPath]));
   if(activeSubtitlePath)cleanup.push(supa.storage.from("drama-videos").remove([activeSubtitlePath]));
-  if(createdDrama&&successCount===0&&dramaId){const rollback=await supa.from("dramas").delete().eq("id",dramaId).eq("uploader_id",user.id);if(rollback.error)console.warn("Pembersihan series gagal:",rollback.error.message);if(posterPath)cleanup.push(supa.storage.from("drama-posters").remove([posterPath]))}
+  if(createdDrama&&successCount===0&&dramaId){const rollback=await supa.from("dramas").delete().eq("id",dramaId).eq("uploader_id",user.id);if(rollback.error)console.warn("Pembersihan series gagal:",rollback.error.message)}
+  if(posterPath&&(!createdDrama||successCount===0))cleanup.push(supa.storage.from("drama-posters").remove([posterPath]));
   const cleanupResults=await Promise.allSettled(cleanup);cleanupResults.forEach(result=>{if(result.status==="rejected")console.warn("Pembersihan file gagal:",result.reason)});
   setStatus("#uploadStatus",successCount?successCount+" episode berhasil diterbitkan, tetapi unggahan berhenti: "+(err?.message||String(err))+". Pilih series yang sama untuk melanjutkan.":"Gagal menerbitkan series: "+(err?.message||String(err))+". Periksa koneksi lalu coba lagi.");
  }finally{btn.disabled=false;updateUploadProgress(0,false)}
