@@ -1299,3 +1299,29 @@ body:has(.melolo-watch-player[open]){overflow:hidden}
 .player-rail-action .rail-comment-icon svg path:last-child{stroke-width:2.4}
 .player-rail-action .rail-share-icon svg circle{fill:currentColor;stroke:currentColor}
 .player-rail-action .rail-share-icon svg path{stroke-width:2}
+
+
+/* Player layout refinement for compact phone screens v117 */
+.player-right-rail{right:max(8px,env(safe-area-inset-right));gap:clamp(10px,1.9dvh,18px);transform:translateY(-42%)}
+.player-rail-action{min-width:44px;gap:5px}
+.player-rail-action .rail-icon{width:41px;height:41px}
+.player-rail-action small{font-size:9px;text-shadow:0 2px 8px #000,0 1px 3px #000}
+.player-bottom-overlay{padding-left:max(16px,env(safe-area-inset-left));padding-right:max(16px,env(safe-area-inset-right))}
+.player-bottom-overlay h2,.player-bottom-overlay #playerDescription,.player-bottom-overlay>.eyebrow{max-width:calc(100% - 58px)}
+@media(max-height:680px){
+ .player-right-rail{gap:8px;transform:translateY(-38%)}
+ .player-rail-action .rail-icon{width:36px;height:36px;font-size:19px}
+ .player-rail-action .rail-icon svg{width:20px;height:20px}
+ .player-rail-action small{font-size:8px}
+ .player-bottom-overlay{padding-top:22px;padding-bottom:max(16px,env(safe-area-inset-bottom))}
+ .player-bottom-overlay h2{font-size:18px}
+ .player-bottom-overlay #playerDescription{margin-bottom:9px}
+ .player-progress-row{margin-bottom:7px}
+}
+@media(max-width:360px){
+ .player-right-rail{right:4px;gap:8px}
+ .player-rail-action{min-width:38px}
+ .player-rail-action .rail-icon{width:35px;height:35px}
+ .player-bottom-overlay h2,.player-bottom-overlay #playerDescription,.player-bottom-overlay>.eyebrow{max-width:calc(100% - 48px)}
+}
+@media(prefers-reduced-motion:reduce){.player-rail-action,.player-bottom-overlay{transition:none}}
