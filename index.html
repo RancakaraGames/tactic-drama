@@ -8,7 +8,7 @@
   <title>TacTic Drama</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
-  <link rel="stylesheet" href="style.css?v=140">
+  <link rel="stylesheet" href="style.css?v=141">
 </head>
 <body>
   <main>
@@ -45,6 +45,7 @@
     <button type="button" class="melolo-profile-tab active" data-profile-view="history" aria-pressed="true"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><small>Riwayat</small></button>
     <button type="button" class="melolo-profile-tab" data-profile-view="saved" aria-pressed="false"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4.5A1.5 1.5 0 0 1 7.5 3h9A1.5 1.5 0 0 1 18 4.5V21l-6-4-6 4z"/></svg><small>Favorit</small></button>
     <button type="button" class="melolo-profile-tab" data-profile-view="liked" aria-pressed="false"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 8.8c0 5.1-8.8 10.2-8.8 10.2S3.2 13.9 3.2 8.8A4.6 4.6 0 0 1 12 6.5a4.6 4.6 0 0 1 8.8 2.3Z"/></svg><small>Disukai</small></button>
+    <button type="button" class="melolo-profile-tab admin-upload-tab" id="adminUploadTab" data-profile-view="upload" aria-pressed="false" hidden><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4m-5 5 5-5 5 5M4 15v5h16v-5"/></svg><small>Upload</small></button>
   </div>
   <div class="melolo-profile-filter" id="profileHistoryFilters">
     <button type="button" class="active" data-profile-filter="all">Semua</button>
@@ -350,6 +351,6 @@
   </dialog>
 
   <script src="./supabase-config.js"></script>
-  <script src="app.js?v=140"></script>
+  <script src="app.js?v=141"></script>
 </body>
 </html>

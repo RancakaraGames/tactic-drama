@@ -526,7 +526,7 @@ body{background:#08090c;color:#f7f7f7;font-family:Inter,Roboto,system-ui,sans-se
 .bottom-nav{background:#08090cf7;border-top:1px solid #ffffff16;padding:9px 8px max(9px,env(safe-area-inset-bottom));backdrop-filter:blur(20px)}.nav-item{min-width:62px;color:#858993;font-size:10px;font-weight:650}.nav-item.active{color:#fff}.nav-item.active span{color:#e50914}
 .viewer-promo{display:flex;align-items:center;justify-content:space-between;gap:14px;margin:30px 14px 20px;padding:18px;border:1px solid #ffffff18;border-radius:12px;background:linear-gradient(130deg,#191b22,#101116)}.viewer-promo h2{margin:0;font-size:17px;font-weight:850}.viewer-promo p:not(.eyebrow){margin:7px 0 0;color:#aeb0b7;font-size:11px;line-height:1.55}.viewer-promo .primary-btn{flex:0 0 auto;padding:11px 13px;background:#e50914;color:#fff;border-radius:6px;box-shadow:none;font-size:11px}
 .viewer-account{margin:16px 0;padding:16px;border:1px solid #ffffff1c;border-radius:12px;background:#111319}.viewer-account strong{display:block;font-size:14px;overflow-wrap:anywhere}.viewer-account p:not(.eyebrow){color:#aeb0b7;font-size:11px;line-height:1.6}.viewer-account .secondary-btn{background:#252830;border-color:#3b3f49}
-#uploadSection{display:none!important}#uploadSection[data-admin="true"]{display:block!important}#uploadSection[data-admin="true"] .creator-profile-card,#uploadSection[data-admin="true"] .creator-stats,#uploadSection[data-admin="true"] #creatorLibrary{display:none!important}
+#uploadSection{display:none!important}#uploadSection[data-admin="true"]:not([hidden]){display:block!important}#uploadSection[data-admin="true"] .creator-profile-card,#uploadSection[data-admin="true"] .creator-stats,#uploadSection[data-admin="true"] #creatorLibrary{display:none!important}
 .admin-dialog .primary-btn{background:#e50914;color:#fff;box-shadow:none}.admin-dialog .secondary-btn{background:#252830}.network-status{font-size:9px;color:#a3a6af}
 @media(min-width:650px){.hero{margin:0 0 32px;padding:58px 5vw 48px;min-height:430px}.drama-grid{grid-template-columns:repeat(5,minmax(0,1fr));gap:18px;padding:0 18px}.catalog-tools{padding-left:18px;padding-right:18px}.section-heading{padding-left:20px;padding-right:20px}.viewer-promo{margin-left:18px;margin-right:18px}}
 @media(max-width:420px){.viewer-promo{align-items:flex-start;flex-direction:column}.viewer-promo .primary-btn{width:100%}.catalog-tools{align-items:stretch}.sort-control{flex-direction:column;align-items:flex-start;justify-content:center}}
@@ -1787,3 +1787,6 @@ body:has(.melolo-watch-player[open]){overflow:hidden}
 .admin-upload-guide p{margin:9px 0 0;color:#aaa1ad;font-size:10px;line-height:1.55}
 .admin-upload-guide .admin-upload-note{padding-top:9px;border-top:1px solid #ffffff15;color:#e5c994}
 .favorite-btn{display:grid;place-items:center}
+
+/* Admin-only Upload tab alongside profile activity tabs */
+.melolo-profile-tabs{grid-template-columns:repeat(4,minmax(0,1fr))}.melolo-profile-tab[hidden]{display:none!important}.melolo-profile-tab.admin-upload-tab.active{color:#e50914}
