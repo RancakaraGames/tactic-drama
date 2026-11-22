@@ -8,7 +8,7 @@
   <title>TacTic Drama</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
-  <link rel="stylesheet" href="style.css?v=141">
+  <link rel="stylesheet" href="style.css?v=142">
 </head>
 <body>
   <main>
@@ -56,7 +56,6 @@
   <section class="profile-account-footer">
     <div class="profile-footer-info"><strong id="profileAccountTitle">Mode tamu</strong><small id="profileAccountDescription">Masuk untuk menyinkronkan akun penontonmu.</small></div>
     <button id="profileLoginBtn" class="profile-action primary" type="button">Masuk / Daftar</button>
-    <button id="adminUploadBtn" class="profile-action primary" type="button" hidden>↑ Upload Video</button>
   </section>
   <p id="profilePageStatus" class="profile-page-status" role="status" aria-live="polite"></p>
 </section>
@@ -159,94 +158,8 @@
     <p id="loginStatus" class="status" role="status"></p>
     <section id="uploadSection" hidden>
       <p class="notice" id="adminIdentity"></p>
-      <div class="admin-upload-guide">
-        <div class="admin-upload-guide-icon" aria-hidden="true">↑</div>
-        <div><strong>Cara mengunggah drama</strong><ol><li>Pilih <b>Buat drama baru</b> atau pilih drama milik akun admin untuk menambah episode.</li><li>Isi judul, nomor episode, lalu pilih video dari galeri perangkat.</li><li>Tambahkan poster dan subtitle jika tersedia, kemudian tekan <b>Unggah video</b>.</li></ol><p>Video: MP4, WebM, atau MOV · Maks. 500 MB. Poster: JPG/PNG/WebP · Maks. 10 MB. Subtitle: VTT · Maks. 1 MB.</p><p class="admin-upload-note">Panel ini khusus admin. Unggah hanya video dan materi yang kamu miliki atau sudah mendapat izin distribusi. Video akan masuk katalog setelah data berhasil disimpan.</p></div>
-      </div>
-      <section class="creator-profile-card" aria-label="Profil kreator">
-        <div class="creator-profile-cover"><div><p class="eyebrow">TACTIC DRAMA · CREATOR STUDIO</p><strong>Ruang kreator pribadi</strong><span>Bangun identitas dan kelola kehadiran dramamu.</span></div><span class="creator-cover-mark">✦</span></div>
-        <div class="creator-profile-top"><img id="creatorAvatar" class="creator-avatar" alt="Foto profil kreator"><div><strong id="creatorDisplayName">Kreator TacTic</strong><small id="creatorEmail"></small></div></div>
-        <form id="creatorProfileForm" class="creator-profile-form">
-          <label>Nama tampilan<input name="displayName" maxlength="40" required placeholder="Nama kreator"><small class="profile-field-meta"><span id="displayNameCount">0/40 karakter</span><span>Nama publik kreator</span></small></label>
-          <label>Foto profil (opsional)<input id="creatorAvatarInput" name="avatar" type="file" accept="image/jpeg,image/png,image/webp"><small class="profile-field-meta">JPG, PNG, atau WebP · Maksimal 2 MB</small></label><div id="avatarPreviewWrap" class="avatar-preview-wrap" hidden><img id="avatarPreview" alt="Pratinjau foto profil"><span>Pratinjau foto baru</span></div>
-          <button class="secondary-btn full" type="submit">Simpan profil</button>
-        </form>
-        <p id="profileStatus" class="status" role="status"></p>
-      </section>
-      <section class="creator-stats" aria-label="Statistik kreator">
-        <div class="creator-heading"><h3>Statistik kreator</h3><span class="creator-count">Data langsung</span></div>
-        <div class="creator-stats-grid">
-          <article><strong id="statDrama">0</strong><span>Total drama</span></article>
-          <article><strong id="statEpisode">0</strong><span>Total episode</span></article>
-          <article><strong id="statViews">0</strong><span>Total penayangan</span></article>
-          <article><strong id="statLikes">0</strong><span>Total suka</span></article>
-        </div>
-        <section class="creator-earnings" aria-label="Penghasilan kreator">
-          <div class="creator-heading"><h3>Penghasilan kreator</h3><span class="creator-count">Buku transaksi aman</span></div>
-          <div class="creator-earnings-grid">
-            <article><strong id="creatorEarned">Rp0</strong><span>Total penghasilan</span></article>
-            <article><strong id="creatorPaid">Rp0</strong><span>Sudah dicairkan</span></article>
-            <article><strong id="creatorAvailable">Rp0</strong><span>Saldo tersedia</span></article>
-          </div>
-          <p id="creatorEarningsStatus" class="creator-earnings-status" role="status" aria-live="polite">Program monetisasi belum aktif. Saldo hanya akan bertambah dari pendapatan iklan yang sudah diverifikasi.</p>
-          <small class="creator-earnings-note">Tidak ada saldo simulasi, pengubahan manual, atau pencairan sebelum sumber pendapatan dan verifikasi pembayaran tersedia.</small>
-          <section class="creator-payout-readiness" aria-label="Kesiapan pembayaran kreator">
-            <div class="creator-heading"><h4>Kesiapan pembayaran</h4><span id="creatorPayoutBadge" class="creator-count">Belum tersedia</span></div>
-            <p id="creatorPayoutStatus" class="creator-payout-status" role="status" aria-live="polite">Memeriksa status pembayaran...</p>
-            <ul class="creator-payout-checks">
-              <li><span>Identitas dan verifikasi</span><strong id="creatorPayoutVerification">Belum dimulai</strong></li>
-              <li><span>Penyedia pembayaran resmi</span><strong id="creatorPayoutProvider">Belum terhubung</strong></li>
-              <li><span>Pencairan</span><strong id="creatorPayoutEnabled">Belum diaktifkan</strong></li>
-            </ul>
-            <small class="creator-earnings-note">Untuk keamanan, jangan kirim nomor rekening, PIN, kata sandi bank, foto identitas, atau OTP melalui chat maupun formulir TacTic Drama. Pengaturan pembayaran baru dibuka setelah penyedia resmi dipilih dan integrasi diverifikasi.</small>
-          </section>
-          <div class="creator-transaction-section">
-            <div class="creator-heading"><h4>Riwayat transaksi</h4><span class="creator-count">20 terbaru</span></div>
-            <button id="exportCreatorEarnings" class="secondary-button creator-earnings-export" type="button">Ekspor riwayat CSV</button>
-            <div id="creatorEarningsHistory" class="creator-transaction-list" aria-live="polite"><p class="creator-transaction-empty">Riwayat transaksi akan muncul di sini.</p></div>
-          </div>
-        </section>
-        <section class="creator-eligibility" aria-label="Kelayakan Program Partner">
-          <div class="creator-heading"><h3>Program Partner TacTic</h3><span class="creator-count">Pemeriksaan otomatis</span></div>
-          <p id="creatorEligibilityStatus" class="creator-eligibility-status" role="status" aria-live="polite">Memeriksa syarat monetisasi...</p>
-          <div class="creator-eligibility-grid">
-            <article><strong id="eligibilityAge">—</strong><span>Hari usia akun</span></article>
-            <article><strong id="eligibilityEpisodes">—</strong><span>Episode publik</span></article>
-            <article><strong id="eligibilityViews">—</strong><span>Penonton unik</span></article>
-          </div>
-          <ul class="creator-eligibility-rules">
-            <li>Usia akun minimal <b id="requiredAge">30</b> hari</li>
-            <li>Minimal <b id="requiredEpisodes">10</b> episode yang disetujui</li>
-            <li>Minimal <b id="requiredViews">1.000</b> penonton unik</li>
-          </ul>
-          <small class="creator-eligibility-note">Pemeriksaan dihitung dari data akun, episode yang disetujui, dan penonton unik tercatat. Memenuhi syarat belum berarti pendapatan aktif; program menunggu sumber iklan dan pembayaran resmi.</small>
-        </section>
-        <section class="creator-integrity" aria-label="Audit integritas tayangan">
-          <div class="creator-heading"><h3>Integritas tayangan</h3><span class="creator-count">Audit otomatis</span></div>
-          <div class="creator-integrity-grid">
-            <article><strong id="integrityTotal">—</strong><span>Tayangan tercatat</span></article>
-            <article><strong id="integrityCounted">—</strong><span>Tidak dikecualikan</span></article>
-            <article><strong id="integrityExcluded">—</strong><span>Dikecualikan</span></article>
-            <article><strong id="integrityFlagged">—</strong><span>Penonton bertanda</span></article>
-          </div>
-          <p id="creatorIntegrityStatus" class="creator-integrity-status" role="status" aria-live="polite">Memuat ringkasan keamanan tayangan...</p>
-          <small class="creator-integrity-note">Tayangan dikecualikan jika identitas penonton memiliki flag risiko aktif. Identitas pribadi tidak ditampilkan. Flag adalah sinyal otomatis, bukan bukti pelanggaran; tayangan tanpa flag juga bukan jaminan bahwa aktivitasnya organik.</small>
-        </section>
-        <section id="creatorAppealPanel" class="creator-appeal" hidden aria-label="Peninjauan tayangan kreator">
-          <div class="creator-heading"><h3>Peninjauan tayangan</h3><span class="creator-count">Hak kreator</span></div>
-          <p id="creatorAppealStatus" class="creator-appeal-status" role="status" aria-live="polite">Memeriksa status peninjauan...</p>
-          <form id="creatorAppealForm">
-            <label for="creatorAppealReason">Jelaskan jika ada tayangan yang menurutmu salah ditandai</label>
-            <textarea id="creatorAppealReason" name="reason" minlength="20" maxlength="1000" rows="3" placeholder="Contoh: penonton berasal dari keluarga atau jaringan Wi-Fi bersama..." required></textarea>
-            <button class="secondary-btn" type="submit">Ajukan peninjauan</button>
-          </form>
-          <small class="creator-appeal-note">Permohonan hanya tersedia jika ada tayangan bertanda risiko aktif. Batas pengajuan satu kali setiap 7 hari, termasuk setelah keputusan sebelumnya. Keputusan tidak otomatis mengubah hitungan tayangan.</small>
-        </section>
-        <p class="notice" id="creatorStatsStatus" role="status">Statistik diperbarui otomatis saat daftar drama dimuat.</p>
-        <section class="creator-performance" aria-label="Performa setiap drama"><div class="creator-heading"><h3>Performa drama</h3><button id="exportCreatorStats" class="secondary-btn creator-export-btn" type="button" disabled>↓ Unduh CSV</button></div><p class="creator-performance-caption">Peringkat berdasarkan jumlah tayangan · Data seluruh waktu</p><div id="creatorPerformanceList" class="creator-performance-list"><p class="notice">Memuat performa drama...</p></div></section>
-      </section>
-      <section id="creatorLibrary" class="creator-library"><div class="creator-heading"><h3>Drama saya</h3><span class="creator-count" id="creatorCount">0 drama</span></div><p class="notice">Kelola dan buka kembali drama yang sudah kamu terbitkan.</p><div id="myDramaList" class="my-drama-list"><p class="notice">Memuat daftar drama...</p></div></section>
-      <section id="moderationSection" hidden><h3>Peninjauan kreator</h3><p class="notice">Permohonan peninjauan tayangan yang diberi tanda risiko. Keputusan dicatat dan tidak menghapus jejak audit.</p><div id="creatorAppealsAdminList" class="creator-appeals-admin-list"><p class="notice">Memuat permohonan...</p></div><h3>Riwayat keputusan banding</h3><p class="notice">Catatan keputusan tersimpan permanen dan tidak dapat diedit dari aplikasi.</p><div id="creatorAppealHistoryAdminList" class="creator-appeals-admin-list"><p class="notice">Memuat riwayat...</p></div><h3>Laporan video dari pengguna</h3><p class="notice">Tinjau laporan. Jika terbukti melanggar, sembunyikan drama dari katalog.</p><div id="moderationList"></div></section>
+      <div class="admin-upload-guide"><div class="admin-upload-guide-icon" aria-hidden="true">↑</div><div><strong>Kelola katalog drama resmi</strong><ol><li>Buat drama baru atau pilih drama yang sudah ada.</li><li>Isi judul, nomor episode, dan pilih video dari galeri perangkat.</li><li>Tambahkan poster atau subtitle jika tersedia, lalu unggah.</li></ol><p>Video MP4/WebM/MOV maksimal 500 MB · Poster JPG/PNG/WebP maksimal 10 MB · Subtitle VTT maksimal 1 MB.</p><p class="admin-upload-note">Menu ini hanya tersedia untuk admin. Unggah hanya materi yang kamu miliki atau telah mendapat izin distribusi.</p></div></div>
+      <section id="moderationSection" hidden><h3>Laporan video pengguna</h3><p class="notice">Tinjau laporan dan sembunyikan drama dari katalog jika terbukti melanggar.</p><div id="moderationList"></div></section>
       <form id="uploadForm">
         <label>Tujuan unggahan<select name="targetDrama" id="targetDrama"><option value="">Buat drama baru</option></select></label>
         <label>Judul drama<input name="title" required placeholder="Contoh: Cinta di Ujung Senja"></label>
@@ -261,7 +174,6 @@
         <button class="primary-btn full" type="submit">Unggah video ke TacTic Drama</button>
       </form>
       <p id="uploadStatus" class="status" role="status"></p>
-      <button id="logoutBtn" class="primary-btn full" type="button">Keluar dari akun</button>
     </section>
   </dialog>
 
@@ -351,6 +263,6 @@
   </dialog>
 
   <script src="./supabase-config.js"></script>
-  <script src="app.js?v=141"></script>
+  <script src="app.js?v=142"></script>
 </body>
 </html>

@@ -10,7 +10,6 @@ const demoDramas=[
 ];
 let dramas=[...demoDramas],activeDrama=null,activeEpisodeIndex=0,supa=null,activeTab="clips",collectionView="saved",collectionHistoryFilter="all",sharedDramaOpened=false,profileCollectionView="history",profileHistoryFilter="all",profileLikesLoadedFor=null,profileLikedIds=new Set();
 let clipsObserver=null;
-let creatorPerformanceData=[];
 let autoNextEnabled=true;try{autoNextEnabled=localStorage.getItem("tactic-auto-next")!=="false"}catch{}
 let searchQuery="";
 let favoriteIds=new Set();try{favoriteIds=new Set(JSON.parse(localStorage.getItem("tactic-favorites")||"[]"))}catch{}
@@ -81,8 +80,10 @@ async function renderProfileCollections(){
  const list=$("#profileDramaList");if(!list)return;
  const view=profileCollectionView,filter=profileHistoryFilter;
  document.querySelectorAll("[data-profile-view]").forEach(btn=>{const active=btn.dataset.profileView===view;btn.classList.toggle("active",active);btn.setAttribute("aria-pressed",String(active))});
- const filters=$("#profileHistoryFilters");if(filters)filters.hidden=view!=="history";const uploadPanel=$("#uploadSection");if(uploadPanel)uploadPanel.hidden=!(view==="upload"&&uploadPanel.dataset.admin==="true");if(view==="upload"&&uploadPanel?.dataset.admin!=="true"){profileCollectionView="history";return renderProfileCollections()}list.hidden=view==="upload";
+ const filters=$("#profileHistoryFilters");const uploadPanel=$("#uploadSection");
  filters?.querySelectorAll("[data-profile-filter]").forEach(btn=>btn.classList.toggle("active",btn.dataset.profileFilter===filter));
+ if(view==="upload"){if(filters)filters.hidden=true;list.hidden=true;if(uploadPanel)uploadPanel.hidden=uploadPanel.dataset.admin!=="true";if(uploadPanel?.dataset.admin!=="true"){profileCollectionView="history";return renderProfileCollections()}return}
+ if(uploadPanel)uploadPanel.hidden=true;list.hidden=false;if(filters)filters.hidden=view!=="history";
  let entries=[];
  if(view==="history"){
   entries=Object.entries(watchHistory).map(([id,entry])=>({drama:dramas.find(d=>String(d.id)===String(id)),entry})).filter(x=>x.drama).sort((a,b)=>new Date(b.entry.watched_at||0)-new Date(a.entry.watched_at||0));
@@ -558,345 +559,46 @@ async function loadDramaLikeState(dramaId){
  }catch(err){btn.textContent="♡ Suka";const railLikeCount=$("#playerLikeRailCount");if(railLikeCount)railLikeCount.textContent="—";console.warn("Jumlah suka belum dapat dimuat:",err?.message||err)}
  finally{btn.disabled=false;syncPlayerActionRail()}
 }
-async function loadCreatorViewAppeal(){
- const panel=$("#creatorAppealPanel"),status=$("#creatorAppealStatus"),form=$("#creatorAppealForm");
- if(!supa||!panel||!status)return;
- try{
-  const {data,error}=await supa.rpc("get_creator_view_appeal");
-  if(error)throw error;
-  const row=Array.isArray(data)?data[0]:data;
-  if(!row)return;
-  const active=Number(row.active_flagged_views||0),state=row.appeal_status;
-  panel.hidden=active===0&&!row.appeal_id;
-  if(active>0){
-   status.textContent=active.toLocaleString("id-ID")+" tayangan terkait akunmu saat ini memiliki tanda risiko aktif. Kamu dapat meminta peninjauan manual.";
-  }else{
-   status.textContent="Tidak ada tayangan bertanda risiko aktif saat ini. Riwayat permohonan terakhir tetap ditampilkan di bawah.";
-  }
-  if(state==="pending"){
-   status.textContent+=" Permohonanmu sedang menunggu pemeriksaan.";
-   form.hidden=true;
-  }else if(state==="accepted"){
-   status.textContent+=" Permohonan terakhir diterima.";
-   form.hidden=active===0;
-  }else if(state==="rejected"){
-   status.textContent+=" Permohonan terakhir belum dapat diterima.";
-   if(row.admin_note)status.textContent+=" Catatan: "+row.admin_note;
-   form.hidden=active===0;
-  }else{
-   form.hidden=active===0;
-  }
- }catch(err){
-  panel.hidden=false;status.textContent="Status peninjauan belum dapat dimuat. Coba muat ulang nanti.";
-  console.warn("Status peninjauan kreator gagal:",err?.message||err);
+let authCheckSequence=0;
+async function verifySession(session){
+ const check=++authCheckSequence;
+ if(session)hideGuestPrompt();
+ const profileTitle=$("#profileAccountTitle"),profileDescription=$("#profileAccountDescription"),profileEmail=$("#profileEmail"),profileLogin=$("#profileLoginBtn"),profileLogout=$("#profileLogoutBtn"),profileAvatar=$("#profileAvatar"),profileSince=$("#profileSince");
+ if(profileAvatar){const email=session?.user?.email||"";profileAvatar.textContent=(email.split("@")[0].trim().charAt(0)||"T").toUpperCase()}
+ if(profileSince){const created=session?.user?.created_at?new Date(session.user.created_at):null;const days=created?Math.max(0,Math.floor((Date.now()-created.getTime())/86400000)):null;profileSince.textContent=session?(days===null?"Penonton TacTic Drama":days+" hari bersama TacTic Drama"):"Nikmati drama bersama TacTic Drama"}
+ if(profileTitle){profileTitle.textContent=session?"Memeriksa akun…":"Mode tamu";profileDescription.textContent=session?"Memeriksa status akunmu.":"Masuk untuk mengelola akun penontonmu.";profileEmail.textContent=session?.user?.email||"Kamu sedang menonton sebagai tamu.";profileLogin.hidden=!!session;if(profileLogout)profileLogout.hidden=true}
+ const panel=$("#uploadSection"),adminTab=$("#adminUploadTab");panel.hidden=true;panel.removeAttribute("data-admin");if(adminTab)adminTab.hidden=true;$("#viewerAccount").hidden=true;$("#moderationSection").hidden=true;setAuthMode("login");$("#resetPasswordForm").hidden=true;
+ if(!session||!supa)return;
+ let isAdmin=false,checkError=null;
+ const rpc=await supa.rpc("is_admin");
+ if(check!==authCheckSequence)return;
+ if(!rpc.error)isAdmin=rpc.data===true;else checkError=rpc.error;
+ if(!isAdmin){
+  const role=await supa.from("user_roles").select("role").eq("user_id",session.user.id).maybeSingle();
+  if(check!==authCheckSequence)return;
+  if(role.error)checkError=role.error;else isAdmin=role.data?.role==="admin";
  }
-}
-$("#creatorAppealForm")?.addEventListener("submit",async event=>{
- event.preventDefault();
- const form=event.currentTarget,button=form.querySelector('button[type="submit"]');
- const reason=String(new FormData(form).get("reason")||"").trim();
- if(reason.length<20||reason.length>1000){$("#creatorAppealStatus").textContent="Alasan harus berisi 20 sampai 1.000 karakter.";return}
- const {data}=await supa.auth.getSession();
- if(!data.session){$("#creatorAppealStatus").textContent="Sesi berakhir. Masuk kembali untuk mengajukan peninjauan.";return}
- button.disabled=true;$("#creatorAppealStatus").textContent="Mengirim permohonan...";
- try{
-  const {error}=await supa.rpc("submit_creator_view_appeal",{p_reason:reason});
-  if(error)throw error;
-  form.reset();$("#creatorAppealStatus").textContent="Permohonan berhasil dikirim. Status akan diperbarui setelah pemeriksaan.";
-  await loadCreatorViewAppeal();
- }catch(err){
-  $("#creatorAppealStatus").textContent=err?.message?.includes("menunggu")?"Masih ada permohonan yang menunggu keputusan.":err?.message?.includes("7 hari")?"Batas pengajuan banding adalah satu kali setiap 7 hari, termasuk setelah keputusan sebelumnya.":(err?.message||"Permohonan belum berhasil dikirim.");
- }finally{button.disabled=false}
-});
-async function loadCreatorViewAppealHistoryAdmin(){
- const list=$("#creatorAppealHistoryAdminList");if(!supa||!list)return;
- list.innerHTML='<p class="notice">Memuat riwayat keputusan...</p>';
- try{
-  const {data,error}=await supa.rpc("list_creator_view_appeal_events");if(error)throw error;
-  const rows=data||[];
-  if(!rows.length){list.innerHTML='<p class="notice">Belum ada keputusan banding yang tercatat.</p>';return}
-  list.innerHTML=rows.map(row=>'<article class="creator-appeal-admin-item"><div><strong>'+escapeHtml(row.creator_email||row.creator_id)+'</strong><span>'+new Date(row.created_at).toLocaleString("id-ID")+' · '+(row.decision==="accepted"?"Diterima":"Ditolak")+'</span><p><b>Alasan kreator:</b> '+escapeHtml(row.appeal_reason||"—")+'</p>'+(row.admin_note?'<small>Catatan admin: '+escapeHtml(row.admin_note)+'</small>':'<small>Tidak ada catatan admin.</small>')+'</div></article>').join("");
- }catch(err){list.innerHTML='<p class="notice">Riwayat keputusan tidak dapat dimuat. Pastikan akun admin memiliki izin.</p>';console.warn("Riwayat banding admin gagal:",err?.message||err)}
-}
-async function loadCreatorViewAppealsAdmin(){
- const list=$("#creatorAppealsAdminList");if(!supa||!list)return;
- list.innerHTML='<p class="notice">Memuat permohonan peninjauan...</p>';
- try{
-  const {data,error}=await supa.rpc("list_creator_view_appeals");if(error)throw error;
-  const rows=data||[];
-  if(!rows.length){list.innerHTML='<p class="notice">Belum ada permohonan peninjauan kreator.</p>';return}
-  list.innerHTML=rows.map(row=>'<article class="creator-appeal-admin-item"><div><strong>'+escapeHtml(row.creator_email||row.creator_id)+'</strong><span>'+new Date(row.created_at).toLocaleString("id-ID")+' · '+(row.appeal_status==="pending"?"Menunggu":row.appeal_status==="accepted"?"Diterima":"Ditolak")+'</span><p>'+escapeHtml(row.appeal_reason)+'</p>'+(row.admin_note?'<small>Catatan: '+escapeHtml(row.admin_note)+'</small>':'')+'</div>'+(row.appeal_status==="pending"?'<div class="creator-appeal-admin-actions"><button type="button" class="secondary-btn" data-appeal-id="'+row.appeal_id+'" data-appeal-decision="accepted">Terima</button><button type="button" class="secondary-btn" data-appeal-id="'+row.appeal_id+'" data-appeal-decision="rejected">Tolak</button></div>':'')+'</article>').join("");
- }catch(err){list.innerHTML='<p class="notice">Daftar peninjauan tidak dapat dimuat. Pastikan akun admin memiliki izin.</p>';console.warn("Daftar peninjauan admin gagal:",err?.message||err)}
-}
-$("#creatorAppealsAdminList")?.addEventListener("click",async event=>{
- const button=event.target.closest("button[data-appeal-id]");if(!button)return;
- const id=button.dataset.appealId,decision=button.dataset.appealDecision;
- const note=window.prompt("Catatan keputusan untuk kreator (opsional):","");if(note===null)return;
- button.disabled=true;
- try{
-  const {data,error}=await supa.rpc("review_creator_view_appeal",{p_appeal_id:id,p_decision:decision,p_admin_note:note});
-  if(error)throw error;
-  if(!data)throw new Error("Permohonan sudah diproses atau tidak ditemukan.");
-  await loadCreatorViewAppealsAdmin();
-  await loadCreatorViewAppealHistoryAdmin();
- }catch(err){window.alert("Keputusan belum tersimpan: "+(err?.message||String(err)));button.disabled=false}
-});
-async function loadCreatorViewIntegrity(){
- const status=$("#creatorIntegrityStatus");
- if(!supa||!status)return;
- status.textContent="Memeriksa ringkasan keamanan tayangan...";
- try{
-  const {data,error}=await supa.rpc("get_creator_view_integrity");
-  if(error)throw error;
-  const row=Array.isArray(data)?data[0]:data;
-  if(!row)throw new Error("Ringkasan belum tersedia.");
-  const fmt=value=>Number(value||0).toLocaleString("id-ID");
-  $("#integrityTotal").textContent=fmt(row.total_recorded_views);
-  $("#integrityCounted").textContent=fmt(row.verified_views);
-  $("#integrityExcluded").textContent=fmt(row.excluded_flagged_views);
-  $("#integrityFlagged").textContent=fmt(row.flagged_viewers);
-  if(row.latest_flag_at){
-   const date=new Date(row.latest_flag_at);
-   status.textContent="Pembaruan audit terakhir: "+date.toLocaleString("id-ID",{dateStyle:"medium",timeStyle:"short"})+". Flag aktif dihitung untuk periode 30 hari.";
-  }else{
-   status.textContent="Belum ada sinyal risiko aktif pada tayangan drama milikmu.";
-  }
- }catch(err){
-  status.textContent="Ringkasan integritas belum dapat dimuat. Statistik tontonan biasa tetap tersedia.";
-  console.warn("Audit integritas tayangan gagal:",err?.message||err);
+ if(check!==authCheckSequence)return;
+ if(isAdmin){
+  if(profileTitle){profileTitle.textContent="Admin TacTic";profileDescription.textContent="Akun administrator aktif. Kamu dapat mengelola katalog drama resmi.";profileEmail.textContent=session.user.email||""}
+  panel.dataset.admin="true";panel.hidden=true;
+  const profilePanel=$("#profilePanel");if(profilePanel&&panel.parentElement!==profilePanel)profilePanel.append(panel);
+  if(adminTab)adminTab.hidden=false;
+  $("#loginForm").hidden=true;$("#signupForm").hidden=true;$("#moderationSection").hidden=false;
+  $("#adminIdentity").textContent="Admin masuk sebagai "+session.user.email;
+  setStatus("#loginStatus","Hak admin terverifikasi. Tab Upload tersedia di Profil.");
+  if(admin.open)admin.close();
+  activeTab="profile";profileCollectionView="history";setActiveNav("profile");render();loadAdminDramas(session.user.id);loadModeration();return;
  }
-}
-
-async function loadCreatorStats(userId){
- const status=$("#creatorStatsStatus"),list=$("#creatorPerformanceList");if(!supa||!userId)return;
- status.textContent="Memuat statistik kreator...";
- loadCreatorViewIntegrity();
- creatorPerformanceData=[];const exportBtn=$("#exportCreatorStats");if(exportBtn)exportBtn.disabled=true;
- if(list)list.innerHTML='<p class="notice">Memuat performa drama...</p>';
- try{
-  const {data,error}=await supa.from("dramas").select("id,title,episodes(id)").eq("uploader_id",userId);
-  if(error)throw error;
-  const owned=data||[],ids=owned.map(d=>d.id),episodeCount=owned.reduce((sum,d)=>sum+(d.episodes||[]).length,0);
-  let viewRows=[],likeRows=[];
-  if(ids.length){
-   const [v,l]=await Promise.all([
-    supa.from("drama_views").select("drama_id").in("drama_id",ids),
-    supa.from("drama_like_counts").select("drama_id,like_count").in("drama_id",ids)
-   ]);
-   if(v.error)throw v.error;if(l.error)throw l.error;
-   viewRows=v.data||[];likeRows=l.data||[];
-  }
-  const performance=owned.map(d=>({
-   id:d.id,title:d.title||"Drama tanpa judul",
-   episodes:(d.episodes||[]).length,
-   views:viewRows.filter(v=>String(v.drama_id)===String(d.id)).length,
-   likes:Number(likeRows.find(x=>String(x.drama_id)===String(d.id))?.like_count||0)
-  })).sort((a,b)=>b.views-a.views||b.likes-a.likes||a.title.localeCompare(b.title,"id"));
-  creatorPerformanceData=performance;
-  if(exportBtn)exportBtn.disabled=!performance.length;
-  const views=viewRows.length,likes=likeRows.reduce((sum,row)=>sum+Number(row.like_count||0),0);
-  $("#statDrama").textContent=String(ids.length);$("#statEpisode").textContent=String(episodeCount);
-  $("#statViews").textContent=views.toLocaleString("id-ID");$("#statLikes").textContent=likes.toLocaleString("id-ID");
-  if(list){
-   list.innerHTML=performance.length?performance.map((d,i)=>'<article class="creator-performance-item"><div class="creator-performance-rank">'+(i+1)+'</div><div class="creator-performance-main"><strong>'+escapeHtml(d.title)+'</strong><span>'+d.episodes.toLocaleString("id-ID")+' episode'+(d.episodes===1?"":"")+'</span><div class="creator-performance-metrics"><span>▶ '+d.views.toLocaleString("id-ID")+' tayangan</span><span>♥ '+d.likes.toLocaleString("id-ID")+' suka</span></div></div><div class="creator-performance-bar" aria-hidden="true"><span style="width:'+(views?Math.max(3,d.views/Math.max(1,performance[0].views)*100):0)+'%"></span></div></article>').join(""):'<p class="notice">Belum ada drama yang diterbitkan. Drama yang kamu unggah akan muncul di sini.</p>';
-  }
-  status.textContent="Statistik akun diperbarui.";
- }catch(err){creatorPerformanceData=[];if(exportBtn)exportBtn.disabled=true;status.textContent="Statistik belum dapat dimuat: "+(err?.message||String(err));if(list)list.innerHTML='<p class="notice">Performa drama belum dapat dimuat.</p>'}
-}
-
-
-
-async function loadCreatorEligibility(userId){
- const status=$("#creatorEligibilityStatus");if(!supa||!userId||!status)return;
- status.textContent="Memeriksa syarat Program Partner...";
- try{
-  const {data,error}=await supa.rpc("get_creator_monetization_eligibility");
-  if(error)throw error;
-  const row=Array.isArray(data)?data[0]:data;
-  if(!row)throw new Error("Data kelayakan belum tersedia.");
-  const n=value=>Number(value||0),fmt=value=>n(value).toLocaleString("id-ID");
-  $("#eligibilityAge").textContent=fmt(row.account_age_days);
-  $("#eligibilityEpisodes").textContent=fmt(row.published_episodes);
-  $("#eligibilityViews").textContent=fmt(row.unique_views);
-  $("#requiredAge").textContent=fmt(row.required_account_age_days);
-  $("#requiredEpisodes").textContent=fmt(row.required_published_episodes);
-  $("#requiredViews").textContent=fmt(row.required_unique_views);
-  if(row.requirements_met&&row.program_enabled){
-   status.textContent="Selamat! Syarat terpenuhi dan Program Partner sedang aktif. Tahap berikutnya adalah verifikasi pembayaran.";
-  }else if(row.requirements_met){
-   status.textContent="Syarat kelayakan terpenuhi. Monetisasi belum dibuka karena sumber iklan dan pembayaran resmi belum diaktifkan.";
-  }else{
-   const missing=[];
-   if(n(row.account_age_days)<n(row.required_account_age_days))missing.push("usia akun");
-   if(n(row.published_episodes)<n(row.required_published_episodes))missing.push("jumlah episode");
-   if(n(row.unique_views)<n(row.required_unique_views))missing.push("penonton unik");
-   status.textContent="Belum memenuhi syarat: tingkatkan "+missing.join(", ")+". Status diperbarui otomatis.";
-  }
- }catch(err){
-  status.textContent="Syarat monetisasi belum dapat diperiksa. Coba muat ulang nanti.";
-  console.warn("Pemeriksaan Program Partner gagal:",err?.message||err);
- }
-}
-
-async function loadCreatorEarnings(userId){
- const status=$("#creatorEarningsStatus"),history=$("#creatorEarningsHistory");
- if(!supa||!userId||!status)return;
- status.textContent="Memeriksa buku transaksi...";
- if(history)history.innerHTML='<p class="creator-transaction-empty">Memuat riwayat transaksi...</p>';
- await loadCreatorPayoutSetupStatus();
- try{
-  const {data,error}=await supa.rpc("get_creator_earnings_summary");
-  if(error)throw error;
-  const row=Array.isArray(data)?data[0]:data;
-  const format=(value,currency="IDR")=>{
-   const code=/^[A-Z]{3}$/.test(currency||"")?currency:"IDR";
-   const digits=new Intl.NumberFormat("id-ID",{style:"currency",currency:code}).resolvedOptions().maximumFractionDigits;
-   return Number(value||0)/(10**digits);
-  };
-  const money=(value,currency="IDR")=>new Intl.NumberFormat("id-ID",{style:"currency",currency:/^[A-Z]{3}$/.test(currency||"")?currency:"IDR",maximumFractionDigits:2}).format(format(value,currency));
-  $("#creatorEarned").textContent=money(row?.total_earned_minor);
-  $("#creatorPaid").textContent=money(row?.total_paid_minor);
-  $("#creatorAvailable").textContent=money(row?.available_minor);
-  status.textContent="Buku transaksi terhubung. Monetisasi belum aktif sampai jaringan iklan dan sumber pembayaran resmi dihubungkan.";
-  const {data:entries,error:entryError}=await supa.from("creator_earnings_ledger")
-   .select("id,entry_type,amount_minor,currency,description,period_start,period_end,created_at")
-   .order("created_at",{ascending:false}).limit(20);
-  if(entryError)throw entryError;
-  if(history){
-   if(!entries?.length){history.innerHTML='<p class="creator-transaction-empty">Belum ada transaksi. Riwayat akan muncul setelah pendapatan atau pencairan terverifikasi.</p>';return;}
-   const labels={earning:"Pendapatan",payout:"Pencairan",reversal:"Pembatalan",adjustment:"Penyesuaian"};
-   history.innerHTML=entries.map(entry=>{
-    const date=new Date(entry.created_at);
-    const dateText=Number.isNaN(date.getTime())?"Tanggal tidak tersedia":date.toLocaleString("id-ID",{dateStyle:"medium",timeStyle:"short"});
-    const amount=money(Math.abs(Number(entry.amount_minor||0)),entry.currency);
-    const sign=Number(entry.amount_minor)<0?"−":"+";
-    const period=entry.period_start&&entry.period_end?'<small>Periode '+escapeHtml(entry.period_start)+' – '+escapeHtml(entry.period_end)+'</small>':"";
-    return '<article class="creator-transaction"><div class="creator-transaction-copy"><strong>'+escapeHtml(labels[entry.entry_type]||"Transaksi")+'</strong><span>'+escapeHtml(entry.description||"")+'</span><small>'+escapeHtml(dateText)+'</small>'+period+'</div><strong class="creator-transaction-amount">'+sign+escapeHtml(amount)+'</strong></article>';
-   }).join("");
-  }
- }catch(err){
-  status.textContent="Data penghasilan belum dapat dimuat. Saldo tidak dapat diubah dari aplikasi.";
-  if(history)history.innerHTML='<p class="creator-transaction-empty">Riwayat transaksi belum dapat dimuat. Coba lagi nanti.</p>';
-  console.warn("Ringkasan atau riwayat penghasilan kreator belum dapat dimuat:",err?.message||err);
- }
-}
-
-async function loadCreatorPayoutSetupStatus(){
- const status=$("#creatorPayoutStatus"),badge=$("#creatorPayoutBadge");
- if(!supa||!status)return;
- try{
-  const {data,error}=await supa.rpc("get_creator_payout_setup_status");
-  if(error)throw error;
-  const row=Array.isArray(data)?data[0]:data;
-  const state=row?.verification_status||"not_configured";
-  const labels={not_configured:"Belum dimulai",pending:"Sedang diverifikasi",verified:"Terverifikasi",rejected:"Perlu diperbaiki",restricted:"Dibatasi"};
-  $("#creatorPayoutVerification").textContent=labels[state]||"Belum tersedia";
-  $("#creatorPayoutProvider").textContent=row?.provider_connected?"Terhubung":"Belum terhubung";
-  $("#creatorPayoutEnabled").textContent=row?.payouts_enabled?"Aktif":"Belum diaktifkan";
-  badge.textContent=row?.payouts_enabled?"Siap setelah pemeriksaan":"Belum tersedia";
-  status.textContent=row?.payouts_enabled
-   ?"Status pembayaran tercatat aktif. Pencairan tetap mengikuti verifikasi dan kebijakan penyedia resmi."
-   :"Pengaturan pembayaran belum dibuka. TacTic Drama belum menghubungkan penyedia pembayaran, sehingga verifikasi identitas dan pencairan belum tersedia.";
- }catch(err){
-  status.textContent="Status pembayaran belum dapat diperiksa. Tidak ada data rekening yang diminta atau disimpan.";
-  badge.textContent="Status tidak tersedia";
-  console.warn("Status pembayaran kreator gagal dimuat:",err?.message||err);
- }
-}
-
-async function exportCreatorEarningsCsv(){
- const status=$("#creatorEarningsStatus");
- if(!supa||!status)return;
- const button=$("#exportCreatorEarnings");
- if(button){button.disabled=true;button.textContent="Menyiapkan CSV...";}
- try{
-  const {data,error}=await supa.from("creator_earnings_ledger")
-   .select("entry_type,amount_minor,currency,description,period_start,period_end,created_at")
-   .order("created_at",{ascending:false}).limit(1000);
-  if(error)throw error;
-  if(!data?.length){status.textContent="Belum ada transaksi yang dapat diekspor.";return;}
-  const labels={earning:"Pendapatan",payout:"Pencairan",reversal:"Pembatalan",adjustment:"Penyesuaian"};
-  const safeCell=value=>{
-   let cell=String(value??"");
-   if(/^[\\s\\u0000-\\u001f]*[=+@-]/.test(cell))cell="'"+cell;
-   return '"'+cell.replace(/"/g,'""')+'"';
-  };
-  const rows=[
-   ["Tanggal","Jenis transaksi","Nominal dalam unit minor","Mata uang","Keterangan","Periode mulai","Periode selesai"],
-   ...data.map(entry=>[
-    entry.created_at?new Date(entry.created_at).toISOString():"",
-    labels[entry.entry_type]||"Transaksi",
-    entry.amount_minor,
-    entry.currency,
-    entry.description,
-    entry.period_start,
-    entry.period_end
-   ])
-  ];
-  const csv="\\uFEFF"+rows.map(row=>row.map(safeCell).join(",")).join("\\r\\n");
-  const url=URL.createObjectURL(new Blob([csv],{type:"text/csv;charset=utf-8"}));
-  const link=document.createElement("a");
-  link.href=url;
-  link.download="tactic-drama-riwayat-penghasilan-"+new Date().toISOString().slice(0,10)+".csv";
-  document.body.appendChild(link);link.click();link.remove();
-  setTimeout(()=>URL.revokeObjectURL(url),1000);
-  status.textContent="Berhasil menyiapkan "+data.length+" transaksi untuk diekspor. Maksimal 1.000 transaksi terbaru per file.";
- }catch(err){
-  status.textContent="Riwayat transaksi gagal diekspor. Coba lagi setelah koneksi pulih.";
-  console.warn("Ekspor riwayat penghasilan gagal:",err?.message||err);
- }finally{
-  if(button){button.disabled=false;button.textContent="Ekspor riwayat CSV";}
- }
-}
-$("#exportCreatorEarnings")?.addEventListener("click",exportCreatorEarningsCsv);
-
-function exportCreatorStatsCsv(){
- if(!creatorPerformanceData.length)return;
- const safeCell=value=>{let text=String(value??"");if(/^[=+@-]/.test(text))text="'"+text;return '"'+text.replace(/"/g,'""')+'"'};
- const rows=[["Peringkat","Judul drama","Jumlah episode","Tayangan","Suka"],...creatorPerformanceData.map((d,i)=>[i+1,d.title,d.episodes,d.views,d.likes])];
- const csv="\\uFEFF"+rows.map(row=>row.map(safeCell).join(",")).join("\\r\\n");
- const url=URL.createObjectURL(new Blob([csv],{type:"text/csv;charset=utf-8"}));
- const link=document.createElement("a");link.href=url;link.download="tactic-drama-statistik-"+new Date().toISOString().slice(0,10)+".csv";
- document.body.appendChild(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
-}
-$("#exportCreatorStats")?.addEventListener("click",exportCreatorStatsCsv);
-
-function renderCreatorProfile(user){
- const meta=user?.user_metadata||{},name=String(meta.display_name||"").trim()||"Kreator TacTic";
- $("#creatorDisplayName").textContent=name;$("#creatorEmail").textContent=user?.email||"";
- $("#creatorProfileForm").elements.displayName.value=String(meta.display_name||"");$("#displayNameCount").textContent=$("#creatorProfileForm").elements.displayName.value.length+"/40 karakter";
- const avatar=$("#creatorAvatar");avatar.src=meta.avatar_url||"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='50' fill='%23251e2b'/%3E%3Ctext x='50' y='63' text-anchor='middle' font-size='42' fill='%23e9c58a'%3E"+encodeURIComponent(name.charAt(0).toUpperCase())+"%3C/text%3E%3C/svg%3E";
-}
-const profileNameInput=$("#creatorProfileForm").elements.displayName,nameCount=$("#displayNameCount"),avatarInput=$("#creatorAvatarInput"),avatarPreviewWrap=$("#avatarPreviewWrap"),avatarPreview=$("#avatarPreview");
-profileNameInput.addEventListener("input",()=>{nameCount.textContent=profileNameInput.value.length+"/40 karakter"});
-avatarInput.addEventListener("change",()=>{const file=avatarInput.files?.[0];if(!file){avatarPreviewWrap.hidden=true;avatarPreview.removeAttribute("src");return}if(file.size>2*1024*1024||!["image/jpeg","image/png","image/webp"].includes(file.type)){avatarPreviewWrap.hidden=true;setStatus("#profileStatus",file.size>2*1024*1024?"Foto profil maksimal 2 MB.":"Foto harus JPG, PNG, atau WebP.");avatarInput.value="";return}avatarPreview.src=URL.createObjectURL(file);avatarPreviewWrap.hidden=false;setStatus("#profileStatus","Pratinjau foto siap. Tekan Simpan profil untuk menerapkan.")});
-$("#creatorProfileForm").addEventListener("submit",async e=>{
- e.preventDefault();if(!supa)return;const form=e.currentTarget,fd=new FormData(form),name=String(fd.get("displayName")||"").trim(),file=fd.get("avatar"),btn=form.querySelector("button[type=submit]");
- if(!name){setStatus("#profileStatus","Nama tampilan wajib diisi.");return}
- if(file&&file.size>2*1024*1024){setStatus("#profileStatus","Foto profil maksimal 2 MB.");return}
- if(file&&file.size&&!["image/jpeg","image/png","image/webp"].includes(file.type)){setStatus("#profileStatus","Foto harus JPG, PNG, atau WebP.");return}
- btn.disabled=true;setStatus("#profileStatus","Menyimpan profil...");
- try{
-  const {data:sessionData}=await supa.auth.getSession(),user=sessionData.session?.user;if(!user)throw new Error("Sesi login berakhir. Silakan masuk kembali.");
-  const oldAvatar=user.user_metadata?.avatar_url||null;let avatarUrl=oldAvatar;
-  if(file&&file.size){
-   const ext=({ "image/jpeg":"jpg","image/png":"png","image/webp":"webp"})[file.type],path=user.id+"/avatar-"+crypto.randomUUID()+"."+ext;
-   const uploaded=await supa.storage.from("drama-posters").upload(path,file,{contentType:file.type,upsert:false});if(uploaded.error)throw uploaded.error;
-   avatarUrl=supa.storage.from("drama-posters").getPublicUrl(path).data.publicUrl;
-  }
-  const updated=await supa.auth.updateUser({data:{display_name:name.slice(0,40),avatar_url:avatarUrl}});if(updated.error)throw updated.error;
-  if(oldAvatar&&avatarUrl!==oldAvatar){const oldPath=storagePathFromPublicUrl(oldAvatar,"drama-posters");if(oldPath&&oldPath.startsWith(user.id+"/"))await removeOwnedStorageFiles("drama-posters",[oldPath])}
-  renderCreatorProfile(updated.data.user||user);avatarPreviewWrap.hidden=true;avatarPreview.removeAttribute("src");form.reset();nameCount.textContent="0/40 karakter";setStatus("#profileStatus","Profil kreator berhasil disimpan.");
- }catch(err){setStatus("#profileStatus","Gagal menyimpan profil: "+(err?.message||String(err)))}
- finally{btn.disabled=false}
-});
-async function verifySession(session){if(session)hideGuestPrompt();const profileTitle=$("#profileAccountTitle"),profileDescription=$("#profileAccountDescription"),profileEmail=$("#profileEmail"),profileLogin=$("#profileLoginBtn"),profileLogout=$("#profileLogoutBtn");const profileAvatar=$("#profileAvatar"),profileSince=$("#profileSince");if(profileAvatar){const email=session?.user?.email||"";profileAvatar.textContent=(email.split("@")[0].trim().charAt(0)||"T").toUpperCase()}if(profileSince){const created=session?.user?.created_at?new Date(session.user.created_at):null;const days=created?Math.max(0,Math.floor((Date.now()-created.getTime())/86400000)):null;profileSince.textContent=session?(days===null?"Penonton TacTic Drama":days+" hari bersama TacTic Drama"):"Nikmati drama bersama TacTic Drama"}if(profileTitle){profileTitle.textContent=session?"Memeriksa akun…":"Mode tamu";profileDescription.textContent=session?"Memeriksa status akunmu.":"Masuk untuk mengelola akun penontonmu.";profileEmail.textContent=session?.user?.email||"Kamu sedang menonton sebagai tamu.";profileLogin.hidden=!!session;if(profileLogout)profileLogout.hidden=true;}const panel=$("#uploadSection"),adminUploadBtn=$("#adminUploadBtn"),adminUploadTab=$("#adminUploadTab");panel.hidden=true;panel.removeAttribute("data-admin");if(adminUploadBtn)adminUploadBtn.hidden=true;if(adminUploadTab)adminUploadTab.hidden=true;$("#viewerAccount").hidden=true;setAuthMode("login");$("#resetPasswordForm").hidden=true;$("#moderationSection").hidden=true;if(!session||!supa)return;const {data,error}=await supa.from("user_roles").select("role").eq("user_id",session.user.id).maybeSingle();if(error){setStatus("#loginStatus","Gagal memeriksa akun. Coba masuk kembali.");return}if(data?.role==="admin"){if(profileTitle){profileTitle.textContent="Akun aktif";profileDescription.textContent="Akunmu sudah terhubung dan siap digunakan.";profileEmail.textContent=session.user.email||"";}panel.dataset.admin="true";panel.hidden=false;const profilePanel=$("#profilePanel");if(profilePanel&&panel.parentElement!==profilePanel)profilePanel.append(panel);if(adminUploadBtn)adminUploadBtn.hidden=false;if(adminUploadTab)adminUploadTab.hidden=false;$("#loginForm").hidden=true;$("#signupForm").hidden=true;$("#moderationSection").hidden=false;$("#adminIdentity").textContent="Admin masuk sebagai "+session.user.email;setStatus("#loginStatus","Mode admin aktif. Menu Upload Video tersedia di halaman Profil.");if(admin.open)admin.close();activeTab="profile";setActiveNav("profile");render();loadModeration();return}renderViewerProfile(session.user);$("#viewerAccount").hidden=false;$("#viewerEmail").textContent=session.user.email||"Akun penonton aktif";if(profileTitle){profileTitle.textContent="Akun penonton aktif";profileDescription.textContent="Akunmu sudah terhubung dan siap digunakan.";profileEmail.textContent=session.user.email||"Akun penonton aktif";}$("#loginForm").hidden=true;$("#signupForm").hidden=true;$("#forgotPasswordBtn").hidden=true;$("#resendConfirmationBtn").hidden=true;setStatus("#loginStatus","Login berhasil. Akun penonton aktif.")}
-async function editCreatorDrama(drama,userId){const title=window.prompt("Ubah judul drama:",drama.title);if(title===null)return;if(!title.trim()){setStatus("#loginStatus","Judul drama tidak boleh kosong.");return}const description=window.prompt("Ubah deskripsi drama:",drama.description||"");if(description===null)return;const {data,error}=await supa.from("dramas").update({title:title.trim().slice(0,120),description:description.trim().slice(0,2000)}).eq("id",drama.id).eq("uploader_id",userId).select("id").maybeSingle();if(error){setStatus("#loginStatus","Gagal mengubah drama: "+error.message);return}if(!data){setStatus("#loginStatus","Drama tidak berubah. Pastikan akun memiliki akses edit.");return}setStatus("#loginStatus","Judul dan deskripsi drama berhasil diperbarui.");await loadMyDramas(userId);await loadCatalog()}
+ renderViewerProfile(session.user);$("#viewerAccount").hidden=false;$("#viewerEmail").textContent=session.user.email||"Akun penonton aktif";
+ if(profileTitle){profileTitle.textContent="Akun penonton aktif";profileDescription.textContent="Akunmu sudah terhubung dan siap digunakan.";profileEmail.textContent=session.user.email||"Akun penonton aktif"}
+ $("#loginForm").hidden=true;$("#signupForm").hidden=true;$("#forgotPasswordBtn").hidden=true;$("#resendConfirmationBtn").hidden=true;
+ setStatus("#loginStatus",checkError?"Tidak dapat memverifikasi hak admin: "+checkError.message:"Login berhasil. Akun penonton aktif.");
+}async function editAdminDrama(drama,userId){const title=window.prompt("Ubah judul drama:",drama.title);if(title===null)return;if(!title.trim()){setStatus("#loginStatus","Judul drama tidak boleh kosong.");return}const description=window.prompt("Ubah deskripsi drama:",drama.description||"");if(description===null)return;const {data,error}=await supa.from("dramas").update({title:title.trim().slice(0,120),description:description.trim().slice(0,2000)}).eq("id",drama.id).eq("uploader_id",userId).select("id").maybeSingle();if(error){setStatus("#loginStatus","Gagal mengubah drama: "+error.message);return}if(!data){setStatus("#loginStatus","Drama tidak berubah. Pastikan akun memiliki akses edit.");return}setStatus("#loginStatus","Judul dan deskripsi drama berhasil diperbarui.");await loadAdminDramas(userId);await loadCatalog()}
 $("#guestPromptLogin").addEventListener("click",()=>{hideGuestPrompt();admin.showModal()});
 $("#guestPromptContinue").addEventListener("click",hideGuestPrompt);
 $("#openAdmin")?.addEventListener("click",()=>admin.showModal());
 $("#profileLoginBtn").addEventListener("click",()=>admin.showModal());
-$("#adminUploadBtn")?.addEventListener("click",()=>$("#uploadSection")?.scrollIntoView({behavior:"smooth",block:"start"}));
 document.querySelectorAll("[data-profile-tab]").forEach(button=>button.addEventListener("click",()=>{collectionView=button.dataset.profileTab;activeTab="collection";setActiveNav("collection");render();window.scrollTo({top:0,behavior:"smooth"})}));
 document.querySelectorAll("[data-profile-view]").forEach(button=>button.addEventListener("click",()=>{profileCollectionView=button.dataset.profileView;renderProfileCollections()}));
 document.querySelectorAll("[data-profile-filter]").forEach(button=>button.addEventListener("click",()=>{profileHistoryFilter=button.dataset.profileFilter;renderProfileCollections()}));
@@ -1093,7 +795,7 @@ $("#confirmLogoutButton")?.addEventListener("click",async()=>{const button=$("#c
 
 function storagePathFromPublicUrl(url,bucket){if(!url)return null;try{const u=new URL(url);const marker="/storage/v1/object/public/"+bucket+"/";const at=u.pathname.indexOf(marker);return at<0?null:decodeURIComponent(u.pathname.slice(at+marker.length))}catch{return null}}
 async function removeOwnedStorageFiles(bucket,paths){const clean=[...new Set(paths.filter(Boolean))];if(!clean.length)return;const {error}=await supa.storage.from(bucket).remove(clean);if(error)throw error}
-async function editCreatorEpisode(drama,ep,userId){
+async function editAdminEpisode(drama,ep,userId){
  const numberInput=window.prompt("Ubah nomor episode:",String(ep.episode_number));if(numberInput===null)return;
  const episodeNumber=Number(numberInput);if(!Number.isInteger(episodeNumber)||episodeNumber<1){setStatus("#uploadStatus","Nomor episode harus bilangan bulat positif.");return}
  const title=window.prompt("Ubah judul episode:",ep.title||"");if(title===null)return;
@@ -1102,12 +804,12 @@ async function editCreatorEpisode(drama,ep,userId){
   if(duplicate.error)throw duplicate.error;if(duplicate.data){setStatus("#uploadStatus","Nomor episode tersebut sudah dipakai.");return}
   const result=await supa.from("episodes").update({episode_number:episodeNumber,title:title.trim().slice(0,120)}).eq("id",ep.id).eq("uploader_id",userId).select("id").maybeSingle();
   if(result.error)throw result.error;if(!result.data)throw new Error("Akun ini tidak memiliki izin mengubah episode tersebut.");
-  setStatus("#uploadStatus","Episode berhasil diperbarui.");await loadCatalog();await loadMyDramas(userId)
+  setStatus("#uploadStatus","Episode berhasil diperbarui.");await loadCatalog();await loadAdminDramas(userId)
  }catch(err){setStatus("#uploadStatus","Gagal mengubah episode: "+(err?.message||String(err)))}
 }
-async function deleteCreatorEpisode(drama,ep,userId){if(!confirm("Hapus episode "+ep.episode_number+" dari drama "+drama.title+"? Video episode ini juga akan dihapus permanen."))return;try{await removeOwnedStorageFiles("drama-videos",[ep.video_path,ep.subtitle_path]);const {error}=await supa.from("episodes").delete().eq("id",ep.id).eq("drama_id",drama.id).eq("uploader_id",userId);if(error)throw error;setStatus("#uploadStatus","Episode "+ep.episode_number+" berhasil dihapus.");await loadCatalog();await loadMyDramas(userId)}catch(err){setStatus("#uploadStatus","Episode belum berhasil dihapus: "+(err?.message||String(err)))}}
-async function deleteCreatorDrama(drama,userId){const eps=drama.episodes||[];if(!confirm("Hapus drama “"+drama.title+"” beserta "+eps.length+" episode? Tindakan ini permanen."))return;try{await removeOwnedStorageFiles("drama-videos",eps.flatMap(ep=>[ep.video_path,ep.subtitle_path]));const posterPath=storagePathFromPublicUrl(drama.poster_url,"drama-posters");await removeOwnedStorageFiles("drama-posters",[posterPath]);const {error}=await supa.from("dramas").delete().eq("id",drama.id).eq("uploader_id",userId);if(error)throw error;setStatus("#uploadStatus","Drama dan seluruh episode berhasil dihapus.");if(activeDrama?.id===drama.id){video.pause();video.removeAttribute("src");player.close();activeDrama=null}await loadCatalog();await loadMyDramas(userId)}catch(err){setStatus("#uploadStatus","Drama belum berhasil dihapus: "+(err?.message||String(err))+". Jika file sudah terhapus, muat ulang daftar dan coba periksa kembali.")}}
-async function loadMyDramas(userId){const list=$("#myDramaList"),count=$("#creatorCount"),target=$("#targetDrama");if(!list||!supa)return;list.textContent="Memuat drama...";const {data,error}=await supa.from("dramas").select("id,title,description,poster_url,status,created_at,episodes(id,episode_number,title,video_path,subtitle_path,status)").eq("uploader_id",userId).order("created_at",{ascending:false});if(error){list.textContent="Daftar drama belum dapat dimuat: "+error.message;count.textContent="—";return}count.textContent=(data?.length||0)+" drama";await loadCreatorStats(userId);await loadCreatorEarnings(userId);await loadCreatorEligibility(userId);await loadCreatorViewAppeal();if(target){const selected=target.value;target.innerHTML='<option value="">Buat drama baru</option>';(data||[]).filter(d=>d.status==="approved").forEach(d=>{const o=document.createElement("option");o.value=d.id;o.textContent=d.title;target.append(o)});target.value=selected}list.innerHTML="";if(!data?.length){list.innerHTML='<p class="notice">Kamu belum mengunggah drama. Gunakan formulir unggah di bawah untuk mulai menerbitkan.</p>';return}for(const d of data){const card=document.createElement("article");card.className="creator-item";const info=document.createElement("div");info.className="creator-item-info";const title=document.createElement("strong");title.textContent=d.title;const meta=document.createElement("span");const eps=d.episodes||[];meta.textContent=eps.length+" episode · "+(d.status==="approved"?"Tayang":d.status==="rejected"?"Disembunyikan":"Status: "+d.status);const date=document.createElement("small");date.textContent=d.created_at?new Date(d.created_at).toLocaleDateString("id-ID"):"";info.append(title,meta,date);card.append(info);const edit=document.createElement("button");edit.className="secondary-btn";edit.type="button";edit.textContent="Edit";edit.addEventListener("click",()=>editCreatorDrama(d,userId));card.append(edit);if(d.status==="approved"&&eps.some(ep=>ep.status==="approved")){const open=document.createElement("button");open.className="secondary-btn";open.type="button";open.textContent="Lihat";open.addEventListener("click",()=>{const published={...d,episodes:eps.filter(ep=>ep.status==="approved"),genre:eps.length+" episode"};admin.close();openDrama(published)});card.append(open)}const remove=document.createElement("button");remove.className="danger-btn";remove.type="button";remove.textContent="Hapus drama";remove.addEventListener("click",()=>deleteCreatorDrama(d,userId));card.append(remove);if(eps.length){const details=document.createElement("details");details.className="creator-episodes";const summary=document.createElement("summary");summary.textContent="Kelola "+eps.length+" episode";details.append(summary);for(const ep of [...eps].sort((x,y)=>x.episode_number-y.episode_number)){const row=document.createElement("div");row.className="creator-episode-row";const label=document.createElement("span");label.textContent="Episode "+ep.episode_number+(ep.title?" · "+ep.title:"");const del=document.createElement("button");del.className="danger-btn";del.type="button";del.textContent="Hapus";del.addEventListener("click",()=>deleteCreatorEpisode(d,ep,userId));const edit=document.createElement("button");edit.className="secondary-btn";edit.type="button";edit.textContent="Edit";edit.addEventListener("click",()=>editCreatorEpisode(d,ep,userId));row.append(label,edit,del);details.append(row)}card.append(details)}list.append(card)}} 
+async function deleteAdminEpisode(drama,ep,userId){if(!confirm("Hapus episode "+ep.episode_number+" dari drama "+drama.title+"? Video episode ini juga akan dihapus permanen."))return;try{await removeOwnedStorageFiles("drama-videos",[ep.video_path,ep.subtitle_path]);const {error}=await supa.from("episodes").delete().eq("id",ep.id).eq("drama_id",drama.id).eq("uploader_id",userId);if(error)throw error;setStatus("#uploadStatus","Episode "+ep.episode_number+" berhasil dihapus.");await loadCatalog();await loadAdminDramas(userId)}catch(err){setStatus("#uploadStatus","Episode belum berhasil dihapus: "+(err?.message||String(err)))}}
+async function deleteAdminDrama(drama,userId){const eps=drama.episodes||[];if(!confirm("Hapus drama “"+drama.title+"” beserta "+eps.length+" episode? Tindakan ini permanen."))return;try{await removeOwnedStorageFiles("drama-videos",eps.flatMap(ep=>[ep.video_path,ep.subtitle_path]));const posterPath=storagePathFromPublicUrl(drama.poster_url,"drama-posters");await removeOwnedStorageFiles("drama-posters",[posterPath]);const {error}=await supa.from("dramas").delete().eq("id",drama.id).eq("uploader_id",userId);if(error)throw error;setStatus("#uploadStatus","Drama dan seluruh episode berhasil dihapus.");if(activeDrama?.id===drama.id){video.pause();video.removeAttribute("src");player.close();activeDrama=null}await loadCatalog();await loadAdminDramas(userId)}catch(err){setStatus("#uploadStatus","Drama belum berhasil dihapus: "+(err?.message||String(err))+". Jika file sudah terhapus, muat ulang daftar dan coba periksa kembali.")}}
+async function loadAdminDramas(userId){const list=$("#myDramaList"),count=$("#adminDramaCount"),target=$("#targetDrama");if(!list||!supa)return;list.textContent="Memuat drama...";const {data,error}=await supa.from("dramas").select("id,title,description,poster_url,status,created_at,episodes(id,episode_number,title,video_path,subtitle_path,status)").eq("uploader_id",userId).order("created_at",{ascending:false});if(error){list.textContent="Daftar drama belum dapat dimuat: "+error.message;count.textContent="—";return}count.textContent=(data?.length||0)+" drama";if(target){const selected=target.value;target.innerHTML='<option value="">Buat drama baru</option>';(data||[]).filter(d=>d.status==="approved").forEach(d=>{const o=document.createElement("option");o.value=d.id;o.textContent=d.title;target.append(o)});target.value=selected}list.innerHTML="";if(!data?.length){list.innerHTML='<p class="notice">Kamu belum mengunggah drama. Gunakan formulir unggah di bawah untuk mulai menerbitkan.</p>';return}for(const d of data){const card=document.createElement("article");card.className="admin-item";const info=document.createElement("div");info.className="admin-item-info";const title=document.createElement("strong");title.textContent=d.title;const meta=document.createElement("span");const eps=d.episodes||[];meta.textContent=eps.length+" episode · "+(d.status==="approved"?"Tayang":d.status==="rejected"?"Disembunyikan":"Status: "+d.status);const date=document.createElement("small");date.textContent=d.created_at?new Date(d.created_at).toLocaleDateString("id-ID"):"";info.append(title,meta,date);card.append(info);const edit=document.createElement("button");edit.className="secondary-btn";edit.type="button";edit.textContent="Edit";edit.addEventListener("click",()=>editAdminDrama(d,userId));card.append(edit);if(d.status==="approved"&&eps.some(ep=>ep.status==="approved")){const open=document.createElement("button");open.className="secondary-btn";open.type="button";open.textContent="Lihat";open.addEventListener("click",()=>{const published={...d,episodes:eps.filter(ep=>ep.status==="approved"),genre:eps.length+" episode"};admin.close();openDrama(published)});card.append(open)}const remove=document.createElement("button");remove.className="danger-btn";remove.type="button";remove.textContent="Hapus drama";remove.addEventListener("click",()=>deleteAdminDrama(d,userId));card.append(remove);if(eps.length){const details=document.createElement("details");details.className="admin-episodes";const summary=document.createElement("summary");summary.textContent="Kelola "+eps.length+" episode";details.append(summary);for(const ep of [...eps].sort((x,y)=>x.episode_number-y.episode_number)){const row=document.createElement("div");row.className="admin-episode-row";const label=document.createElement("span");label.textContent="Episode "+ep.episode_number+(ep.title?" · "+ep.title:"");const del=document.createElement("button");del.className="danger-btn";del.type="button";del.textContent="Hapus";del.addEventListener("click",()=>deleteAdminEpisode(d,ep,userId));const edit=document.createElement("button");edit.className="secondary-btn";edit.type="button";edit.textContent="Edit";edit.addEventListener("click",()=>editAdminEpisode(d,ep,userId));row.append(label,edit,del);details.append(row)}card.append(details)}list.append(card)}} 
 document.querySelectorAll("[data-close]").forEach(b=>b.addEventListener("click",()=>{if(b.dataset.close==="playerDialog"){persistCurrentPlayback();video.pause()}document.getElementById(b.dataset.close).close()}));
 player.addEventListener("cancel",()=>{persistCurrentPlayback();video.pause()});
 player.addEventListener("close",()=>{if(activeTab==="clips")resumeClipsFeed()});
@@ -1150,7 +852,7 @@ $("#loginForm").addEventListener("submit",async e=>{e.preventDefault();if(!supa)
 $("#signupForm").addEventListener("submit",async e=>{e.preventDefault();if(!supa){setStatus("#loginStatus","Backend belum siap.");return}const f=new FormData(e.currentTarget),email=String(f.get("email")||"").trim();setStatus("#loginStatus","Mendaftarkan akun...");const {data,error}=await supa.auth.signUp({email,password:f.get("password"),options:{emailRedirectTo:location.origin+location.pathname}});if(error){setStatus("#loginStatus","Pendaftaran gagal: "+error.message);return}if(data.session){$("#resendConfirmationBtn").hidden=true;await verifySession(data.session)}else{$("#loginForm input[name=email]").value=email;$("#resendConfirmationBtn").hidden=false;setStatus("#loginStatus","Permintaan pendaftaran diterima. Jika akun belum terverifikasi, gunakan tombol Kirim ulang verifikasi email. Periksa juga folder Spam. Jika akun sudah pernah dibuat, gunakan Lupa password?.")}});
 async function signOutViewer(){if(supa)await supa.auth.signOut();$("#profileAccountTitle").textContent="Mode tamu";$("#profileAccountDescription").textContent="Masuk untuk mengelola akun penontonmu.";
 $("#profileEmail").textContent="Kamu sedang menonton sebagai tamu.";
-$("#profileLoginBtn").hidden=false;$("#viewerAccount").hidden=true;$("#uploadSection").hidden=true;$("#uploadSection").removeAttribute("data-admin");$("#adminUploadTab").hidden=true;$("#moderationSection").hidden=true;$("#loginForm").hidden=false;$("#signupForm").hidden=false;$("#forgotPasswordBtn").hidden=false;setStatus("#loginStatus","Kamu sudah keluar.")}
+$("#profileLoginBtn").hidden=false;$("#viewerAccount").hidden=true;$("#uploadSection").hidden=true;$("#uploadSection").removeAttribute("data-admin");$("#adminUploadTab").hidden=true;profileCollectionView="history";$("#moderationSection").hidden=true;$("#loginForm").hidden=false;$("#signupForm").hidden=false;$("#forgotPasswordBtn").hidden=false;setStatus("#loginStatus","Kamu sudah keluar.")}
 $("#logoutBtn").addEventListener("click",signOutViewer);$("#viewerLogoutBtn").addEventListener("click",signOutViewer);
 async function loadModeration(){const list=$("#moderationList");if(!list||!supa)return;list.textContent="Memuat laporan...";const {data,error}=await supa.from("video_reports").select("id,drama_id,reason,details,status,created_at").eq("status","open").order("created_at",{ascending:false}).limit(50);if(error){list.textContent="Gagal memuat laporan: "+error.message;return}list.innerHTML="";if(!data?.length){list.textContent="Belum ada laporan video.";return}for(const report of data){const card=document.createElement("article");card.className="comment-item";const title=document.createElement("strong");title.textContent="Alasan: "+report.reason;const detail=document.createElement("p");detail.textContent=report.details||"Tidak ada keterangan tambahan.";const date=document.createElement("small");date.textContent=new Date(report.created_at).toLocaleString("id-ID");const review=document.createElement("button");review.className="secondary-btn";review.textContent="Tandai ditinjau";review.addEventListener("click",()=>updateReport(report.id,"reviewed"));const hide=document.createElement("button");hide.className="primary-btn";hide.textContent="Sembunyikan drama";hide.addEventListener("click",()=>hideReportedDrama(report.id,report.drama_id));card.append(title,detail,date,review,hide);list.append(card)}}
 async function updateReport(id,status){const {error}=await supa.from("video_reports").update({status}).eq("id",id);if(error){setStatus("#loginStatus","Gagal memperbarui laporan: "+error.message);return}await loadModeration()}
@@ -1240,7 +942,7 @@ $("#uploadForm").addEventListener("submit",async e=>{
   const saved=await supa.from("episodes").insert({drama_id:dramaId,episode_number:episode,title:String(data.get("episodeTitle")||""),video_path:videoPath,subtitle_path:subtitlePath,uploader_id:user.id,status:"approved"});
   if(saved.error)throw saved.error;
   setStatus("#uploadStatus",createdDrama?"Berhasil! Drama baru dan episode sudah langsung diterbitkan.":"Berhasil! Episode baru sudah ditambahkan ke drama pilihan.");
-  f.reset();syncTargetForm();await loadCatalog();await loadMyDramas(user.id);
+  f.reset();syncTargetForm();await loadCatalog();await loadAdminDramas(user.id);
  }catch(err){
   if(dramaId&&createdDrama){
    const rollback=await supa.from("dramas").delete().eq("id",dramaId).eq("uploader_id",user.id);

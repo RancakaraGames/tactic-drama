@@ -1790,3 +1790,6 @@ body:has(.melolo-watch-player[open]){overflow:hidden}
 
 /* Admin-only Upload tab alongside profile activity tabs */
 .melolo-profile-tabs{grid-template-columns:repeat(4,minmax(0,1fr))}.melolo-profile-tab[hidden]{display:none!important}.melolo-profile-tab.admin-upload-tab.active{color:#e50914}
+
+/* Compact admin-only Upload tab */
+.melolo-profile-tabs{grid-template-columns:repeat(4,minmax(0,1fr))}.melolo-profile-tab[hidden]{display:none!important}
