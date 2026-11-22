@@ -1061,9 +1061,9 @@ $("#uploadForm").addEventListener("submit",async e=>{
    const plan=plans[index],file=plan.file,episodeTitle=file.name.replace(/\.[^.]+$/,"").replace(/^(?:episode|eps?|e)[\s._-]*0*\d+[\s._-]*/i,"").replace(/[._]+/g," ").trim()||"Episode "+plan.number;
    activeVideoPath=user.id+"/"+crypto.randomUUID()+"-"+file.name.replace(/[^a-zA-Z0-9._-]/g,"_");
    setStatus("#uploadStatus","Mengunggah episode "+plan.number+" ("+(index+1)+"/"+plans.length+"): "+file.name);
-   updateUploadProgress(0);
-   await uploadVideoResumable(file,activeVideoPath,session,pct=>{updateUploadProgress(pct);setStatus("#uploadStatus","Episode "+plan.number+" · "+(index+1)+"/"+plans.length+" · "+pct+"%")});
-   uploadedPaths.push({bucket:"drama-videos",path:activeVideoPath});updateUploadProgress(100);
+   updateUploadProgress(Math.round(index/plans.length*100));
+   await uploadVideoResumable(file,activeVideoPath,session,pct=>{const totalPct=Math.round(((index+pct/100)/plans.length)*100);updateUploadProgress(totalPct);setStatus("#uploadStatus","Episode "+plan.number+" · "+(index+1)+"/"+plans.length+" · "+pct+"% · Total "+totalPct+"%")});
+   uploadedPaths.push({bucket:"drama-videos",path:activeVideoPath});updateUploadProgress(Math.round((index+1)/plans.length*100));
    if(subtitleFile&&subtitleFile.size){activeSubtitlePath=user.id+"/"+crypto.randomUUID()+"-subtitle.vtt";const subtitleUpload=await supa.storage.from("drama-videos").upload(activeSubtitlePath,subtitleFile,{contentType:"text/vtt",upsert:false});if(subtitleUpload.error)throw subtitleUpload.error;uploadedPaths.push({bucket:"drama-videos",path:activeSubtitlePath})}
    setStatus("#uploadStatus","Menyimpan episode "+plan.number+"...");
    const saved=await supa.from("episodes").insert({drama_id:dramaId,episode_number:plan.number,title:episodeTitle,video_path:activeVideoPath,subtitle_path:activeSubtitlePath,uploader_id:user.id,status:"approved"});
