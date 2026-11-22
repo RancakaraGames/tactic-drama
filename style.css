@@ -1238,3 +1238,13 @@ body:has(.melolo-watch-player[open]){overflow:hidden}
 .continue-play-btn:focus-visible{outline:2px solid #f2c27d;outline-offset:3px}
 @media(min-width:620px){.continue-card{align-items:center;flex-direction:row}.continue-card-poster{flex-basis:48px;width:48px;height:62px}.continue-play-btn{width:auto;margin:0}}
 @media(max-width:360px){.continue-card{gap:8px;padding-left:9px;padding-right:9px}.continue-card-poster{flex-basis:44px;width:44px;height:60px}.continue-play-btn{padding:0 8px;font-size:9px}}
+
+
+/* Collection tab counters and touch refinement v109 */
+.collection-tabs{align-items:center;gap:7px;padding:5px}
+.collection-tab{display:flex;align-items:center;justify-content:center;gap:8px;min-height:42px;padding:0 10px;transition:background .18s ease,color .18s ease,transform .18s ease}
+.collection-tab:active{transform:scale(.985)}
+.collection-tab-count{display:inline-grid;place-items:center;min-width:21px;height:21px;padding:0 6px;border:1px solid #ffffff18;border-radius:99px;background:#ffffff0d;color:#c4c5cc;font-size:10px;font-weight:850;font-variant-numeric:tabular-nums}
+.collection-tab.active .collection-tab-count{border-color:#ffffff35;background:#ffffff20;color:#fff}
+.collection-tab:focus-visible{outline:2px solid #ff6670;outline-offset:3px}
+@media(prefers-reduced-motion:reduce){.collection-tab{transition:none}}

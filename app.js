@@ -152,6 +152,9 @@ function render(){
  if(headingEyebrow)headingEyebrow.textContent=clipsPage?"PILIH CERITA DAN MULAI MENONTON":savedPage?"TERSIMPAN UNTUKMU":historyPage?"LANJUTKAN CERITAMU":"UNTUKMU";
  if(savedCount)savedCount.textContent=favoriteIds.size.toLocaleString("id-ID");
  document.querySelectorAll("[data-collection-view]").forEach(button=>{const active=button.dataset.collectionView===collectionView;button.classList.toggle("active",active);button.setAttribute("aria-pressed",String(active))});
+ const favoriteCount=$("#collectionFavoriteCount"),historyCount=$("#collectionHistoryCount");
+ if(favoriteCount)favoriteCount.textContent=favoriteIds.size>99?"99+":String(favoriteIds.size);
+ if(historyCount)historyCount.textContent=Object.keys(watchHistory).length>99?"99+":String(Object.keys(watchHistory).length);
  let visible=clipsPage?dramas.filter(d=>(d.episodes||[]).length>0):savedPage?dramas.filter(d=>favoriteIds.has(d.id)):historyPage?dramas.filter(d=>watchHistory[d.id]).sort((a,b)=>new Date(watchHistory[b.id]?.watched_at||0)-new Date(watchHistory[a.id]?.watched_at||0)):dramas;
  if(searchQuery)visible=visible.filter(d=>(String(d.title||"")+" "+String(d.description||"")+" "+String(d.genre||"")).toLocaleLowerCase("id").includes(searchQuery));
  if(!historyPage){const mode=$("#dramaSort")?.value||"newest";if(mode==="popular")visible.sort((a,b)=>Number(b.like_count||0)-Number(a.like_count||0)||String(a.title||"").localeCompare(String(b.title||""),"id"));else if(mode==="az")visible.sort((a,b)=>String(a.title||"").localeCompare(String(b.title||""),"id"));else if(mode==="za")visible.sort((a,b)=>String(b.title||"").localeCompare(String(a.title||""),"id"))}

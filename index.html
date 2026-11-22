@@ -8,7 +8,7 @@
   <title>TacTic Drama</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
-  <link rel="stylesheet" href="style.css?v=108">
+  <link rel="stylesheet" href="style.css?v=109">
 </head>
 <body>
   <main>
@@ -59,7 +59,7 @@
   </section>
   <p id="profilePageStatus" class="profile-page-status" role="status" aria-live="polite"></p>
 </section>
-    <section id="collectionTabs" class="collection-tabs" hidden aria-label="Isi koleksi"><button type="button" class="collection-tab active" data-collection-view="saved" aria-pressed="true">♡ Favorit</button><button type="button" class="collection-tab" data-collection-view="history" aria-pressed="false">◷ Riwayat</button></section>
+    <section id="collectionTabs" class="collection-tabs" hidden aria-label="Isi koleksi"><button type="button" class="collection-tab active" data-collection-view="saved" aria-pressed="true"><span>♡ Favorit</span><span class="collection-tab-count" id="collectionFavoriteCount">0</span></button><button type="button" class="collection-tab" data-collection-view="history" aria-pressed="false"><span>◷ Riwayat</span><span class="collection-tab-count" id="collectionHistoryCount">0</span></button></section>
     <section id="historyTools" class="history-tools" hidden><span>Episode yang terakhir kamu tonton tersimpan di perangkat ini.</span><button id="clearHistory" class="secondary-btn" type="button">Hapus riwayat</button></section>
     <section id="dramaGrid" class="drama-grid" aria-live="polite"></section>
   </main>
@@ -352,6 +352,6 @@
   </dialog>
 
   <script src="./supabase-config.js"></script>
-  <script src="app.js?v=108"></script>
+  <script src="app.js?v=109"></script>
 </body>
 </html>
