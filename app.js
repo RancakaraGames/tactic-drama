@@ -1166,6 +1166,12 @@ function loadTusLibrary(){
   document.head.append(script);
  });
 }
+function getUploadMimeType(file,kind){
+ const supplied=String(file?.type||"").toLowerCase();
+ const extension=String(file?.name||"").split(".").pop().toLowerCase();
+ const allowed=kind==="video"?{"mp4":"video/mp4","webm":"video/webm","mov":"video/quicktime"}:{"jpg":"image/jpeg","jpeg":"image/jpeg","png":"image/png","webp":"image/webp"};
+ return Object.values(allowed).includes(supplied)?supplied:(allowed[extension]||"");
+}
 function uploadVideoResumable(file,path,session,onProgress){
  return loadTusLibrary().then(tus=>new Promise((resolve,reject)=>{
   const projectRef=(cfg.url||"").replace(/^https:\/\//,"").split(".")[0];
@@ -1173,7 +1179,7 @@ function uploadVideoResumable(file,path,session,onProgress){
    endpoint:"https://"+projectRef+".storage.supabase.co/storage/v1/upload/resumable",
    retryDelays:[0,3000,5000,10000,20000],
    headers:{authorization:"Bearer "+session.access_token},
-   metadata:{bucketName:"drama-videos",objectName:path,contentType:file.type||"application/octet-stream",cacheControl:"3600"},
+   metadata:{bucketName:"drama-videos",objectName:path,contentType:getUploadMimeType(file,"video")||"application/octet-stream",cacheControl:"3600"},
    chunkSize:6*1024*1024,
    uploadDataDuringCreation:true,
    removeFingerprintOnSuccess:true,
@@ -1201,8 +1207,8 @@ $("#uploadForm").addEventListener("submit",async e=>{
  if(!targetDrama&&!title){setStatus("#uploadStatus","Isi judul drama terlebih dahulu.");return}
  if(!Number.isInteger(episode)||episode<1){setStatus("#uploadStatus","Nomor episode harus bilangan positif.");return}
  if(posterFile&&posterFile.size>10*1024*1024){setStatus("#uploadStatus","Ukuran poster maksimal 10 MB.");return}
- if(posterFile&&!["image/jpeg","image/png","image/webp"].includes(posterFile.type)){setStatus("#uploadStatus","Poster harus JPG, PNG, atau WebP.");return}
- if(!file||!["video/mp4","video/webm","video/quicktime"].includes(file.type)){setStatus("#uploadStatus","Pilih video MP4, WebM, atau MOV.");return}
+ if(posterFile&&!getUploadMimeType(posterFile,"image")){setStatus("#uploadStatus","Poster harus JPG, PNG, atau WebP.");return}
+ if(!file||!getUploadMimeType(file,"video")){setStatus("#uploadStatus","Pilih video MP4, WebM, atau MOV.");return}
  if(file.size===0){setStatus("#uploadStatus","File video kosong. Pilih video lain.");return}
  if(file.size>500*1024*1024){setStatus("#uploadStatus","Ukuran video maksimal 500 MB.");return}
  if(subtitleFile&&subtitleFile.size){if(subtitleFile.size>1024*1024){setStatus("#uploadStatus","Ukuran subtitle maksimal 1 MB.");return}if(!/\.vtt$/i.test(subtitleFile.name)){setStatus("#uploadStatus","Subtitle harus menggunakan format .VTT.");return}const subtitleText=await subtitleFile.text();if(!/^WEBVTT(?:\s|$)/.test(subtitleText.replace(/^\uFEFF/,""))){setStatus("#uploadStatus","File subtitle tidak valid. Gunakan format WebVTT yang diawali WEBVTT.");return}}
@@ -1223,7 +1229,7 @@ $("#uploadForm").addEventListener("submit",async e=>{
   videoPath=user.id+"/"+crypto.randomUUID()+"-"+safeName;
   if(posterFile&&posterFile.size){
    posterPath=user.id+"/"+crypto.randomUUID()+"-"+posterFile.name.replace(/[^a-zA-Z0-9._-]/g,"_");
-   const posterUpload=await supa.storage.from("drama-posters").upload(posterPath,posterFile,{contentType:posterFile.type,upsert:false});
+   const posterUpload=await supa.storage.from("drama-posters").upload(posterPath,posterFile,{contentType:getUploadMimeType(posterFile,"image"),upsert:false});
    if(posterUpload.error)throw posterUpload.error;
   }
   updateUploadProgress(0);await uploadVideoResumable(file,videoPath,session,pct=>{updateUploadProgress(pct);setStatus("#uploadStatus","Mengunggah video... "+pct+"% (jangan tutup halaman).")});updateUploadProgress(100);

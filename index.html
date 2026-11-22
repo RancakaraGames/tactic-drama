@@ -8,7 +8,7 @@
   <title>TacTic Drama</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
-  <link rel="stylesheet" href="style.css?v=138">
+  <link rel="stylesheet" href="style.css?v=139">
 </head>
 <body>
   <main>
@@ -252,7 +252,7 @@
         <label id="posterField">Poster drama (opsional)<input name="poster" type="file" accept="image/jpeg,image/png,image/webp"></label>
         <label>Nomor episode<input name="episode" type="number" min="1" value="1" required></label>
         <label>Judul episode<input name="episodeTitle" placeholder="Contoh: Pertemuan pertama"></label>
-        <label>File video<input name="video" type="file" accept="video/mp4,video/webm,video/quicktime" capture="environment" required></label>
+        <label>File video<input name="video" type="file" accept="video/mp4,video/webm,video/quicktime" required></label>
         <label>Subtitle Bahasa Indonesia (opsional, .VTT)<input name="subtitle" type="file" accept=".vtt,text/vtt"></label><small class="subtitle-help">Pilih file subtitle WebVTT maksimal 1 MB. Subtitle muncul melalui tombol CC pada pemutar video.</small>
         <div id="uploadPreview" class="upload-preview" hidden><img id="uploadPosterPreview" alt="Pratinjau poster"><div><strong id="uploadVideoName">Video belum dipilih</strong><span id="uploadVideoSize"></span></div></div>
         <div id="uploadProgressWrap" class="upload-progress" hidden><div><span>Progres unggahan video</span><strong id="uploadProgressLabel">0%</strong></div><progress id="uploadProgressBar" max="100" value="0" aria-label="Progres unggahan video"></progress><small>Jangan tutup halaman sampai unggahan selesai.</small></div>
@@ -349,6 +349,6 @@
   </dialog>
 
   <script src="./supabase-config.js"></script>
-  <script src="app.js?v=138"></script>
+  <script src="app.js?v=139"></script>
 </body>
 </html>
