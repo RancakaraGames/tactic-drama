@@ -1284,3 +1284,10 @@ body:has(.melolo-watch-player[open]){overflow:hidden}
 .catalog-sort-select{min-width:142px;max-width:58%;padding:9px 30px 9px 11px;border:1px solid #34343b;border-radius:10px;background:#17171c;color:#f4f4f5;font-size:11px;font-weight:650;outline:none}
 .catalog-sort-select:focus-visible{border-color:#e50914;box-shadow:0 0 0 3px #e509142b}
 @media(max-width:360px){.catalog-sort-row{padding-right:12px}.catalog-sort-select{min-width:130px}}
+
+
+/* Distinct player actions v115: bookmark for favorite, heart for like */
+.player-rail-action .rail-bookmark-icon{position:relative;color:#fff}
+.player-rail-action .rail-bookmark-icon:before{content:"";display:block;width:15px;height:21px;background:currentColor;clip-path:polygon(0 0,100% 0,100% 100%,50% 73%,0 100%);filter:drop-shadow(0 1px 1px #0008)}
+.player-rail-action[aria-pressed="true"] .rail-bookmark-icon{color:#f2c27d;border-color:#f2c27d;background:#3b2930d9}
+#playerLikeAction .rail-icon{font-size:23px}
