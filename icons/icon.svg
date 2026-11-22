@@ -1,7 +1,34 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-<defs><linearGradient id="gold" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f4dfba"/><stop offset="1" stop-color="#b98250"/></linearGradient><radialGradient id="glow"><stop stop-color="#e9c58a" stop-opacity=".18"/><stop offset="1" stop-color="#e9c58a" stop-opacity="0"/></radialGradient></defs>
-<rect width="512" height="512" rx="112" fill="#09090d"/><rect x="28" y="28" width="456" height="456" rx="94" fill="#18131d" stroke="#e9c58a" stroke-opacity=".58" stroke-width="5"/>
-<circle cx="256" cy="245" r="166" fill="url(#glow)"/><circle cx="256" cy="245" r="145" fill="none" stroke="#e9c58a" stroke-opacity=".16" stroke-width="5"/>
-<path d="M137 143h238v49h-91v206h-56V192h-91z" fill="url(#gold)"/>
-<rect x="198" y="422" width="116" height="8" rx="4" fill="#e9c58a"/>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+<title id="title">TacTic Drama</title><desc id="desc">Logo TacTic Drama dengan mahkota emas, simbol T dan tombol putar, serta pita film ungu.</desc>
+<defs>
+ <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#160526"/><stop offset=".55" stop-color="#08050f"/><stop offset="1" stop-color="#210b38"/></linearGradient>
+ <linearGradient id="violet" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f0caff"/><stop offset=".38" stop-color="#b84cff"/><stop offset="1" stop-color="#5812bb"/></linearGradient>
+ <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff0a8"/><stop offset=".45" stop-color="#f6b936"/><stop offset="1" stop-color="#a85c12"/></linearGradient>
+ <linearGradient id="silver" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#fff"/><stop offset="1" stop-color="#aaa3c0"/></linearGradient>
+ <filter id="glow"><feGaussianBlur stdDeviation="7" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+ <clipPath id="round"><rect x="12" y="12" width="488" height="488" rx="94"/></clipPath>
+</defs>
+<g clip-path="url(#round)">
+ <rect width="512" height="512" fill="url(#bg)"/>
+ <path d="M-30 135 145 -30h80L50 150M380 545 545 380v-70L310 545" fill="#8e35df" opacity=".18"/>
+ <g opacity=".32" fill="none" stroke="#a76be0" stroke-width="13">
+  <path d="M-15 260q90-70 180 0t180 0 180 0"/><path d="M-15 287q90-70 180 0t180 0 180 0"/>
+ </g>
+ <g opacity=".22" fill="#c99aff"><path d="M70 85h22v42H70zM112 85h22v42h-22zM154 85h22v42h-22zM336 370h22v42h-22zM378 370h22v42h-22zM420 370h22v42h-22z"/></g>
+ <rect x="13" y="13" width="486" height="486" rx="93" fill="none" stroke="#a83dff" stroke-width="5"/>
+ <g filter="url(#glow)" transform="translate(0 0)">
+  <path d="m174 112-38-31 7 55 48 10 34-58 35 58 48-10 7-55-38 31-52-74z" fill="url(#gold)" stroke="#ffe49a" stroke-width="5" stroke-linejoin="round"/>
+  <path d="M157 145h198l-9 20H166z" fill="url(#gold)" stroke="#8b4c12" stroke-width="3"/>
+  <circle cx="143" cy="80" r="8" fill="#fff2b4"/><circle cx="256" cy="38" r="8" fill="#fff2b4"/><circle cx="369" cy="80" r="8" fill="#fff2b4"/>
+ </g>
+ <g filter="url(#glow)">
+  <path d="M128 185h256c20 0 31 24 15 38L230 365c-18 15-44 0-38-22l26-92h-90z" fill="url(#silver)" stroke="#fff" stroke-width="5" stroke-linejoin="round"/>
+  <path d="m273 230 97 56-97 56z" fill="url(#violet)" stroke="#6d20bd" stroke-width="5" stroke-linejoin="round"/>
+  <path d="M110 389q146 38 292-4" fill="none" stroke="url(#gold)" stroke-width="10" stroke-linecap="round"/>
+ </g>
+ <g text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-weight="900">
+  <text x="256" y="439" font-size="58" letter-spacing="-3" fill="url(#silver)">Tac<tspan fill="url(#violet)">T</tspan>ic</text>
+  <text x="256" y="478" font-size="31" letter-spacing="7" fill="url(#gold)">DRAMA</text>
+ </g>
+ <path d="M120 486h272" stroke="url(#gold)" stroke-width="3" stroke-linecap="round" opacity=".8"/>
+</g></svg>

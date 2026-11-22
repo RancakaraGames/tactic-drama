@@ -7,8 +7,9 @@
   <meta name="description" content="TacTic Drama — tempat menikmati drama pendek favoritmu.">
   <title>TacTic Drama</title>
   <link rel="manifest" href="manifest.webmanifest">
-  <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
-  <link rel="stylesheet" href="style.css?v=155">
+  <link rel="icon" type="image/svg+xml" href="icons/icon.svg?v=156">
+  <link rel="apple-touch-icon" href="icons/icon.svg?v=156">
+  <link rel="stylesheet" href="style.css?v=156">
 </head>
 <body>
   <main>
@@ -24,7 +25,7 @@
       <div><p class="eyebrow">UNTUKMU</p><h2>Drama pilihan</h2></div>
       <button id="reloadCatalog" class="refresh-btn" type="button">↻ Muat ulang</button>
     </section>
-    <div class="catalog-tools"><span class="brand-mark search-logo" aria-label="Logo TacTic">T</span><div class="search-wrap"><input id="dramaSearch" type="search" placeholder="Cari judul atau cerita drama..." aria-label="Cari judul atau cerita drama"><button id="clearSearch" class="clear-search-btn" type="button" hidden aria-label="Hapus pencarian">×</button><button id="searchSubmit" class="search-submit" type="button">Cari</button></div><button class="install-action" id="installBtn" type="button" aria-label="Pasang aplikasi" title="Pasang aplikasi">↓</button><span id="networkStatus" class="network-status" role="status" aria-label="Koneksi online" title="Koneksi online"></span></div>
+    <div class="catalog-tools"><span class="brand-mark search-logo" alt="Logo TacTic Drama"><div class="search-wrap"><input id="dramaSearch" type="search" placeholder="Cari judul atau cerita drama..." aria-label="Cari judul atau cerita drama"><button id="clearSearch" class="clear-search-btn" type="button" hidden aria-label="Hapus pencarian">×</button><button id="searchSubmit" class="search-submit" type="button">Cari</button></div><button class="install-action" id="installBtn" type="button" aria-label="Pasang aplikasi" title="Pasang aplikasi">↓</button><span id="networkStatus" class="network-status" role="status" aria-label="Koneksi online" title="Koneksi online"></span></div>
     <div class="catalog-sort-row"><label for="dramaSort">Urutkan</label><select id="dramaSort" class="catalog-sort-select" aria-label="Urutkan drama"><option value="newest">Terbaru</option><option value="popular">Paling disukai</option><option value="az">Judul A–Z</option><option value="za">Judul Z–A</option></select></div>
     <p id="catalogCount" class="catalog-count" aria-live="polite">Drama ditampilkan</p><p id="catalogStatus" class="catalog-status" role="status" aria-live="polite"></p><section id="profilePanel" class="profile-panel melolo-profile" hidden aria-labelledby="profileTitle">
   <header class="melolo-profile-head">
@@ -71,7 +72,7 @@
     <button class="nav-item" data-tab="profile"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M4.5 21a7.5 7.5 0 0 1 15 0"/></svg>Profil</button>
   </nav>
   <dialog id="guestPromptDialog" class="guest-prompt-dialog" aria-labelledby="guestPromptTitle">
-    <div class="guest-prompt-mark" aria-hidden="true">▶</div>
+    <img class="guest-prompt-mark" src="icons/icon.svg?v=156" alt="">
     <p class="eyebrow">SELAMAT DATANG DI TAC TIC DRAMA</p>
     <h2 id="guestPromptTitle">Siap menikmati drama?</h2>
     <p class="guest-prompt-copy">Kamu bisa langsung menonton tanpa akun. Daftar atau masuk untuk menyiapkan akun penonton dan menyimpan koleksimu.</p>
@@ -125,7 +126,7 @@
   </dialog>
   <dialog id="adminDialog" class="admin-dialog">
     <button class="close-btn" data-close="adminDialog" aria-label="Tutup">×</button>
-    <div class="auth-brand"><span class="auth-brand-mark">T</span><strong>TacTic Drama</strong><p>Masuk dan nikmati cerita favoritmu</p></div>
+    <div class="auth-brand"><img class="auth-brand-mark" src="icons/icon.svg?v=156" alt="Logo TacTic Drama"><strong>TacTic Drama</strong><p>Masuk dan nikmati cerita favoritmu</p></div>
     <div class="auth-tabs" role="tablist" aria-label="Jenis akun">
       <button id="authLoginTab" class="auth-tab active" type="button" role="tab" aria-selected="true">Masuk</button>
       <button id="authSignupTab" class="auth-tab" type="button" role="tab" aria-selected="false">Daftar</button>

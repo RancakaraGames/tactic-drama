@@ -975,3 +975,20 @@ body:has(.melolo-watch-player[open]){overflow:hidden}.melolo-watch-player{positi
 .melolo-avatar img{position:absolute;inset:0;z-index:2;display:block;width:100%;height:100%;max-width:none;max-height:none;object-fit:cover;object-position:center;border:0;border-radius:50%;background:#17151b}
 .settings-account-avatar{position:relative;overflow:hidden;padding:0;background:#17151b}
 .settings-account-avatar img{position:absolute;inset:0;display:block;width:100%;height:100%;max-width:none;max-height:none;object-fit:cover;object-position:center;border-radius:50%;background:#17151b}
+
+/* TacTic Drama unified brand identity v156 */
+.brand-mark.search-logo{
+ display:block;flex:0 0 43px;width:43px;height:43px;min-width:43px;
+ padding:0;border:1px solid #a855f755;border-radius:12px;
+ background:#100719;object-fit:cover;box-shadow:0 4px 16px #8b35e833;
+}
+.guest-prompt-mark{
+ display:block;width:68px;height:68px;margin:0 auto 16px;
+ border:1px solid #c58cff66;border-radius:19px;object-fit:cover;
+ background:#100719;box-shadow:0 8px 28px #8b35e844;
+}
+.auth-brand-mark{
+ display:block;width:76px;height:76px;margin:0 auto 12px;
+ border:1px solid #c58cff66;border-radius:21px;object-fit:cover;
+ background:#100719;box-shadow:0 9px 28px #8b35e844;
+}
