@@ -1015,3 +1015,24 @@ body:has(.melolo-watch-player[open]){overflow:hidden}.melolo-watch-player{positi
  .catalog-tools{grid-template-columns:48px minmax(0,1fr) 36px 10px!important}
  .catalog-tools .search-logo{width:48px!important;height:48px!important;min-width:48px!important}
 }
+
+
+/* Official uploaded TacTic logo: use the complete original image without tint */
+.brand-mark.search-logo,.catalog-tools .search-logo{
+ display:block!important;width:64px!important;height:64px!important;min-width:64px!important;
+ object-fit:contain!important;object-position:center!important;background:transparent!important;
+ padding:0!important;border:0!important;border-radius:14px!important;filter:none!important;
+}
+.catalog-tools{grid-template-columns:64px minmax(0,1fr) 40px 12px!important;gap:9px!important}
+.guest-prompt-mark{
+ display:block!important;width:120px!important;height:120px!important;object-fit:contain!important;
+ object-position:center!important;background:transparent!important;padding:0!important;filter:none!important;
+}
+.auth-brand-mark,#adminDialog .auth-brand-mark{
+ display:block!important;width:128px!important;height:128px!important;object-fit:contain!important;
+ object-position:center!important;background:transparent!important;padding:0!important;filter:none!important;
+}
+@media(max-width:380px){
+ .brand-mark.search-logo,.catalog-tools .search-logo{width:56px!important;height:56px!important;min-width:56px!important}
+ .catalog-tools{grid-template-columns:56px minmax(0,1fr) 36px 10px!important}
+}
