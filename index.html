@@ -8,7 +8,7 @@
   <title>TacTic Drama</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
-  <link rel="stylesheet" href="style.css?v=145">
+  <link rel="stylesheet" href="style.css?v=146">
 </head>
 <body>
   <main>
@@ -158,14 +158,14 @@
     <p id="loginStatus" class="status" role="status"></p>
     <section id="uploadSection" hidden>
       <p class="notice" id="adminIdentity"></p>
-      <div class="admin-upload-guide upload-welcome"><div class="admin-upload-guide-icon" aria-hidden="true">✦</div><div><span class="upload-eyebrow">ADMIN STUDIO</span><strong>Terbitkan episode baru</strong><p>Kelola drama resmi TacTic dengan alur unggah yang ringkas. Pilih drama lama atau buat judul baru, lalu tambahkan videonya.</p><p class="admin-upload-note">MP4, WebM, atau MOV · Maks. 500 MB. Unggah hanya konten yang memiliki izin distribusi.</p></div></div>
+      <div class="admin-upload-guide upload-welcome"><div class="admin-upload-guide-icon" aria-hidden="true">✦</div><div><span class="upload-eyebrow">ADMIN STUDIO · SERIES MANAGER</span><strong>Satu series, semua episode tersusun</strong><p>Buat series sekali saja. Setelah itu pilih series dari daftar di bawah untuk menambahkan episode berikutnya—tidak membuat kartu drama baru.</p><p class="admin-upload-note">MP4, WebM, atau MOV · Maks. 500 MB. Unggah hanya konten yang memiliki izin distribusi.</p></div></div><section class="series-library"><div class="series-library-heading"><div><span class="upload-eyebrow">PERPUSTAKAAN ADMIN</span><h3>Series yang dikelola</h3><p>Pilih Tambah episode pada series yang ingin dilanjutkan.</p></div><strong id="adminDramaCount">0 series</strong></div><div id="myDramaList" class="admin-series-list" aria-live="polite"><p class="notice">Memuat daftar series…</p></div></section>
       <section id="moderationSection" hidden><h3>Laporan video pengguna</h3><p class="notice">Tinjau laporan dan sembunyikan drama dari katalog jika terbukti melanggar.</p><div id="moderationList"></div></section>
       <form id="uploadForm" class="premium-upload-form">
-        <div class="upload-form-section"><div class="upload-section-heading"><span>01</span><div><strong>Pilih drama</strong><small>Tambahkan episode ke serial yang sudah ada atau buat drama baru.</small></div></div><label class="upload-field">Tujuan unggahan<select name="targetDrama" id="targetDrama"><option value="">Buat drama baru</option></select></label>
-        <label class="upload-field">Judul drama<input name="title" required placeholder="Contoh: Cinta di Ujung Senja"></label>
-        <label class="upload-field">Deskripsi drama<textarea name="description" rows="3" placeholder="Ceritakan singkat dramanya"></textarea></label>
+        <div class="upload-form-section"><div class="upload-section-heading"><span>01</span><div><strong>Pilih atau buat series</strong><small>Series baru dibuat sekali. Episode berikutnya masuk ke series yang sama.</small></div></div><label class="upload-field">Series tujuan<select name="targetDrama" id="targetDrama"><option value="">＋ Buat series baru</option></select></label><small id="uploadSeriesMode" class="upload-series-mode">Membuat series baru + episode pertama</small>
+        <label id="seriesTitleField" class="upload-field">Nama series<input name="title" required placeholder="Contoh: Cinta di Ujung Senja"></label>
+        <label id="seriesDescriptionField" class="upload-field">Deskripsi series<textarea name="description" rows="3" placeholder="Ceritakan singkat series-nya"></textarea></label>
         <label id="posterField" class="upload-field">Poster drama <span class="upload-optional">Opsional</span><input name="poster" type="file" accept="image/jpeg,image/png,image/webp"></label></div>
-        <div class="upload-form-section"><div class="upload-section-heading"><span>02</span><div><strong>Detail episode</strong><small>Nomor episode wajib; judul episode boleh dikosongkan.</small></div></div>
+        <div class="upload-form-section"><div class="upload-section-heading"><span>02</span><div><strong>Susunan episode</strong><small>Nomor episode wajib dan tidak boleh duplikat dalam satu series.</small></div></div>
         <label class="upload-field">Nomor episode<input name="episode" type="number" min="1" value="1" required></label>
         <label class="upload-field">Judul episode <span class="upload-optional">Opsional</span><input name="episodeTitle" placeholder="Contoh: Pertemuan pertama"></label>
         </div><div class="upload-form-section upload-media-section"><div class="upload-section-heading"><span>03</span><div><strong>File video</strong><small>Pilih video langsung dari galeri atau file perangkat.</small></div></div>
@@ -265,6 +265,6 @@
   </dialog>
 
   <script src="./supabase-config.js"></script>
-  <script src="app.js?v=145"></script>
+  <script src="app.js?v=146"></script>
 </body>
 </html>

@@ -810,7 +810,60 @@ async function editAdminEpisode(drama,ep,userId){
 }
 async function deleteAdminEpisode(drama,ep,userId){if(!confirm("Hapus episode "+ep.episode_number+" dari drama "+drama.title+"? Video episode ini juga akan dihapus permanen."))return;try{await removeOwnedStorageFiles("drama-videos",[ep.video_path,ep.subtitle_path]);const {error}=await supa.from("episodes").delete().eq("id",ep.id).eq("drama_id",drama.id).eq("uploader_id",userId);if(error)throw error;setStatus("#uploadStatus","Episode "+ep.episode_number+" berhasil dihapus.");await loadCatalog();await loadAdminDramas(userId)}catch(err){setStatus("#uploadStatus","Episode belum berhasil dihapus: "+(err?.message||String(err)))}}
 async function deleteAdminDrama(drama,userId){const eps=drama.episodes||[];if(!confirm("Hapus drama “"+drama.title+"” beserta "+eps.length+" episode? Tindakan ini permanen."))return;try{await removeOwnedStorageFiles("drama-videos",eps.flatMap(ep=>[ep.video_path,ep.subtitle_path]));const posterPath=storagePathFromPublicUrl(drama.poster_url,"drama-posters");await removeOwnedStorageFiles("drama-posters",[posterPath]);const {error}=await supa.from("dramas").delete().eq("id",drama.id).eq("uploader_id",userId);if(error)throw error;setStatus("#uploadStatus","Drama dan seluruh episode berhasil dihapus.");if(activeDrama?.id===drama.id){video.pause();video.removeAttribute("src");player.close();activeDrama=null}await loadCatalog();await loadAdminDramas(userId)}catch(err){setStatus("#uploadStatus","Drama belum berhasil dihapus: "+(err?.message||String(err))+". Jika file sudah terhapus, muat ulang daftar dan coba periksa kembali.")}}
-async function loadAdminDramas(userId){const list=$("#myDramaList"),count=$("#adminDramaCount"),target=$("#targetDrama");if(!list||!supa)return;list.textContent="Memuat drama...";const {data,error}=await supa.from("dramas").select("id,title,description,poster_url,status,created_at,episodes(id,episode_number,title,video_path,subtitle_path,status)").eq("uploader_id",userId).order("created_at",{ascending:false});if(error){list.textContent="Daftar drama belum dapat dimuat: "+error.message;count.textContent="—";return}count.textContent=(data?.length||0)+" drama";if(target){const selected=target.value;target.innerHTML='<option value="">Buat drama baru</option>';(data||[]).filter(d=>d.status==="approved").forEach(d=>{const o=document.createElement("option");o.value=d.id;o.textContent=d.title;target.append(o)});target.value=selected}list.innerHTML="";if(!data?.length){list.innerHTML='<p class="notice">Kamu belum mengunggah drama. Gunakan formulir unggah di bawah untuk mulai menerbitkan.</p>';return}for(const d of data){const card=document.createElement("article");card.className="admin-item";const info=document.createElement("div");info.className="admin-item-info";const title=document.createElement("strong");title.textContent=d.title;const meta=document.createElement("span");const eps=d.episodes||[];meta.textContent=eps.length+" episode · "+(d.status==="approved"?"Tayang":d.status==="rejected"?"Disembunyikan":"Status: "+d.status);const date=document.createElement("small");date.textContent=d.created_at?new Date(d.created_at).toLocaleDateString("id-ID"):"";info.append(title,meta,date);card.append(info);const edit=document.createElement("button");edit.className="secondary-btn";edit.type="button";edit.textContent="Edit";edit.addEventListener("click",()=>editAdminDrama(d,userId));card.append(edit);if(d.status==="approved"&&eps.some(ep=>ep.status==="approved")){const open=document.createElement("button");open.className="secondary-btn";open.type="button";open.textContent="Lihat";open.addEventListener("click",()=>{const published={...d,episodes:eps.filter(ep=>ep.status==="approved"),genre:eps.length+" episode"};admin.close();openDrama(published)});card.append(open)}const remove=document.createElement("button");remove.className="danger-btn";remove.type="button";remove.textContent="Hapus drama";remove.addEventListener("click",()=>deleteAdminDrama(d,userId));card.append(remove);if(eps.length){const details=document.createElement("details");details.className="admin-episodes";const summary=document.createElement("summary");summary.textContent="Kelola "+eps.length+" episode";details.append(summary);for(const ep of [...eps].sort((x,y)=>x.episode_number-y.episode_number)){const row=document.createElement("div");row.className="admin-episode-row";const label=document.createElement("span");label.textContent="Episode "+ep.episode_number+(ep.title?" · "+ep.title:"");const del=document.createElement("button");del.className="danger-btn";del.type="button";del.textContent="Hapus";del.addEventListener("click",()=>deleteAdminEpisode(d,ep,userId));const edit=document.createElement("button");edit.className="secondary-btn";edit.type="button";edit.textContent="Edit";edit.addEventListener("click",()=>editAdminEpisode(d,ep,userId));row.append(label,edit,del);details.append(row)}card.append(details)}list.append(card)}} 
+async function loadAdminDramas(userId){
+ const list=$("#myDramaList"),count=$("#adminDramaCount"),target=$("#targetDrama");
+ if(!list||!supa)return;
+ list.textContent="Memuat series…";
+ const {data,error}=await supa.from("dramas").select("id,title,description,poster_url,status,created_at,episodes(id,episode_number,title,video_path,subtitle_path,status)").eq("uploader_id",userId).order("created_at",{ascending:false});
+ if(error){list.textContent="Daftar series belum dapat dimuat: "+error.message;if(count)count.textContent="—";return}
+ const seriesList=data||[];
+ if(count)count.textContent=seriesList.length+" series";
+ if(target){
+  const selected=target.value;
+  target.innerHTML='<option value="">＋ Buat series baru</option>';
+  seriesList.filter(d=>d.status==="approved").forEach(d=>{const option=document.createElement("option");option.value=d.id;option.textContent=d.title+" · "+(d.episodes||[]).length+" eps";target.append(option)});
+  target.value=selected;
+  syncTargetForm();
+ }
+ list.innerHTML="";
+ if(!seriesList.length){const empty=document.createElement("p");empty.className="notice";empty.textContent="Belum ada series. Buat series pertama lewat formulir di bawah.";list.append(empty);return}
+ for(const d of seriesList){
+  const eps=[...(d.episodes||[])].sort((x,y)=>Number(x.episode_number)-Number(y.episode_number));
+  const card=document.createElement("article");card.className="admin-series-card";
+  const top=document.createElement("div");top.className="admin-series-top";
+  const cover=document.createElement("div");cover.className="admin-series-cover";
+  if(d.poster_url){const img=document.createElement("img");img.src=d.poster_url;img.alt="";img.loading="lazy";cover.append(img)}else cover.textContent="T";
+  const info=document.createElement("div");info.className="admin-series-info";
+  const title=document.createElement("strong");title.textContent=d.title;
+  const meta=document.createElement("span");meta.textContent=eps.length+" episode · "+(d.status==="approved"?"Tayang":d.status==="rejected"?"Disembunyikan":"Status: "+d.status);
+  const date=document.createElement("small");date.textContent=d.created_at?new Date(d.created_at).toLocaleDateString("id-ID"):"";
+  info.append(title,meta,date);top.append(cover,info);card.append(top);
+  const actions=document.createElement("div");actions.className="admin-series-actions";
+  const add=document.createElement("button");add.className="primary-btn";add.type="button";add.textContent="+ Tambah episode";
+  add.disabled=d.status!=="approved";
+  add.addEventListener("click",()=>{
+   if(!target)return;
+   target.value=d.id;target.dispatchEvent(new Event("change"));
+   const next=Math.max(0,...eps.map(ep=>Number(ep.episode_number)||0))+1;
+   $("#uploadForm [name=episode]").value=next;
+   $("#uploadForm [name=episodeTitle]").value="";
+   $("#uploadForm [name=video]").focus({preventScroll:true});
+   $("#uploadForm").scrollIntoView({behavior:"smooth",block:"start"});
+   setStatus("#uploadStatus","Siap menambahkan Episode "+next+" ke series “"+d.title+"”.");
+  });
+  const edit=document.createElement("button");edit.className="secondary-btn";edit.type="button";edit.textContent="Edit series";edit.addEventListener("click",()=>editAdminDrama(d,userId));
+  if(d.status==="approved"&&eps.some(ep=>ep.status==="approved")){const open=document.createElement("button");open.className="secondary-btn";open.type="button";open.textContent="Pratinjau";open.addEventListener("click",()=>{const published={...d,episodes:eps.filter(ep=>ep.status==="approved"),genre:eps.length+" episode"};admin.close();openDrama(published)});actions.append(open)}
+  const remove=document.createElement("button");remove.className="danger-btn";remove.type="button";remove.textContent="Hapus series";remove.addEventListener("click",()=>deleteAdminDrama(d,userId));
+  actions.prepend(add,edit);actions.append(remove);card.append(actions);
+  if(eps.length){
+   const details=document.createElement("details");details.className="admin-episodes";
+   const summary=document.createElement("summary");summary.textContent="Daftar episode · "+eps.length;details.append(summary);
+   for(const ep of eps){const row=document.createElement("div");row.className="admin-episode-row";const label=document.createElement("span");label.textContent="EP "+String(ep.episode_number).padStart(2,"0")+(ep.title?" · "+ep.title:"");const status=document.createElement("small");status.textContent=ep.status==="approved"?"Tayang":ep.status;const editEp=document.createElement("button");editEp.className="secondary-btn";editEp.type="button";editEp.textContent="Edit";editEp.addEventListener("click",()=>editAdminEpisode(d,ep,userId));const del=document.createElement("button");del.className="danger-btn";del.type="button";del.textContent="Hapus";del.addEventListener("click",()=>deleteAdminEpisode(d,ep,userId));row.append(label,status,editEp,del);details.append(row)}
+   card.append(details);
+  }else{const empty=document.createElement("p");empty.className="admin-series-empty";empty.textContent="Belum ada episode. Tekan Tambah episode untuk mulai.";card.append(empty)}
+  list.append(card);
+ }
+}
 document.querySelectorAll("[data-close]").forEach(b=>b.addEventListener("click",()=>{if(b.dataset.close==="playerDialog"){persistCurrentPlayback();video.pause()}document.getElementById(b.dataset.close).close()}));
 player.addEventListener("cancel",()=>{persistCurrentPlayback();video.pause()});
 player.addEventListener("close",()=>{if(activeTab==="clips")resumeClipsFeed()});
@@ -988,7 +1041,7 @@ async function copyShareText(text){
  const field=document.createElement("textarea");field.value=text;field.setAttribute("readonly","");field.style.position="fixed";field.style.opacity="0";field.style.pointerEvents="none";document.body.append(field);field.select();field.setSelectionRange(0,field.value.length);let copied=false;try{copied=document.execCommand("copy")}catch{}field.remove();return copied;
 }
 $("#shareDrama").addEventListener("click",async()=>{if(!activeDrama)return;const shareUrl=new URL(location.href);shareUrl.searchParams.set("drama",String(activeDrama.id));const currentEpisode=activeDrama.episodes?.[activeEpisodeIndex];if(currentEpisode)shareUrl.searchParams.set("episode",String(currentEpisode.episode_number));const shareData={title:activeDrama.title+(currentEpisode?" · Episode "+currentEpisode.episode_number:""),text:"Tonton "+activeDrama.title+(currentEpisode?" episode "+currentEpisode.episode_number:"")+" di TacTic Drama",url:shareUrl.toString()};const copyText=shareData.text+" — "+shareData.url;try{if(navigator.share){await navigator.share(shareData);setStatus("#shareStatus","Menu berbagi berhasil dibuka.")}else if(await copyShareText(copyText))setStatus("#shareStatus","Link episode berhasil disalin. Siap dibagikan!");else setStatus("#shareStatus","Salin link ini secara manual: "+shareData.url)}catch(error){if(error.name==="AbortError")return;if(await copyShareText(copyText))setStatus("#shareStatus","Link episode berhasil disalin sebagai alternatif.");else setStatus("#shareStatus","Link episode: "+shareData.url)}});
-const targetSelect=$("#targetDrama");function syncTargetForm(){const existing=Boolean(targetSelect?.value);$("#posterField").hidden=existing;$("#uploadForm [name=title]").disabled=existing;$("#uploadForm [name=description]").disabled=existing}targetSelect?.addEventListener("change",syncTargetForm);syncTargetForm();
+const targetSelect=$("#targetDrama");function syncTargetForm(){const existing=Boolean(targetSelect?.value);$("#posterField").hidden=existing;$("#seriesTitleField").hidden=existing;$("#seriesDescriptionField").hidden=existing;$("#uploadForm [name=title]").disabled=existing;$("#uploadForm [name=description]").disabled=existing;$("#uploadForm [name=episode]").value=existing?(Number($("#uploadForm [name=episode]").value)||1):1;const heading=$("#uploadSeriesMode");if(heading)heading.textContent=existing?"Menambahkan episode ke series terpilih":"Membuat series baru + episode pertama"}targetSelect?.addEventListener("change",syncTargetForm);syncTargetForm();
  const uploadForm=$("#uploadForm");
  let posterPreviewUrl=null;
  function formatUploadSize(bytes){if(!Number.isFinite(bytes)||bytes<0)return "";const units=["B","KB","MB","GB"];let value=bytes,index=0;while(value>=1024&&index<units.length-1){value/=1024;index++}return value.toFixed(index===0?0:1)+" "+units[index]}
