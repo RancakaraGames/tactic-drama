@@ -1080,3 +1080,8 @@ body:has(.melolo-watch-player[open]){overflow:hidden}.melolo-watch-player{positi
 /* v164: profile shows VIP only; Reward and Download are deferred */
 .melolo-benefit-row{grid-template-columns:minmax(0,1fr)!important}
 .melolo-benefit-row>.vip-card{width:100%;max-width:none;min-height:84px}
+
+/* Mode publik: konfirmasi hak tayang sebelum admin menerbitkan konten. */
+.upload-rights-consent{margin:4px 0 16px;padding:13px 14px;border:1px solid rgba(212,175,95,.24);border-radius:14px;background:rgba(212,175,95,.055)}
+.upload-rights-consent label{display:flex;align-items:flex-start;gap:10px;color:var(--muted,#b8b5b0);font-size:.82rem;line-height:1.55;cursor:pointer}
+.upload-rights-consent input{flex:0 0 auto;width:18px;height:18px;margin:2px 0 0;accent-color:var(--gold,#d6b46a)}
