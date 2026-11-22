@@ -1717,3 +1717,19 @@ body:has(.melolo-watch-player[open]){overflow:hidden}
   .vip-card .vip-card-hint{right:7px;bottom:9px;font-size:6px}
   .vip-card .vip-card-copy small{font-size:7px}
 }
+
+
+/* VIP label closer to title and bottom-aligned v135 */
+.vip-card .vip-title-line{
+  align-items:baseline;
+  gap:3px;
+}
+.vip-card .vip-premium-label{
+  padding:2px 4px;
+  line-height:1;
+  transform:translateY(2px);
+}
+@media(max-width:370px){
+  .vip-card .vip-title-line{gap:2px}
+  .vip-card .vip-premium-label{transform:translateY(2px);padding:2px 3px}
+}
