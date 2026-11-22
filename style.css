@@ -1713,3 +1713,99 @@ body:has(.melolo-watch-player[open]){overflow:hidden}
 
 /* Compact admin-only Upload tab */
 .melolo-profile-tabs{grid-template-columns:repeat(4,minmax(0,1fr))}.melolo-profile-tab[hidden]{display:none!important}
+
+
+/* Premium, simplified admin upload studio v145 */
+#profilePanel #uploadSection{
+  margin:18px 0 8px;padding:0;min-width:0;
+}
+#profilePanel #uploadSection[hidden]{display:none!important}
+#profilePanel .upload-welcome{
+  position:relative;overflow:hidden;grid-template-columns:42px minmax(0,1fr);
+  gap:12px;margin:0 0 18px;padding:17px 15px;border:1px solid #d8b87545;
+  border-radius:18px;background:radial-gradient(ellipse at 100% 0%,#b68b4b22,transparent 55%),linear-gradient(135deg,#211b24,#121116 80%);
+  box-shadow:inset 0 1px #ffffff0b,0 12px 28px #0003;
+}
+#profilePanel .upload-welcome .admin-upload-guide-icon{
+  width:40px;height:40px;border-radius:13px;font-size:20px;
+  background:linear-gradient(145deg,#e9c58a25,#e9c58a08);color:#f2d39a;
+}
+#profilePanel .upload-eyebrow{display:block;margin:0 0 5px;color:#d8b875;font-size:8px;font-weight:850;letter-spacing:1.5px}
+#profilePanel .upload-welcome strong{margin:0 0 6px;color:#fff0d5;font-size:15px;letter-spacing:-.2px}
+#profilePanel .upload-welcome p{margin:0;color:#bdb4c1;font-size:10px;line-height:1.6}
+#profilePanel .upload-welcome .admin-upload-note{margin-top:9px;padding-top:8px;border-top:1px solid #ffffff13;color:#e4c58d}
+#profilePanel .premium-upload-form{display:grid;gap:12px;margin:0;padding:0}
+#profilePanel .upload-form-section{
+  display:grid;gap:11px;min-width:0;padding:15px 13px;
+  border:1px solid #ffffff13;border-radius:16px;
+  background:linear-gradient(145deg,#1b1a20,#131217);
+  box-shadow:0 8px 22px #0002;
+}
+#profilePanel .upload-section-heading{display:flex;align-items:center;gap:10px;margin:0 0 2px}
+#profilePanel .upload-section-heading>span{
+  display:grid;place-items:center;flex:0 0 29px;width:29px;height:29px;
+  border:1px solid #d8b87550;border-radius:9px;background:#d8b87512;
+  color:#e8c98e;font-size:9px;font-weight:850;font-variant-numeric:tabular-nums;
+}
+#profilePanel .upload-section-heading div{display:grid;gap:3px;min-width:0}
+#profilePanel .upload-section-heading strong{color:#f4f0f5;font-size:12px;line-height:1.2}
+#profilePanel .upload-section-heading small{color:#99929f;font-size:9px;line-height:1.45}
+#profilePanel .premium-upload-form .upload-field{
+  display:grid;gap:7px;min-width:0;margin:0;color:#e7e2ea;font-size:10px;font-weight:750;
+}
+#profilePanel .upload-optional{display:inline;color:#99919e;font-size:9px;font-weight:500}
+#profilePanel .premium-upload-form input:not([type=file]),
+#profilePanel .premium-upload-form select,
+#profilePanel .premium-upload-form textarea{
+  width:100%;min-width:0;min-height:43px;padding:11px 12px;
+  border:1px solid #ffffff1c;border-radius:11px;background:#0e0d12;
+  color:#f7f4f8;font-size:12px;outline:none;box-shadow:inset 0 1px 2px #0004;
+}
+#profilePanel .premium-upload-form textarea{min-height:76px;resize:vertical;line-height:1.5}
+#profilePanel .premium-upload-form input:focus,
+#profilePanel .premium-upload-form select:focus,
+#profilePanel .premium-upload-form textarea:focus{border-color:#d8b875a8;box-shadow:0 0 0 3px #d8b87518}
+#profilePanel .premium-upload-form .upload-file-field input[type=file]{
+  display:block;width:100%;min-width:0;padding:10px;
+  border:1px dashed #d8b87565;border-radius:12px;background:#d8b87509;
+  color:#c8bfcc;font-size:10px;
+}
+#profilePanel .premium-upload-form input[type=file]::file-selector-button{
+  margin:0 9px 0 0;padding:8px 10px;border:1px solid #d8b87555;
+  border-radius:8px;background:#d8b87518;color:#f0d49c;font-size:10px;font-weight:750;
+}
+#profilePanel .subtitle-help{margin:-5px 0 0;color:#9f97a4;font-size:9px;line-height:1.5}
+#profilePanel .upload-preview{
+  display:flex;align-items:center;gap:11px;min-width:0;padding:10px;
+  border:1px solid #ffffff16;border-radius:12px;background:#ffffff07;
+}
+#profilePanel .upload-preview[hidden]{display:none!important}
+#profilePanel .upload-preview img{width:48px;height:62px;flex:0 0 48px;object-fit:cover;border-radius:7px;background:#29252d}
+#profilePanel .upload-preview>div{display:grid;gap:5px;min-width:0}
+#profilePanel .upload-preview strong{overflow-wrap:anywhere;color:#f2edf5;font-size:10px}
+#profilePanel .upload-preview span{color:#a9a1ad;font-size:9px}
+#profilePanel .upload-progress{padding:12px;border:1px solid #d8b87538;border-radius:12px;background:#d8b8750a}
+#profilePanel .upload-progress>div{display:flex;justify-content:space-between;gap:10px;color:#e9d4ac;font-size:10px}
+#profilePanel .upload-progress progress{width:100%;height:7px;margin:9px 0 5px;accent-color:#d8b875}
+#profilePanel .upload-progress small{color:#a9a1ad;font-size:9px}
+#profilePanel .upload-submit-btn{
+  position:sticky;bottom:calc(76px + env(safe-area-inset-bottom));
+  z-index:2;display:flex;align-items:center;justify-content:center;gap:9px;
+  min-height:48px;margin:2px 0 8px;border:1px solid #f0d49a55;border-radius:13px;
+  background:linear-gradient(110deg,#b98b4e,#e4c58c 55%,#b88b51);
+  color:#21170e;font-size:12px;font-weight:900;letter-spacing:.15px;
+  box-shadow:0 8px 22px #0005,inset 0 1px #fff7;
+}
+#profilePanel .upload-submit-btn:disabled{opacity:.65;filter:saturate(.65)}
+#profilePanel #uploadStatus{margin:9px 0;padding:0 3px;font-size:11px;line-height:1.5}
+@media(min-width:650px){
+ #profilePanel #uploadSection{max-width:680px;margin:22px auto 10px}
+ #profilePanel .premium-upload-form{grid-template-columns:repeat(2,minmax(0,1fr));align-items:start}
+ #profilePanel .upload-form-section{height:100%}
+ #profilePanel .upload-media-section{grid-column:1/-1}
+ #profilePanel .upload-submit-btn{grid-column:1/-1;position:static}
+}
+@media(max-width:370px){
+ #profilePanel .upload-form-section{padding:13px 11px}
+ #profilePanel .upload-welcome{padding:14px 12px}
+}

@@ -8,7 +8,7 @@
   <title>TacTic Drama</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
-  <link rel="stylesheet" href="style.css?v=144">
+  <link rel="stylesheet" href="style.css?v=145">
 </head>
 <body>
   <main>
@@ -158,20 +158,22 @@
     <p id="loginStatus" class="status" role="status"></p>
     <section id="uploadSection" hidden>
       <p class="notice" id="adminIdentity"></p>
-      <div class="admin-upload-guide"><div class="admin-upload-guide-icon" aria-hidden="true">↑</div><div><strong>Kelola katalog drama resmi</strong><ol><li>Buat drama baru atau pilih drama yang sudah ada.</li><li>Isi judul, nomor episode, dan pilih video dari galeri perangkat.</li><li>Tambahkan poster atau subtitle jika tersedia, lalu unggah.</li></ol><p>Video MP4/WebM/MOV maksimal 500 MB · Poster JPG/PNG/WebP maksimal 10 MB · Subtitle VTT maksimal 1 MB.</p><p class="admin-upload-note">Menu ini hanya tersedia untuk admin. Unggah hanya materi yang kamu miliki atau telah mendapat izin distribusi.</p></div></div>
+      <div class="admin-upload-guide upload-welcome"><div class="admin-upload-guide-icon" aria-hidden="true">✦</div><div><span class="upload-eyebrow">ADMIN STUDIO</span><strong>Terbitkan episode baru</strong><p>Kelola drama resmi TacTic dengan alur unggah yang ringkas. Pilih drama lama atau buat judul baru, lalu tambahkan videonya.</p><p class="admin-upload-note">MP4, WebM, atau MOV · Maks. 500 MB. Unggah hanya konten yang memiliki izin distribusi.</p></div></div>
       <section id="moderationSection" hidden><h3>Laporan video pengguna</h3><p class="notice">Tinjau laporan dan sembunyikan drama dari katalog jika terbukti melanggar.</p><div id="moderationList"></div></section>
-      <form id="uploadForm">
-        <label>Tujuan unggahan<select name="targetDrama" id="targetDrama"><option value="">Buat drama baru</option></select></label>
-        <label>Judul drama<input name="title" required placeholder="Contoh: Cinta di Ujung Senja"></label>
-        <label>Deskripsi drama<textarea name="description" rows="3" placeholder="Ceritakan singkat dramanya"></textarea></label>
-        <label id="posterField">Poster drama (opsional)<input name="poster" type="file" accept="image/jpeg,image/png,image/webp"></label>
-        <label>Nomor episode<input name="episode" type="number" min="1" value="1" required></label>
-        <label>Judul episode<input name="episodeTitle" placeholder="Contoh: Pertemuan pertama"></label>
-        <label>File video<input name="video" type="file" accept="video/mp4,video/webm,video/quicktime" required></label>
-        <label>Subtitle Bahasa Indonesia (opsional, .VTT)<input name="subtitle" type="file" accept=".vtt,text/vtt"></label><small class="subtitle-help">Pilih file subtitle WebVTT maksimal 1 MB. Subtitle muncul melalui tombol CC pada pemutar video.</small>
+      <form id="uploadForm" class="premium-upload-form">
+        <div class="upload-form-section"><div class="upload-section-heading"><span>01</span><div><strong>Pilih drama</strong><small>Tambahkan episode ke serial yang sudah ada atau buat drama baru.</small></div></div><label class="upload-field">Tujuan unggahan<select name="targetDrama" id="targetDrama"><option value="">Buat drama baru</option></select></label>
+        <label class="upload-field">Judul drama<input name="title" required placeholder="Contoh: Cinta di Ujung Senja"></label>
+        <label class="upload-field">Deskripsi drama<textarea name="description" rows="3" placeholder="Ceritakan singkat dramanya"></textarea></label>
+        <label id="posterField" class="upload-field">Poster drama <span class="upload-optional">Opsional</span><input name="poster" type="file" accept="image/jpeg,image/png,image/webp"></label></div>
+        <div class="upload-form-section"><div class="upload-section-heading"><span>02</span><div><strong>Detail episode</strong><small>Nomor episode wajib; judul episode boleh dikosongkan.</small></div></div>
+        <label class="upload-field">Nomor episode<input name="episode" type="number" min="1" value="1" required></label>
+        <label class="upload-field">Judul episode <span class="upload-optional">Opsional</span><input name="episodeTitle" placeholder="Contoh: Pertemuan pertama"></label>
+        </div><div class="upload-form-section upload-media-section"><div class="upload-section-heading"><span>03</span><div><strong>File video</strong><small>Pilih video langsung dari galeri atau file perangkat.</small></div></div>
+        <label class="upload-field upload-file-field">Video episode<input name="video" type="file" accept="video/mp4,video/webm,video/quicktime" required></label>
+        <label class="upload-field upload-file-field">Subtitle Bahasa Indonesia <span class="upload-optional">Opsional · VTT</span><input name="subtitle" type="file" accept=".vtt,text/vtt"></label><small class="subtitle-help">Maksimal 1 MB. Subtitle akan tersedia melalui tombol CC pada pemutar video.</small></div>
         <div id="uploadPreview" class="upload-preview" hidden><img id="uploadPosterPreview" alt="Pratinjau poster"><div><strong id="uploadVideoName">Video belum dipilih</strong><span id="uploadVideoSize"></span></div></div>
         <div id="uploadProgressWrap" class="upload-progress" hidden><div><span>Progres unggahan video</span><strong id="uploadProgressLabel">0%</strong></div><progress id="uploadProgressBar" max="100" value="0" aria-label="Progres unggahan video"></progress><small>Jangan tutup halaman sampai unggahan selesai.</small></div>
-        <button class="primary-btn full" type="submit">Unggah video ke TacTic Drama</button>
+        <button class="primary-btn full upload-submit-btn" type="submit"><span aria-hidden="true">↑</span> Terbitkan episode</button>
       </form>
       <p id="uploadStatus" class="status" role="status"></p>
     </section>
@@ -263,6 +265,6 @@
   </dialog>
 
   <script src="./supabase-config.js"></script>
-  <script src="app.js?v=144"></script>
+  <script src="app.js?v=145"></script>
 </body>
 </html>
