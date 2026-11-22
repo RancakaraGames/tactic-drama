@@ -9,8 +9,14 @@
   "description": "Drama pendek favoritmu.",
   "icons": [
     {
-      "src": "icons/tactic-drama-logo.jpg?v=158",
-      "sizes": "256x256",
+      "src": "icons/tactic-drama-logo.jpg?v=159",
+      "sizes": "192x192",
+      "type": "image/jpeg",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/tactic-drama-logo.jpg?v=159",
+      "sizes": "512x512",
       "type": "image/jpeg",
       "purpose": "any maskable"
     }
