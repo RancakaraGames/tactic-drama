@@ -1353,3 +1353,13 @@ body:has(.melolo-watch-player[open]){overflow:hidden}
 #playerCommentAction[aria-expanded="true"] .rail-icon{color:#f2c27d;border-color:#f2c27d;background:#3b2930e8;box-shadow:0 0 0 3px #f2c27d1a,0 5px 18px #0007}
 #playerLikeAction[aria-pressed="true"] small{color:#ff9aa8}
 #playerFavoriteAction[aria-pressed="true"] small,#playerCommentAction[aria-expanded="true"] small{color:#f2c27d}
+
+
+/* Counts directly below player action icons v121 */
+.player-rail-action{grid-template-rows:auto auto auto;gap:2px;align-content:start}
+.player-rail-action .rail-icon{grid-row:1}
+.player-rail-action .rail-count{grid-row:2;min-height:11px;color:#fff;font-size:10px;font-weight:900;line-height:1.1;font-variant-numeric:tabular-nums;text-shadow:0 2px 7px #000,0 1px 3px #000}
+.player-rail-action small{grid-row:3;font-size:8px;line-height:1.15}
+#playerLikeAction[aria-pressed="true"] .rail-count{color:#ff9aa8}
+#playerCommentAction[aria-expanded="true"] .rail-count{color:#f2c27d}
+@media(max-height:680px){.player-rail-action .rail-count{font-size:9px;min-height:10px}.player-rail-action small{font-size:7px}}
