@@ -450,7 +450,6 @@ dialog{overscroll-behavior:contain}
 
 
 /* Home continue-watching shelf */
-.continue-section{margin:0 16px 26px;padding:16px;border:1px solid #e9c58a38;border-radius:18px;background:linear-gradient(135deg,#211a27,#121116);overflow:hidden}.continue-section[hidden]{display:none}.continue-heading{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;margin-bottom:12px}.continue-heading .eyebrow{margin:0 0 5px;color:#e9c58a;font-size:9px;letter-spacing:.14em}.continue-heading h2{margin:0;color:#f3e6d2;font-family:Georgia,"Times New Roman",serif;font-size:21px;font-weight:500}.continue-heading>span{color:#9f96a3;font-size:8px;letter-spacing:.08em;text-align:right}.continue-grid{display:grid;gap:9px}.continue-card{position:relative;display:flex;align-items:center;gap:10px;min-width:0;padding:12px 11px 15px;border:1px solid #ffffff13;border-radius:13px;background:linear-gradient(110deg,#2a202b,#17141d)}.continue-card-info{display:grid;gap:4px;min-width:0;flex:1}.continue-card-info strong{overflow:hidden;color:#f5e8d7;font-size:12px;text-overflow:ellipsis;white-space:nowrap}.continue-card-info span{overflow:hidden;color:#c1b5c2;font-size:10px;text-overflow:ellipsis;white-space:nowrap}.continue-card-info small{color:#e9c58a;font-size:9px}.continue-play-btn{flex:0 0 auto;padding:9px 11px;border:1px solid #e9c58a65;border-radius:10px;background:#352a2b;color:#f0d5a0;font-size:10px;font-weight:800}.continue-progress-track{position:absolute;right:11px;bottom:7px;left:11px;height:2px;overflow:hidden;border-radius:9px;background:#ffffff16}.continue-progress-track span{display:block;height:100%;border-radius:9px;background:linear-gradient(90deg,#b98250,#f0d5a0)}@media(min-width:620px){.continue-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.continue-card{align-items:flex-start;flex-direction:column}.continue-play-btn{width:100%;margin-top:3px}.continue-progress-track{bottom:8px}}
 
 .episode-search-wrap{display:flex;align-items:center;gap:10px;margin:12px 0 8px}.episode-search-wrap input{flex:1;min-width:0;padding:11px 13px;border:1px solid #ffffff1c;border-radius:11px;background:#17141d;color:#f5e8d7;font:inherit;font-size:12px;outline:none}.episode-search-wrap input:focus{border-color:#e9c58a99;box-shadow:0 0 0 3px #e9c58a18}.episode-search-wrap span{flex:0 0 auto;color:#b9aebd;font-size:10px}.episode-list button[hidden]{display:none}
 
@@ -1226,18 +1225,6 @@ body:has(.melolo-watch-player[open]){overflow:hidden}
 
 
 /* Continue-watching shelf refinement v108 */
-.continue-card{gap:11px;padding:11px 11px 16px;min-height:91px}
-.continue-card-poster{display:grid;place-items:center;flex:0 0 52px;width:52px;height:68px;overflow:hidden;border:1px solid #ffffff20;border-radius:9px;background:linear-gradient(145deg,#71324e,#252344);color:#fff;font-size:22px;font-weight:900}
-.continue-card-poster img{width:100%;height:100%;object-fit:cover}
-.continue-card-info{align-self:center;gap:5px}
-.continue-card-info strong{font-size:11px;line-height:1.35}
-.continue-card-info span{font-size:9px}
-.continue-card-info small{font-size:9px;line-height:1.35}
-.continue-play-btn{min-height:34px;padding:0 11px;white-space:nowrap}
-.continue-card:focus-within{border-color:#e9c58a88;box-shadow:0 0 0 3px #e9c58a12}
-.continue-play-btn:focus-visible{outline:2px solid #f2c27d;outline-offset:3px}
-@media(min-width:620px){.continue-card{align-items:center;flex-direction:row}.continue-card-poster{flex-basis:48px;width:48px;height:62px}.continue-play-btn{width:auto;margin:0}}
-@media(max-width:360px){.continue-card{gap:8px;padding-left:9px;padding-right:9px}.continue-card-poster{flex-basis:44px;width:44px;height:60px}.continue-play-btn{padding:0 8px;font-size:9px}}
 
 
 /* Collection tab counters and touch refinement v109 */

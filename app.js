@@ -132,7 +132,6 @@ function render(){
  if(!clipsPage)pauseClipsFeed();
  const profilePanel=$("#profilePanel");if(profilePanel)profilePanel.hidden=!profilePage;
  [...document.querySelectorAll(".hero,.section-heading,.catalog-tools,.catalog-sort-row,.catalog-count,.catalog-status,.viewer-promo")].forEach(el=>{el.hidden=profilePage});
- const continueSection=$("#continueSection");if(continueSection&&activeTab!=="home")continueSection.hidden=true;
  const historyTools=$("#historyTools");if(historyTools)historyTools.hidden=!(collectionPage&&collectionView==="history");
  const collectionFilters=$("#collectionHistoryFilters");if(collectionFilters)collectionFilters.hidden=!(collectionPage&&collectionView==="history");
  document.querySelectorAll("[data-collection-history-filter]").forEach(button=>{const active=button.dataset.collectionHistoryFilter===collectionHistoryFilter;button.classList.toggle("active",active);button.setAttribute("aria-pressed",String(active))});
@@ -141,7 +140,6 @@ function render(){
  grid.hidden=profilePage;
  if(profilePage){
   const savedSection=$("#savedSection");if(savedSection)savedSection.hidden=true;
-  if(continueSection)continueSection.hidden=true;
   if(historyTools)historyTools.hidden=true;
   if(collectionTabs)collectionTabs.hidden=true;
   renderProfileCollections();
@@ -164,7 +162,7 @@ function render(){
  if(!historyPage){const mode=$("#dramaSort")?.value||"newest";if(mode==="popular")visible.sort((a,b)=>(Number(b.like_count||0)+Number(b.favorite_count||0))-(Number(a.like_count||0)+Number(a.favorite_count||0))||String(a.title||"").localeCompare(String(b.title||""),"id"));else if(mode==="az")visible.sort((a,b)=>String(a.title||"").localeCompare(String(b.title||""),"id"));else if(mode==="za")visible.sort((a,b)=>String(b.title||"").localeCompare(String(a.title||""),"id"))}
  const countLabel=$("#catalogCount");if(countLabel)countLabel.textContent=searchQuery?visible.length+" hasil pencarian":visible.length+" drama ditampilkan";
  const clearSearch=$("#clearSearch");if(clearSearch)clearSearch.hidden=!searchQuery;
- renderContinueWatching();if(activeTab==="home")renderFeaturedHero();
+ if(activeTab==="home")renderFeaturedHero();
  if(!visible.length){
   if(!searchQuery&&(savedPage||historyPage)){
    const filteredHistory=historyPage&&collectionHistoryFilter!=="all";
@@ -210,32 +208,8 @@ function render(){
   grid.append(card)
  })
 }
-function renderContinueWatching(){
- const section=$("#continueSection"),list=$("#continueGrid");
- if(!section||!list)return;
- const entries=Object.entries(watchHistory).map(([id,entry])=>({drama:dramas.find(item=>String(item.id)===String(id)),entry})).filter(item=>item.drama&&(item.drama.episodes||[]).some(ep=>Number(ep.episode_number)===Number(item.entry.episode_number))).sort((a,b)=>new Date(b.entry.watched_at||0)-new Date(a.entry.watched_at||0)).slice(0,3);
- const visible=activeTab==="home"&&!searchQuery&&entries.length>0;
- section.hidden=!visible;if(!visible)return;list.innerHTML="";
- entries.forEach(({drama,entry})=>{
-  const episode=(drama.episodes||[]).find(item=>Number(item.episode_number)===Number(entry.episode_number));if(!episode)return;
-  const key=String(drama.id)+":"+String(episode.id||""),progressData=episodeProgress[key]||{},progress=Math.max(0,Math.min(100,Number(progressData.percent)||0));
-  const card=document.createElement("article");card.className="continue-card";
-  const poster=document.createElement("div");poster.className="continue-card-poster";
-  if(drama.poster_url){const image=document.createElement("img");image.src=drama.poster_url;image.alt="";image.loading="lazy";poster.append(image)}else poster.textContent=String(drama.title||"T").trim().charAt(0).toLocaleUpperCase("id-ID")||"T";
-  const info=document.createElement("div");info.className="continue-card-info";
-  const title=document.createElement("strong");title.textContent=drama.title||"Drama";
-  const meta=document.createElement("span");meta.textContent="Episode "+entry.episode_number+(entry.episode_title?" · "+entry.episode_title:"");
-  const time=document.createElement("small");time.textContent=progress>=95?"Episode selesai":progress>0?"Progres "+progress+"% · "+formatPlaybackTime(progressData.seconds??entry.position_seconds):"Mulai menonton";
-  info.append(title,meta,time);
-  const button=document.createElement("button");button.type="button";button.className="continue-play-btn";button.textContent=progress>=95?"Tonton lagi":"Lanjutkan";button.setAttribute("aria-label",(progress>=95?"Tonton lagi ":"Lanjutkan menonton ")+drama.title+", episode "+entry.episode_number);
-  button.addEventListener("click",()=>{openDrama(drama);const index=(drama.episodes||[]).findIndex(item=>Number(item.episode_number)===Number(entry.episode_number));if(index>=0)playEpisode(index,true,progress>=95?0:Number(entry.position_seconds)||0)});
-  card.append(poster,info,button);
-  const track=document.createElement("span");track.className="continue-progress-track";const fill=document.createElement("span");fill.style.width=progress+"%";track.append(fill);card.append(track);list.append(card);
- });
- if(!list.children.length)section.hidden=true;
-}
 function getVideoUrl(path){const value=String(path||"");if(/^https:\/\//i.test(value))return value;return supa?.storage?.from("drama-videos").getPublicUrl(value).data.publicUrl||""}
-function saveWatchHistory(ep,positionSeconds=0){if(!activeDrama||!ep?.id)return;watchHistory[activeDrama.id]={episode_number:ep.episode_number,episode_title:ep.title||"",position_seconds:Math.max(0,Math.floor(Number(positionSeconds)||0)),watched_at:new Date().toISOString()};try{localStorage.setItem("tactic-watch-history",JSON.stringify(watchHistory))}catch{}renderContinueWatching()}
+function saveWatchHistory(ep,positionSeconds=0){if(!activeDrama||!ep?.id)return;watchHistory[activeDrama.id]={episode_number:ep.episode_number,episode_title:ep.title||"",position_seconds:Math.max(0,Math.floor(Number(positionSeconds)||0)),watched_at:new Date().toISOString()};try{localStorage.setItem("tactic-watch-history",JSON.stringify(watchHistory))}catch{}}
 function episodeProgressKey(ep){return String(activeDrama?.id||"")+":"+String(ep?.id||"")}
 function saveEpisodeProgress(force=false){
  if(!activeDrama||!Number.isFinite(video.duration)||video.duration<=0)return;
