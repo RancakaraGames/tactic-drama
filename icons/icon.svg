@@ -1,34 +1,47 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
-<title id="title">TacTic Drama</title><desc id="desc">Logo TacTic Drama dengan mahkota emas, simbol T dan tombol putar, serta pita film ungu.</desc>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="t d">
+<title id="t">TacTic Drama</title><desc id="d">Mahkota emas, papan klaket, simbol T-play, pita film ungu, dan tulisan TacTic Drama.</desc>
 <defs>
- <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#160526"/><stop offset=".55" stop-color="#08050f"/><stop offset="1" stop-color="#210b38"/></linearGradient>
- <linearGradient id="violet" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f0caff"/><stop offset=".38" stop-color="#b84cff"/><stop offset="1" stop-color="#5812bb"/></linearGradient>
- <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff0a8"/><stop offset=".45" stop-color="#f6b936"/><stop offset="1" stop-color="#a85c12"/></linearGradient>
- <linearGradient id="silver" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#fff"/><stop offset="1" stop-color="#aaa3c0"/></linearGradient>
- <filter id="glow"><feGaussianBlur stdDeviation="7" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
- <clipPath id="round"><rect x="12" y="12" width="488" height="488" rx="94"/></clipPath>
+ <linearGradient id="bg" x2="1" y2="1"><stop stop-color="#170426"/><stop offset=".55" stop-color="#05030b"/><stop offset="1" stop-color="#21083d"/></linearGradient>
+ <linearGradient id="purple" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#e7a6ff"/><stop offset=".48" stop-color="#a900ff"/><stop offset="1" stop-color="#5100a9"/></linearGradient>
+ <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff5b9"/><stop offset=".45" stop-color="#ffc83d"/><stop offset="1" stop-color="#d47a08"/></linearGradient>
+ <linearGradient id="white" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#fff"/><stop offset="1" stop-color="#c8b9df"/></linearGradient>
+ <filter id="shine"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+ <clipPath id="clip"><rect x="10" y="10" width="492" height="492" rx="92"/></clipPath>
 </defs>
-<g clip-path="url(#round)">
+<g clip-path="url(#clip)">
  <rect width="512" height="512" fill="url(#bg)"/>
- <path d="M-30 135 145 -30h80L50 150M380 545 545 380v-70L310 545" fill="#8e35df" opacity=".18"/>
- <g opacity=".32" fill="none" stroke="#a76be0" stroke-width="13">
-  <path d="M-15 260q90-70 180 0t180 0 180 0"/><path d="M-15 287q90-70 180 0t180 0 180 0"/>
+ <path d="M0 0h180L0 180zM512 512H330l182-182z" fill="url(#purple)" opacity=".24"/>
+ <rect x="12" y="12" width="488" height="488" rx="91" fill="none" stroke="url(#purple)" stroke-width="7"/>
+ <!-- curved film strips -->
+ <g fill="none" stroke="#8d36d2" stroke-width="11" opacity=".72">
+  <path d="M-22 250Q85 180 195 250T410 250T540 245"/>
+  <path d="M-22 278Q85 208 195 278T410 278T540 273"/>
+  <path d="M-22 250Q85 180 195 250T410 250T540 245" stroke-dasharray="18 18" stroke-width="4"/>
+  <path d="M-22 278Q85 208 195 278T410 278T540 273" stroke-dasharray="18 18" stroke-width="4"/>
  </g>
- <g opacity=".22" fill="#c99aff"><path d="M70 85h22v42H70zM112 85h22v42h-22zM154 85h22v42h-22zM336 370h22v42h-22zM378 370h22v42h-22zM420 370h22v42h-22z"/></g>
- <rect x="13" y="13" width="486" height="486" rx="93" fill="none" stroke="#a83dff" stroke-width="5"/>
- <g filter="url(#glow)" transform="translate(0 0)">
-  <path d="m174 112-38-31 7 55 48 10 34-58 35 58 48-10 7-55-38 31-52-74z" fill="url(#gold)" stroke="#ffe49a" stroke-width="5" stroke-linejoin="round"/>
-  <path d="M157 145h198l-9 20H166z" fill="url(#gold)" stroke="#8b4c12" stroke-width="3"/>
-  <circle cx="143" cy="80" r="8" fill="#fff2b4"/><circle cx="256" cy="38" r="8" fill="#fff2b4"/><circle cx="369" cy="80" r="8" fill="#fff2b4"/>
+ <!-- clapper board -->
+ <g transform="rotate(-9 330 155)" opacity=".94">
+  <rect x="235" y="104" width="235" height="132" rx="13" fill="#130c20" stroke="#4d315d" stroke-width="7"/>
+  <path d="M235 115 448 68q14-3 18 10l9 36-226 48z" fill="#33213f" stroke="#74518b" stroke-width="5"/>
+  <path d="m265 109 34-7 26 47-34 7zm82-17 34-7 26 47-34 7zm81-17 23-5 25 46-22 5z" fill="#b38bc8" opacity=".72"/>
+  <path d="M248 174h210" stroke="#624077" stroke-width="7"/>
  </g>
- <g filter="url(#glow)">
-  <path d="M128 185h256c20 0 31 24 15 38L230 365c-18 15-44 0-38-22l26-92h-90z" fill="url(#silver)" stroke="#fff" stroke-width="5" stroke-linejoin="round"/>
-  <path d="m273 230 97 56-97 56z" fill="url(#violet)" stroke="#6d20bd" stroke-width="5" stroke-linejoin="round"/>
-  <path d="M110 389q146 38 292-4" fill="none" stroke="url(#gold)" stroke-width="10" stroke-linecap="round"/>
+ <!-- crown -->
+ <g filter="url(#shine)">
+  <path d="m164 137-27-41 48 24 28-67 39 64 43-55 4 72q-67 31-135 3z" fill="url(#gold)" stroke="#ffe9a0" stroke-width="5" stroke-linejoin="round"/>
+  <path d="M157 143q69 21 145-3l-4 17q-70 25-136 2z" fill="#c87912" stroke="#ffe39a" stroke-width="4"/>
+  <circle cx="137" cy="95" r="9" fill="#fff4bc"/><circle cx="213" cy="52" r="9" fill="#fff4bc"/><circle cx="295" cy="65" r="9" fill="#fff4bc"/>
  </g>
- <g text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-weight="900">
-  <text x="256" y="439" font-size="58" letter-spacing="-3" fill="url(#silver)">Tac<tspan fill="url(#violet)">T</tspan>ic</text>
-  <text x="256" y="478" font-size="31" letter-spacing="7" fill="url(#gold)">DRAMA</text>
+ <!-- T/play monogram -->
+ <g filter="url(#shine)">
+  <path d="M124 178q4-18 23-18h228q23 0 4 17L286 255l-35 122q-4 13-18 13h-57q-14 0-10-15l48-167h-76q-20 0-14-30z" fill="url(#white)" stroke="#fff" stroke-width="5" stroke-linejoin="round"/>
+  <path d="M272 205q-3-13 13-13h62q17 0 5 12L278 273l-23 78q-4 12-17 12h-33q-13 0-9-13l33-116q4-15 19-15h24z" fill="url(#purple)"/>
+  <path d="m301 207 88 51-88 51z" fill="url(#purple)" stroke="#7c16d4" stroke-width="5" stroke-linejoin="round"/>
+  <path d="M120 380q142 40 291-14" fill="none" stroke="url(#gold)" stroke-width="11" stroke-linecap="round"/>
  </g>
- <path d="M120 486h272" stroke="url(#gold)" stroke-width="3" stroke-linecap="round" opacity=".8"/>
+ <g font-family="Arial,Helvetica,sans-serif" font-weight="900" text-anchor="middle" font-style="italic">
+  <text x="256" y="441" font-size="62" letter-spacing="-4" fill="url(#white)">Tac<tspan fill="url(#purple)">T</tspan>ic</text>
+  <text x="256" y="483" font-size="39" letter-spacing="1" fill="url(#gold)">Drama</text>
+ </g>
+ <path d="M100 466h68m176 0h68" stroke="url(#gold)" stroke-width="5" stroke-linecap="round"/>
 </g></svg>
