@@ -1024,7 +1024,7 @@ $("#uploadForm").addEventListener("submit",async e=>{
  if(adminCheck.error||adminCheck.data!==true){setStatus("#uploadStatus","Izin admin tidak terverifikasi. Unggahan dibatalkan sebelum file dikirim.");return}
  const f=e.currentTarget,data=new FormData(f),files=Array.from(f.elements.videos?.files||[]),subtitleFile=data.get("subtitle"),targetDrama=String(data.get("targetDrama")||""),posterFile=targetDrama?null:data.get("poster"),title=String(data.get("title")||"").trim();
  if(!targetDrama&&!title){setStatus("#uploadStatus","Isi judul series terlebih dahulu.");return}
- if(!files.length){setStatus("#uploadStatus","Pilih satu atau beberapa video episode.");return}
+ if(!files.length){setStatus("#uploadStatus",uploadMode==="single"?"Pilih satu video episode.":"Pilih satu atau beberapa video episode.");return}if(uploadMode==="single"&&files.length!==1){setStatus("#uploadStatus","Mode satu per satu hanya menerima satu video. Pilih Banyak sekaligus untuk beberapa video.");return}
  if(!data.get("rightsConfirmed")){setStatus("#uploadStatus","Konfirmasi hak tayang publik terlebih dahulu.");return}
  if(posterFile&&posterFile.size>10*1024*1024){setStatus("#uploadStatus","Ukuran poster maksimal 10 MB.");return}
  if(posterFile&&!getUploadMimeType(posterFile,"image")){setStatus("#uploadStatus","Poster harus JPG, PNG, atau WebP.");return}
@@ -1071,7 +1071,7 @@ $("#uploadForm").addEventListener("submit",async e=>{
    successCount++;activeVideoPath=null;activeSubtitlePath=null;
   }
   setStatus("#uploadStatus","Berhasil! "+successCount+" episode dalam satu series sudah diterbitkan.");
-  f.reset();syncTargetForm();await loadCatalog();await loadAdminDramas(user.id);
+  f.reset();setUploadMode("single");syncTargetForm();await loadCatalog();await loadAdminDramas(user.id);
  }catch(err){
   const cleanup=[];
   if(activeVideoPath)cleanup.push(supa.storage.from("drama-videos").remove([activeVideoPath]));
@@ -1114,13 +1114,17 @@ async function copyShareText(text){
 $("#shareDrama").addEventListener("click",async()=>{if(!activeDrama)return;const shareUrl=new URL(location.href);shareUrl.searchParams.set("drama",String(activeDrama.id));const currentEpisode=activeDrama.episodes?.[activeEpisodeIndex];if(currentEpisode)shareUrl.searchParams.set("episode",String(currentEpisode.episode_number));const shareData={title:activeDrama.title+(currentEpisode?" · Episode "+currentEpisode.episode_number:""),text:"Tonton "+activeDrama.title+(currentEpisode?" episode "+currentEpisode.episode_number:"")+" di TacTic Drama",url:shareUrl.toString()};const copyText=shareData.text+" — "+shareData.url;try{if(navigator.share){await navigator.share(shareData);setStatus("#shareStatus","Menu berbagi berhasil dibuka.")}else if(await copyShareText(copyText))setStatus("#shareStatus","Link episode berhasil disalin. Siap dibagikan!");else setStatus("#shareStatus","Salin link ini secara manual: "+shareData.url)}catch(error){if(error.name==="AbortError")return;if(await copyShareText(copyText))setStatus("#shareStatus","Link episode berhasil disalin sebagai alternatif.");else setStatus("#shareStatus","Link episode: "+shareData.url)}});
 const targetSelect=$("#targetDrama");function syncTargetForm(){const existing=Boolean(targetSelect?.value);$("#posterField").hidden=existing;$("#seriesTitleField").hidden=existing;$("#seriesDescriptionField").hidden=existing;$("#uploadForm [name=title]").disabled=existing;$("#uploadForm [name=description]").disabled=existing;const heading=$("#uploadSeriesMode");if(heading)heading.textContent=existing?"Menambahkan banyak episode ke series terpilih":"Membuat satu series baru beserta seluruh episode"}targetSelect?.addEventListener("change",syncTargetForm);syncTargetForm();
  const uploadForm=$("#uploadForm");
+ let uploadMode="single";
+ function setUploadMode(mode){uploadMode=mode==="batch"?"batch":"single";const input=uploadForm?.elements.videos;if(input)input.multiple=uploadMode==="batch";document.querySelectorAll("[data-upload-mode]").forEach(button=>{const active=button.dataset.uploadMode===uploadMode;button.classList.toggle("active",active);button.setAttribute("aria-pressed",String(active))});const hint=$("#uploadVideoModeHint"),help=$("#uploadVideoHelp");if(hint)hint.textContent=uploadMode==="single"?"Pilih satu video · MP4, WebM, MOV":"Bisa pilih banyak file · MP4, WebM, MOV";if(help)help.textContent=uploadMode==="single"?"Maksimal 500 MB. Pilih satu episode dari galeri. Nama file menjadi judul episode; nomor dapat dibaca dari nama seperti EP01.":"Maksimal 500 MB per video. Pilih beberapa episode sekaligus. Nama file menjadi judul episode; nomor dibaca dari EP01, EP02, dan seterusnya.";const submit=uploadForm?.querySelector(".upload-submit-btn");if(submit)submit.innerHTML=uploadMode==="single"?"↑ Terbitkan satu episode":"↑ Terbitkan semua episode"}
+ document.querySelectorAll("[data-upload-mode]").forEach(button=>button.addEventListener("click",()=>{setUploadMode(button.dataset.uploadMode);if(uploadForm?.elements.videos)uploadForm.elements.videos.value="";updateUploadPreview()}));
+ setUploadMode("single");
  let posterPreviewUrl=null;
  function formatUploadSize(bytes){if(!Number.isFinite(bytes)||bytes<0)return "";const units=["B","KB","MB","GB"];let value=bytes,index=0;while(value>=1024&&index<units.length-1){value/=1024;index++}return value.toFixed(index===0?0:1)+" "+units[index]}
  function updateUploadPreview(){
   const poster=uploadForm?.elements.poster?.files?.[0],videoFiles=Array.from(uploadForm?.elements.videos?.files||[]),preview=$("#uploadPreview"),image=$("#uploadPosterPreview"),name=$("#uploadVideoName"),size=$("#uploadVideoSize");
   if(posterPreviewUrl){URL.revokeObjectURL(posterPreviewUrl);posterPreviewUrl=null}
   if(poster){posterPreviewUrl=URL.createObjectURL(poster);image.src=posterPreviewUrl;image.hidden=false}else{image.removeAttribute("src");image.hidden=true}
-  name.textContent=videoFiles.length?videoFiles.length+" video episode dipilih":"Pilih video episode dari galeri";
+  name.textContent=videoFiles.length?(videoFiles.length===1?"1 video episode dipilih":videoFiles.length+" video episode dipilih"):"Pilih video episode dari galeri";
   size.textContent=videoFiles.length?videoFiles.reduce((sum,file)=>sum+file.size,0)>0?formatUploadSize(videoFiles.reduce((sum,file)=>sum+file.size,0))+" total · "+videoFiles.map(file=>file.name).slice(0,3).join(", ")+(videoFiles.length>3?" dan "+(videoFiles.length-3)+" lainnya":""):"":"";
   preview.hidden=!poster&&!videoFiles.length;
  }
