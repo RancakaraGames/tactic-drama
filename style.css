@@ -1075,3 +1075,8 @@ body:has(.melolo-watch-player[open]){overflow:hidden}.melolo-watch-player{positi
  .catalog-tools .search-wrap{height:40px!important;min-height:40px!important}
  .catalog-tools #installBtn{height:40px!important;min-height:40px!important}
 }
+
+
+/* v164: profile shows VIP only; Reward and Download are deferred */
+.melolo-benefit-row{grid-template-columns:minmax(0,1fr)!important}
+.melolo-benefit-row>.vip-card{width:100%;max-width:none;min-height:84px}
