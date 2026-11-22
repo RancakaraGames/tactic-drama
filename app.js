@@ -579,6 +579,8 @@ async function verifySession(session){
   if(role.error)checkError=role.error;else isAdmin=role.data?.role==="admin";
  }
  if(check!==authCheckSequence)return;
+ // Apply the latest Supabase profile metadata to viewer and admin profile surfaces.
+ renderViewerProfile(session.user);
  if(isAdmin){
   document.body.classList.add("admin-mode");
   if(profileTitle){profileTitle.textContent="Admin TacTic";profileDescription.textContent="Akun administrator aktif. Kamu dapat mengelola katalog drama resmi.";profileEmail.textContent=session.user.email||""}
@@ -613,7 +615,7 @@ function openProfileSettings(){
  const signedIn=!!(supa&&email&&email!=="Kamu sedang menonton sebagai tamu.");
  $("#settingsAccountName").textContent=title;
  $("#settingsAccountEmail").textContent=email;
- $("#settingsAccountAvatar").textContent=(title.trim().charAt(0)||"T").toUpperCase();
+ // Keep the avatar rendered from the current Supabase user metadata.
  $("#settingsAccountStatus").textContent=signedIn?"Akun penonton aktif":"Kamu sedang menggunakan mode tamu";
  $("#settingsLoginButton").hidden=signedIn;
  $("#settingsLogoutButton").hidden=!signedIn;
