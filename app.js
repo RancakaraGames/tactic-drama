@@ -561,7 +561,7 @@ async function loadDramaLikeState(dramaId){
 }
 let authCheckSequence=0;
 async function verifySession(session){
- const check=++authCheckSequence;
+ const check=++authCheckSequence;document.body.classList.remove("admin-mode");
  if(session)hideGuestPrompt();
  const profileTitle=$("#profileAccountTitle"),profileDescription=$("#profileAccountDescription"),profileEmail=$("#profileEmail"),profileLogin=$("#profileLoginBtn"),profileLogout=$("#profileLogoutBtn"),profileAvatar=$("#profileAvatar"),profileSince=$("#profileSince");
  if(profileAvatar){const email=session?.user?.email||"";profileAvatar.textContent=(email.split("@")[0].trim().charAt(0)||"T").toUpperCase()}
@@ -580,6 +580,7 @@ async function verifySession(session){
  }
  if(check!==authCheckSequence)return;
  if(isAdmin){
+  document.body.classList.add("admin-mode");
   if(profileTitle){profileTitle.textContent="Admin TacTic";profileDescription.textContent="Akun administrator aktif. Kamu dapat mengelola katalog drama resmi.";profileEmail.textContent=session.user.email||""}
   panel.dataset.admin="true";panel.hidden=true;
   const profilePanel=$("#profilePanel");if(profilePanel&&panel.parentElement!==profilePanel)profilePanel.append(panel);
