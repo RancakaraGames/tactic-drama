@@ -213,12 +213,12 @@ function render(){
 function getVideoUrl(path){const value=String(path||"");if(/^https:\/\//i.test(value))return value;return supa?.storage?.from("drama-videos").getPublicUrl(value).data.publicUrl||""}
 function saveWatchHistory(ep,positionSeconds=0){if(!activeDrama||!ep?.id)return;watchHistory[activeDrama.id]={episode_number:ep.episode_number,episode_title:ep.title||"",position_seconds:Math.max(0,Math.floor(Number(positionSeconds)||0)),watched_at:new Date().toISOString()};try{localStorage.setItem("tactic-watch-history",JSON.stringify(watchHistory))}catch{}}
 function episodeProgressKey(ep){return String(activeDrama?.id||"")+":"+String(ep?.id||"")}
-function saveEpisodeProgress(force=false){
+function saveEpisodeProgress(force=false,completed=false){
  if(!activeDrama||!Number.isFinite(video.duration)||video.duration<=0)return;
  const now=Date.now();if(!force&&now-lastEpisodeProgressPersist<5000)return;lastEpisodeProgressPersist=now;
  const ep=activeDrama.episodes?.[activeEpisodeIndex];if(!ep?.id)return;
  const key=episodeProgressKey(ep),seconds=Math.max(0,Math.floor(video.currentTime||0)),duration=Math.floor(video.duration);
- episodeProgress[key]={seconds,duration,percent:Math.min(100,Math.floor(seconds/duration*100)),updated_at:new Date().toISOString()};
+ episodeProgress[key]={seconds:completed?duration:seconds,duration,percent:completed?100:Math.min(100,Math.floor(seconds/duration*100)),updated_at:new Date().toISOString()};
  try{localStorage.setItem("tactic-episode-progress",JSON.stringify(episodeProgress))}catch{}
  renderEpisodeProgress(ep);
 }
@@ -374,7 +374,7 @@ $("#retryVideo").addEventListener("click",()=>{
  },{once:true});
  video.load();
 });
-video.addEventListener("ended",()=>{saveEpisodeProgress(true);if(activeDrama&&activeEpisodeIndex<(activeDrama.episodes||[]).length-1){if(autoNextEnabled)playEpisode(activeEpisodeIndex+1);else setStatus("#playerDescription","Episode selesai. Putar otomatis nonaktif — pilih episode berikutnya jika ingin lanjut.")}else setStatus("#playerDescription","Kamu sudah menyelesaikan episode terbaru. Pilih drama lain atau tonton ulang episode ini.");});
+video.addEventListener("ended",()=>{const endedEpisode=activeDrama?.episodes?.[activeEpisodeIndex];if(endedEpisode)saveWatchHistory(endedEpisode,video.duration||video.currentTime||0);saveEpisodeProgress(true,true);if(activeDrama&&activeEpisodeIndex<(activeDrama.episodes||[]).length-1){if(autoNextEnabled)playEpisode(activeEpisodeIndex+1);else setStatus("#playerDescription","Episode selesai. Putar otomatis nonaktif — pilih episode berikutnya jika ingin lanjut.")}else setStatus("#playerDescription","Kamu sudah menyelesaikan episode terbaru. Pilih drama lain atau tonton ulang episode ini.");});
 
 function seekVideoBy(seconds){
  if(!Number.isFinite(video.duration)||!Number.isFinite(video.currentTime))return;
