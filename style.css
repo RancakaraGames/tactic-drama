@@ -1362,3 +1362,66 @@ body:has(.melolo-watch-player[open]){overflow:hidden}
 .nav-item .ui-icon{width:20px;height:20px;margin-bottom:3px;stroke-width:1.9}
 .nav-item.active .ui-icon{color:#ff4652}
 @media(prefers-reduced-motion:reduce){.melolo-profile-tab .ui-icon{transition:none}}
+
+
+/* Compact premium profile benefit cards v128 */
+.melolo-benefit-row{
+  gap:9px;
+  margin-bottom:19px;
+}
+.melolo-benefit-card{
+  min-height:78px;
+  height:78px;
+  padding:10px 11px;
+  border-radius:15px;
+  gap:4px;
+  align-content:center;
+}
+.melolo-benefit-card strong{
+  font-size:12px;
+  line-height:1.2;
+  letter-spacing:.1px;
+}
+.melolo-benefit-card small{
+  max-width:100%;
+  font-size:8px;
+  line-height:1.3;
+}
+.benefit-icon{
+  right:8px;
+  bottom:6px;
+  font-size:22px;
+}
+.vip-card:after{
+  top:7px;
+  right:8px;
+  font-size:6px;
+  letter-spacing:.7px;
+}
+.vip-card .vip-card-hint{
+  position:relative;
+  z-index:1;
+  display:inline-block;
+  width:max-content;
+  max-width:100%;
+  margin-top:1px;
+  color:#f2d69b;
+  font-size:8px;
+  line-height:1.2;
+}
+@media(max-width:370px){
+  .melolo-benefit-row{gap:7px}
+  .melolo-benefit-card{
+    min-height:72px;
+    height:72px;
+    padding:9px 8px;
+    border-radius:13px;
+  }
+  .melolo-benefit-card strong{font-size:11px}
+  .melolo-benefit-card small{font-size:7px}
+  .benefit-icon{font-size:19px;right:6px;bottom:5px}
+  .vip-card:after{top:6px;right:6px;font-size:5px}
+}
+@media(min-width:600px){
+  .melolo-benefit-card{min-height:84px;height:84px;padding:11px 13px}
+}
