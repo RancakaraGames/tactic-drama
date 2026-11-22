@@ -22,6 +22,27 @@ let lastEpisodeProgressPersist=0;
 let activePlaybackUserId=null;
 let commentLoadToken=0;
 const isCloudUuid=value=>/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(String(value||""));
+function readPlaybackStore(key){try{return JSON.parse(localStorage.getItem(key)||"{}")||{}}catch{return {}}}
+function mergePlaybackStore(base,incoming,dateField){
+ const result={...base};
+ Object.entries(incoming||{}).forEach(([key,value])=>{const a=Date.parse(result[key]?.updated_at||result[key]?.watched_at||0),b=Date.parse(value?.updated_at||value?.watched_at||0);if(!result[key]||b>a)result[key]=value});
+ return result;
+}
+function switchPlaybackOwner(nextUserId){
+ const nextOwner=nextUserId||"guest";let owner="guest";try{owner=localStorage.getItem("tactic-playback-owner")||"guest"}catch{}
+ if(owner!==nextOwner){
+  if(owner!=="guest"){
+   try{localStorage.setItem("tactic-watch-history-user:"+owner,JSON.stringify(watchHistory));localStorage.setItem("tactic-episode-progress-user:"+owner,JSON.stringify(episodeProgress))}catch{}
+  }
+  if(nextUserId){
+   const savedHistory=readPlaybackStore("tactic-watch-history-user:"+nextUserId),savedProgress=readPlaybackStore("tactic-episode-progress-user:"+nextUserId);
+   if(owner==="guest"){watchHistory=mergePlaybackStore(savedHistory,watchHistory);episodeProgress=mergePlaybackStore(savedProgress,episodeProgress)}
+   else{watchHistory=savedHistory;episodeProgress=savedProgress}
+  }else if(owner!=="guest"){watchHistory={};episodeProgress={}}
+  try{localStorage.setItem("tactic-playback-owner",nextOwner);localStorage.setItem("tactic-watch-history",JSON.stringify(watchHistory));localStorage.setItem("tactic-episode-progress",JSON.stringify(episodeProgress))}catch{}
+ }
+ activePlaybackUserId=nextUserId||null;
+}
 function syncWatchHistoryRow(dramaId){
  const entry=watchHistory[dramaId];if(!supa||!activePlaybackUserId||!entry||!isCloudUuid(dramaId))return;
  const drama=dramas.find(item=>String(item.id)===String(dramaId)),episode=drama?.episodes?.find(item=>Number(item.episode_number)===Number(entry.episode_number));
@@ -602,7 +623,7 @@ async function loadDramaLikeState(dramaId){
 }
 let authCheckSequence=0;
 async function verifySession(session){
- const check=++authCheckSequence;activePlaybackUserId=session?.user?.id||null;document.body.classList.remove("admin-mode");
+ const check=++authCheckSequence;switchPlaybackOwner(session?.user?.id||null);document.body.classList.remove("admin-mode");
  if(session)hideGuestPrompt();
  const profileTitle=$("#profileAccountTitle"),profileDescription=$("#profileAccountDescription"),profileEmail=$("#profileEmail"),profileLogin=$("#profileLoginBtn"),profileLogout=$("#profileLogoutBtn"),profileAvatar=$("#profileAvatar"),profileSince=$("#profileSince");
  if(profileAvatar){const email=session?.user?.email||"";profileAvatar.textContent=(email.split("@")[0].trim().charAt(0)||"T").toUpperCase()}
