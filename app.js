@@ -1104,9 +1104,11 @@ $("#uploadForm").addEventListener("submit",async e=>{
   const selectedNumbers=new Set();
   for(const plan of plans){if(plan.number!==null){if(!Number.isInteger(plan.number)||plan.number<1)throw new Error("Nomor episode dari nama file "+plan.file.name+" tidak valid.");if(existingNumbers.has(plan.number)){plan.skip=true;continue}if(selectedNumbers.has(plan.number))throw new Error("Ada dua file dengan nomor episode "+plan.number+". Periksa nama file.");selectedNumbers.add(plan.number);used.add(plan.number)}}
   let nextNumber=Math.max(0,...existingNumbers)+1;for(const plan of plans){if(plan.number===null){while(used.has(nextNumber))nextNumber++;plan.number=nextNumber;used.add(nextNumber);selectedNumbers.add(nextNumber++)}}
+  const skippedCount=plans.filter(plan=>plan.skip).length;
   const pendingPlans=plans.filter(plan=>!plan.skip).sort((a,b)=>a.number-b.number);
-  if(!pendingPlans.length)throw new Error("Semua episode dari file yang dipilih sudah ada di series ini.");
+  if(!pendingPlans.length)throw new Error("Semua episode dari file yang dipilih sudah ada di series ini. Tidak ada file yang diunggah.");
   plans.splice(0,plans.length,...pendingPlans);
+  if(skippedCount)setStatus("#uploadStatus",skippedCount+" episode dilewati karena nomornya sudah tersedia. Melanjutkan "+plans.length+" episode baru...");
   setStatus("#uploadStatus","Menyiapkan "+plans.length+" episode...");
   if(posterFile&&posterFile.size){posterPath=user.id+"/"+crypto.randomUUID()+"-"+posterFile.name.replace(/[^a-zA-Z0-9._-]/g,"_");const posterUpload=await supa.storage.from("drama-posters").upload(posterPath,posterFile,{contentType:getUploadMimeType(posterFile,"image"),upsert:false});if(posterUpload.error)throw posterUpload.error}
   if(!dramaId){const created=await supa.from("dramas").insert({title,description:String(data.get("description")||""),poster_url:posterPath?supa.storage.from("drama-posters").getPublicUrl(posterPath).data.publicUrl:null,uploader_id:user.id,status:"approved"}).select("id").single();if(created.error)throw created.error;dramaId=created.data.id;createdDrama=true}
@@ -1123,7 +1125,7 @@ $("#uploadForm").addEventListener("submit",async e=>{
    if(saved.error)throw saved.error;
    successCount++;activeVideoPath=null;activeSubtitlePath=null;
   }
-  setStatus("#uploadStatus","Berhasil! "+successCount+" episode dalam satu series sudah diterbitkan.");
+  setStatus("#uploadStatus","Berhasil! "+successCount+" episode dalam satu series sudah diterbitkan."+(skippedCount?" "+skippedCount+" file dilewati karena nomor episode sudah ada.":""));
   f.reset();setUploadMode("single");syncTargetForm();await loadCatalog();await loadAdminDramas(user.id);
  }catch(err){
   const cleanup=[];
