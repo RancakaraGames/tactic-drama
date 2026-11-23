@@ -889,8 +889,8 @@ async function addOrReplaceEpisodeSubtitle(drama,ep,userId,file){
  if(mime&&mime!=="text/vtt"&&!/\.vtt$/i.test(file.name)){setStatus("#uploadStatus","Format subtitle harus WebVTT (.vtt).");return}
  if(!/\.vtt$/i.test(file.name)&&mime!=="text/vtt"){setStatus("#uploadStatus","Pilih file subtitle .vtt.");return}
  try{
-  const header=(await file.slice(0,100).text()).replace(/^\\uFEFF/,"").trimStart();
-  if(!/^WEBVTT(?:\\s|$)/i.test(header))throw new Error("Isi file tidak diawali header WEBVTT.");
+  const header=(await file.slice(0,100).text()).replace(/^\uFEFF/,"").trimStart();
+  if(!/^WEBVTT(?:\s|$)/i.test(header))throw new Error("Isi file tidak diawali header WEBVTT.");
   const safeName=String(file.name||"subtitle.vtt").replace(/[^a-zA-Z0-9._-]/g,"_").slice(-90);
   const path=userId+"/"+drama.id+"/subtitles/"+ep.id+"-"+Date.now()+"-"+safeName;
   const {error:uploadError}=await supa.storage.from("drama-videos").upload(path,file,{upsert:false,contentType:"text/vtt"});
