@@ -937,6 +937,7 @@ async function loadAdminDramas(userId){
   add.addEventListener("click",()=>{
    if(!target)return;
    target.value=d.id;target.dispatchEvent(new Event("change"));
+   setUploadMode("single");
    const next=Math.max(0,...eps.map(ep=>Number(ep.episode_number)||0))+1;
    $("#uploadForm [name=videos]").value="";
    $("#uploadForm [name=videos]").focus({preventScroll:true});
