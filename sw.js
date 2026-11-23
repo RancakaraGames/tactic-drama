@@ -1,4 +1,4 @@
-const CACHE="tactic-drama-v179";
+const CACHE="tactic-drama-v180";
 const ASSETS=["./","./index.html","./style.css","./app.js","./supabase-config.js","./manifest.webmanifest","./icons/file_00000000659882079a7823332294da4f.png"];
 self.addEventListener("install",e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)).then(()=>self.skipWaiting())));
 self.addEventListener("activate",e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
