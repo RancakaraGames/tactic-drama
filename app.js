@@ -868,7 +868,40 @@ async function editAdminEpisode(drama,ep,userId){
   setStatus("#uploadStatus","Episode berhasil diperbarui.");await loadCatalog();await loadAdminDramas(userId)
  }catch(err){setStatus("#uploadStatus","Gagal mengubah episode: "+(err?.message||String(err)))}
 }
-async function deleteAdminEpisode(drama,ep,userId){if(!confirm("Hapus episode "+ep.episode_number+" dari drama "+drama.title+"? Video episode ini juga akan dihapus permanen."))return;try{await removeOwnedStorageFiles("drama-videos",[ep.video_path,ep.subtitle_path]);const {error}=await supa.from("episodes").delete().eq("id",ep.id).eq("drama_id",drama.id).eq("uploader_id",userId);if(error)throw error;setStatus("#uploadStatus","Episode "+ep.episode_number+" berhasil dihapus.");await loadCatalog();await loadAdminDramas(userId)}catch(err){setStatus("#uploadStatus","Episode belum berhasil dihapus: "+(err?.message||String(err)))}}
+async function deleteAdminEpisode(drama,ep,userId){
+ if(!confirm("Hapus episode "+ep.episode_number+" dari series "+drama.title+"? Video dan subtitle episode ini akan dihapus permanen."))return;
+ try{
+  const {data,error}=await supa.from("episodes").delete().eq("id",ep.id).eq("drama_id",drama.id).eq("uploader_id",userId).select("id").maybeSingle();
+  if(error)throw error;if(!data)throw new Error("Episode tidak ditemukan atau akun ini tidak memiliki izin menghapusnya.");
+  let cleanupError=null;try{await removeOwnedStorageFiles("drama-videos",[ep.video_path,ep.subtitle_path])}catch(error){cleanupError=error}
+  if(activeDrama&&String(activeDrama.id)===String(drama.id)&&activeEpisodeIndex>=0){
+   const activeEp=activeDrama.episodes?.[activeEpisodeIndex];
+   if(String(activeEp?.id)===String(ep.id)){video.pause();video.removeAttribute("src");video.load();player.close();activeDrama=null}
+  }
+  setStatus("#uploadStatus",cleanupError?"Episode dihapus dari katalog, tetapi file penyimpanannya belum terhapus. Periksa Storage drama-videos.":"Episode "+ep.episode_number+" berhasil dihapus.");
+  await loadCatalog();await loadAdminDramas(userId)
+ }catch(err){setStatus("#uploadStatus","Episode belum berhasil dihapus: "+(err?.message||String(err)))}
+}
+async function addOrReplaceEpisodeSubtitle(drama,ep,userId,file){
+ if(!file)return;
+ if(file.size>1024*1024){setStatus("#uploadStatus","Subtitle terlalu besar. Maksimal 1 MB.");return}
+ const mime=String(file.type||"").toLowerCase();
+ if(mime&&mime!=="text/vtt"&&!/\.vtt$/i.test(file.name)){setStatus("#uploadStatus","Format subtitle harus WebVTT (.vtt).");return}
+ if(!/\.vtt$/i.test(file.name)&&mime!=="text/vtt"){setStatus("#uploadStatus","Pilih file subtitle .vtt.");return}
+ try{
+  const header=(await file.slice(0,100).text()).replace(/^\\uFEFF/,"").trimStart();
+  if(!/^WEBVTT(?:\\s|$)/i.test(header))throw new Error("Isi file tidak diawali header WEBVTT.");
+  const safeName=String(file.name||"subtitle.vtt").replace(/[^a-zA-Z0-9._-]/g,"_").slice(-90);
+  const path=userId+"/"+drama.id+"/subtitles/"+ep.id+"-"+Date.now()+"-"+safeName;
+  const {error:uploadError}=await supa.storage.from("drama-videos").upload(path,file,{upsert:false,contentType:"text/vtt"});
+  if(uploadError)throw uploadError;
+  const {data,error}=await supa.from("episodes").update({subtitle_path:path}).eq("id",ep.id).eq("drama_id",drama.id).eq("uploader_id",userId).select("id").maybeSingle();
+  if(error||!data){await removeOwnedStorageFiles("drama-videos",[path]);if(error)throw error;throw new Error("Akun ini tidak memiliki izin mengubah episode tersebut.")}
+  let cleanupError=null;try{if(ep.subtitle_path)await removeOwnedStorageFiles("drama-videos",[ep.subtitle_path])}catch(error){cleanupError=error}
+  setStatus("#uploadStatus",cleanupError?"Subtitle baru aktif, tetapi file subtitle lama belum terhapus.":"Subtitle episode berhasil "+(ep.subtitle_path?"diganti.":"ditambahkan."));
+  await loadCatalog();await loadAdminDramas(userId)
+ }catch(error){setStatus("#uploadStatus","Subtitle gagal diperbarui: "+(error?.message||String(error)))}
+}
 async function deleteAdminDrama(drama,userId){const eps=drama.episodes||[];if(!confirm("Hapus drama “"+drama.title+"” beserta "+eps.length+" episode? Tindakan ini permanen."))return;try{await removeOwnedStorageFiles("drama-videos",eps.flatMap(ep=>[ep.video_path,ep.subtitle_path]));const posterPath=storagePathFromPublicUrl(drama.poster_url,"drama-posters");await removeOwnedStorageFiles("drama-posters",[posterPath]);const {error}=await supa.from("dramas").delete().eq("id",drama.id).eq("uploader_id",userId);if(error)throw error;setStatus("#uploadStatus","Drama dan seluruh episode berhasil dihapus.");if(activeDrama?.id===drama.id){video.pause();video.removeAttribute("src");player.close();activeDrama=null}await loadCatalog();await loadAdminDramas(userId)}catch(err){setStatus("#uploadStatus","Drama belum berhasil dihapus: "+(err?.message||String(err))+". Jika file sudah terhapus, muat ulang daftar dan coba periksa kembali.")}}
 async function loadAdminDramas(userId){
  const list=$("#myDramaList"),count=$("#adminDramaCount"),target=$("#targetDrama");
@@ -905,9 +938,8 @@ async function loadAdminDramas(userId){
    if(!target)return;
    target.value=d.id;target.dispatchEvent(new Event("change"));
    const next=Math.max(0,...eps.map(ep=>Number(ep.episode_number)||0))+1;
-   $("#uploadForm [name=episode]").value=next;
-   $("#uploadForm [name=episodeTitle]").value="";
-   $("#uploadForm [name=video]").focus({preventScroll:true});
+   $("#uploadForm [name=videos]").value="";
+   $("#uploadForm [name=videos]").focus({preventScroll:true});
    $("#uploadForm").scrollIntoView({behavior:"smooth",block:"start"});
    setStatus("#uploadStatus","Siap menambahkan Episode "+next+" ke series “"+d.title+"”.");
   });
@@ -918,7 +950,7 @@ async function loadAdminDramas(userId){
   if(eps.length){
    const details=document.createElement("details");details.className="admin-episodes";
    const summary=document.createElement("summary");summary.textContent="Daftar episode · "+eps.length;details.append(summary);
-   for(const ep of eps){const row=document.createElement("div");row.className="admin-episode-row";const label=document.createElement("span");label.textContent="EP "+String(ep.episode_number).padStart(2,"0")+(ep.title?" · "+ep.title:"");const status=document.createElement("small");status.textContent=ep.status==="approved"?"Tayang":ep.status;const editEp=document.createElement("button");editEp.className="secondary-btn";editEp.type="button";editEp.textContent="Edit";editEp.addEventListener("click",()=>editAdminEpisode(d,ep,userId));const del=document.createElement("button");del.className="danger-btn";del.type="button";del.textContent="Hapus";del.addEventListener("click",()=>deleteAdminEpisode(d,ep,userId));row.append(label,status,editEp,del);details.append(row)}
+   for(const ep of eps){const row=document.createElement("div");row.className="admin-episode-row";const label=document.createElement("span");label.textContent="EP "+String(ep.episode_number).padStart(2,"0")+(ep.title?" · "+ep.title:"");const status=document.createElement("small");status.textContent=ep.status==="approved"?"Tayang":ep.status;const editEp=document.createElement("button");editEp.className="secondary-btn";editEp.type="button";editEp.textContent="Edit";editEp.addEventListener("click",()=>editAdminEpisode(d,ep,userId));const subtitle=document.createElement("button");subtitle.className="secondary-btn";subtitle.type="button";subtitle.textContent=ep.subtitle_path?"Ganti subtitle":"Tambah subtitle";subtitle.addEventListener("click",()=>{const picker=document.createElement("input");picker.type="file";picker.accept=".vtt,text/vtt";picker.hidden=true;picker.addEventListener("change",()=>addOrReplaceEpisodeSubtitle(d,ep,userId,picker.files?.[0]));document.body.append(picker);picker.click();picker.addEventListener("change",()=>picker.remove(),{once:true})});const del=document.createElement("button");del.className="danger-btn";del.type="button";del.textContent="Hapus";del.addEventListener("click",()=>deleteAdminEpisode(d,ep,userId));row.append(label,status,editEp,subtitle,del);details.append(row)}
    card.append(details);
   }else{const empty=document.createElement("p");empty.className="admin-series-empty";empty.textContent="Belum ada episode. Tekan Tambah episode untuk mulai.";card.append(empty)}
   list.append(card);
