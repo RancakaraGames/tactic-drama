@@ -1088,3 +1088,18 @@ body:has(.melolo-watch-player[open]){overflow:hidden}.melolo-watch-player{positi
 
 /* Upload mode: simple single episode or batch */
 .upload-mode-switch{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0 16px;padding:5px;border:1px solid #e9c58a35;border-radius:13px;background:#100f15}.upload-mode-btn{min-height:42px;padding:10px;border:1px solid transparent;border-radius:9px;background:transparent;color:#b4aab6;font:inherit;font-size:12px;font-weight:800}.upload-mode-btn.active{border-color:#e9c58a75;background:linear-gradient(135deg,#3a2a2c,#211a27);color:#f0d5a0;box-shadow:0 4px 14px #0004}.upload-mode-btn:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+
+
+/* v178: rapikan daftar centang keuntungan VIP agar teks selalu sejajar dan membungkus rapi */
+.vip-benefit-list{width:100%;gap:15px}
+.vip-benefit-list>div{display:grid;grid-template-columns:22px minmax(0,1fr);align-items:start;column-gap:11px;width:100%;min-width:0}
+.vip-benefit-list>div>span{width:22px;height:22px;line-height:1;flex:none}
+.vip-benefit-list p{display:grid;grid-template-columns:minmax(0,1fr);gap:4px;min-width:0;width:100%;overflow-wrap:anywhere}
+.vip-benefit-list p strong{display:block;min-width:0;font-size:12px;line-height:1.4;overflow-wrap:anywhere}
+.vip-benefit-list p small{display:block;min-width:0;font-size:11px;line-height:1.55;white-space:normal;overflow-wrap:anywhere}
+@media(max-width:380px){
+ .vip-benefit-list{gap:13px}
+ .vip-benefit-list>div{column-gap:9px}
+ .vip-benefit-list p strong{font-size:11px}
+ .vip-benefit-list p small{font-size:10px;line-height:1.5}
+}
