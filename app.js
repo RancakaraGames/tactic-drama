@@ -1,4 +1,5 @@
 let dramas=[],activeDrama=null,activeEpisodeIndex=0,supa=null,activeTab="clips",collectionView="saved",collectionHistoryFilter="all",sharedDramaOpened=false,profileCollectionView="history",profileHistoryFilter="all",profileLikesLoadedFor=null,profileLikedIds=new Set();
+try{const savedTab=localStorage.getItem("tactic-active-tab");if(["clips","home","collection","profile"].includes(savedTab))activeTab=savedTab}catch{}
 let clipsObserver=null;
 let autoNextEnabled=true;try{autoNextEnabled=localStorage.getItem("tactic-auto-next")!=="false"}catch{}
 let searchQuery="";
@@ -1115,7 +1116,7 @@ $("#uploadForm").addEventListener("submit",async e=>{
   setStatus("#uploadStatus",successCount?successCount+" episode berhasil diterbitkan, tetapi unggahan berhenti: "+(err?.message||String(err))+". Pilih series yang sama untuk melanjutkan.":"Gagal menerbitkan series: "+(err?.message||String(err))+". Periksa koneksi lalu coba lagi.");
  }finally{btn.disabled=false;updateUploadProgress(0,false)}
 });
-function setActiveNav(tab){document.querySelectorAll(".nav-item").forEach(item=>{const active=item.dataset.tab===tab;item.classList.toggle("active",active);if(active)item.setAttribute("aria-current","page");else item.removeAttribute("aria-current")})}
+function setActiveNav(tab){if(["clips","home","collection","profile"].includes(tab)){try{localStorage.setItem("tactic-active-tab",tab)}catch{}}document.querySelectorAll(".nav-item").forEach(item=>{const active=item.dataset.tab===tab;item.classList.toggle("active",active);if(active)item.setAttribute("aria-current","page");else item.removeAttribute("aria-current")})}
 document.querySelectorAll(".nav-item").forEach(button=>button.addEventListener("click",()=>{activeTab=button.dataset.tab;setActiveNav(activeTab);render();window.scrollTo({top:0,behavior:"smooth"})}));
 document.querySelectorAll("[data-collection-view]").forEach(button=>button.addEventListener("click",()=>{collectionView=button.dataset.collectionView;render()}));
 document.querySelectorAll("[data-collection-history-filter]").forEach(button=>button.addEventListener("click",()=>{collectionHistoryFilter=button.dataset.collectionHistoryFilter;render()}));
@@ -1169,6 +1170,7 @@ $("#dramaSort")?.addEventListener("change",render);
 $("#reloadCatalog")?.addEventListener("click",()=>loadCatalog());
 function updateNetworkStatus(){const el=$("#networkStatus");if(!el)return;const online=navigator.onLine;el.classList.toggle("is-offline",!online);el.setAttribute("aria-label",online?"Koneksi online":"Koneksi offline");el.title=online?"Koneksi online":"Koneksi offline"}
 window.addEventListener("online",()=>{updateNetworkStatus();loadCatalog();if(activePlaybackUserId)loadCloudPlayback(activePlaybackUserId)});window.addEventListener("offline",updateNetworkStatus);updateNetworkStatus();
+setActiveNav(activeTab);
 render();
 const cfg=window.TACTIC_SUPABASE_CONFIG||{};
 const backendConfigured=cfg.url?.startsWith("https://")&&!cfg.url.includes("YOUR-PROJECT")&&cfg.anonKey&&!cfg.anonKey.includes("YOUR-SUPABASE");
