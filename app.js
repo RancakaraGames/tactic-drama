@@ -903,7 +903,26 @@ async function addOrReplaceEpisodeSubtitle(drama,ep,userId,file){
   await loadCatalog();await loadAdminDramas(userId)
  }catch(error){setStatus("#uploadStatus","Subtitle gagal diperbarui: "+(error?.message||String(error)))}
 }
-async function deleteAdminDrama(drama,userId){const eps=drama.episodes||[];if(!confirm("Hapus drama “"+drama.title+"” beserta "+eps.length+" episode? Tindakan ini permanen."))return;try{await removeOwnedStorageFiles("drama-videos",eps.flatMap(ep=>[ep.video_path,ep.subtitle_path]));const posterPath=storagePathFromPublicUrl(drama.poster_url,"drama-posters");await removeOwnedStorageFiles("drama-posters",[posterPath]);const {error}=await supa.from("dramas").delete().eq("id",drama.id).eq("uploader_id",userId);if(error)throw error;setStatus("#uploadStatus","Drama dan seluruh episode berhasil dihapus.");if(activeDrama?.id===drama.id){video.pause();video.removeAttribute("src");player.close();activeDrama=null}await loadCatalog();await loadAdminDramas(userId)}catch(err){setStatus("#uploadStatus","Drama belum berhasil dihapus: "+(err?.message||String(err))+". Jika file sudah terhapus, muat ulang daftar dan coba periksa kembali.")}}
+async function deleteAdminDrama(drama,userId){
+ const eps=drama.episodes||[];
+ if(!confirm("Hapus drama “"+drama.title+"” beserta "+eps.length+" episode? Tindakan ini permanen."))return;
+ try{
+  const {data,error}=await supa.from("dramas").delete().eq("id",drama.id).eq("uploader_id",userId).select("id").maybeSingle();
+  if(error)throw error;
+  if(!data)throw new Error("Series tidak ditemukan atau akun ini tidak memiliki izin menghapusnya.");
+  let cleanupError=null;
+  try{
+   await removeOwnedStorageFiles("drama-videos",eps.flatMap(ep=>[ep.video_path,ep.subtitle_path]));
+   const posterPath=storagePathFromPublicUrl(drama.poster_url,"drama-posters");
+   await removeOwnedStorageFiles("drama-posters",[posterPath]);
+  }catch(error){cleanupError=error}
+  if(activeDrama&&String(activeDrama.id)===String(drama.id)){
+   video.pause();video.removeAttribute("src");video.load();if(player?.open)player.close();activeDrama=null;
+  }
+  setStatus("#uploadStatus",cleanupError?"Series dihapus dari katalog, tetapi sebagian file penyimpanannya belum terhapus. Periksa Storage drama-videos dan drama-posters.":"Series dan seluruh episode berhasil dihapus.");
+  await loadCatalog();await loadAdminDramas(userId);
+ }catch(err){setStatus("#uploadStatus","Series belum berhasil dihapus: "+(err?.message||String(err)))}
+}
 async function loadAdminDramas(userId){
  const list=$("#myDramaList"),count=$("#adminDramaCount"),target=$("#targetDrama");
  if(!list||!supa)return;
