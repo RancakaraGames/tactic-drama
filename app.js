@@ -650,7 +650,7 @@ async function verifySession(session){
   $("#adminIdentity").textContent="Admin masuk sebagai "+session.user.email;
   setStatus("#loginStatus","Hak admin terverifikasi. Tab Upload tersedia di Profil.");
   if(admin.open)admin.close();
-  activeTab="clips";setActiveNav("clips");render();loadAdminDramas(session.user.id);loadModeration();return;
+  setActiveNav(activeTab);render();loadAdminDramas(session.user.id);loadModeration();return;
  }
  renderViewerProfile(session.user);$("#viewerAccount").hidden=false;$("#viewerEmail").textContent=session.user.email||"Akun penonton aktif";
  if(profileTitle){profileTitle.textContent="Akun penonton aktif";profileDescription.textContent="Akunmu sudah terhubung dan siap digunakan.";profileEmail.textContent=session.user.email||"Akun penonton aktif"}
